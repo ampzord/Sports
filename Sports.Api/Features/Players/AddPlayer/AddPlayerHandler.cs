@@ -2,34 +2,27 @@
 
 using MediatR;
 using Sports.Api.Database;
-using Sports.Api.Entities;
 
 public class AddPlayerHandler : IRequestHandler<AddPlayerCommand, AddPlayerResponse>
 {
     private readonly SportsDbContext _db;
+    private readonly AddPlayerMapper _mapper;
 
-    public AddPlayerHandler(SportsDbContext db) => _db = db;
+    public AddPlayerHandler(SportsDbContext db, AddPlayerMapper mapper)
+    {
+        _db = db;
+        _mapper = mapper;
+    }
 
     public async Task<AddPlayerResponse> Handle(
         AddPlayerCommand command,
         CancellationToken cancellationToken)
     {
-        var player = new Player
-        {
-            Name = command.Name,
-            Position = command.Position,
-            TeamId = command.TeamId
-        };
+        var player = _mapper.ToEntity(command);
 
         _db.Players.Add(player);
         await _db.SaveChangesAsync(cancellationToken);
 
-        return new AddPlayerResponse
-        {
-            Id = player.Id,
-            Name = player.Name,
-            Position = player.Position,
-            TeamId = player.TeamId
-        };
+        return _mapper.ToResponse(player);
     }
 }

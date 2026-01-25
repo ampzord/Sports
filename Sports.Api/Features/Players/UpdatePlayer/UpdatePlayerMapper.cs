@@ -1,0 +1,14 @@
+﻿namespace Sports.Api.Features.Players.UpdatePlayer;
+
+using Riok.Mapperly.Abstractions;
+using Sports.Api.Entities;
+
+[Mapper]
+public partial class UpdatePlayerMapper
+{
+    public partial UpdatePlayerCommand ToCommand(UpdatePlayerRequest request);
+    public partial UpdatePlayerResponse ToResponse(Player player);
+
+    [MapperIgnoreTarget(nameof(Player.Id))]
+    public partial void Apply(UpdatePlayerCommand command, Player player);
+}

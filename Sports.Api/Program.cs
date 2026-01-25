@@ -2,6 +2,10 @@ using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
+using Sports.Api.Features.Players.AddPlayer;
+using Sports.Api.Features.Players.DeletePlayer;
+using Sports.Api.Features.Players.GetPlayer;
+using Sports.Api.Features.Players.UpdatePlayer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +18,11 @@ builder.Services.AddDbContext<SportsDbContext>(options =>
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(Program).Assembly)
 );
+
+builder.Services.AddSingleton<AddPlayerMapper>();
+builder.Services.AddSingleton<UpdatePlayerMapper>();
+builder.Services.AddSingleton<GetPlayerMapper>();
+builder.Services.AddSingleton<DeletePlayerMapper>();
 
 builder.Services.AddOpenApi();
 

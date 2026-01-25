@@ -1,14 +1,14 @@
-﻿namespace Sports.Api.Features.Players.AddPlayer;
+﻿namespace Sports.Api.Features.Players.UpdatePlayer;
 
 using FastEndpoints;
 using MediatR;
 
-public class AddPlayerEndpoint : Endpoint<AddPlayerRequest, AddPlayerResponse>
+public class UpdatePlayerEndpoint : Endpoint<UpdatePlayerRequest, UpdatePlayerResponse>
 {
     private readonly IMediator _mediator;
-    private readonly AddPlayerMapper _mapper;
+    private readonly UpdatePlayerMapper _mapper;
 
-    public AddPlayerEndpoint(IMediator mediator, AddPlayerMapper mapper)
+    public UpdatePlayerEndpoint(IMediator mediator, UpdatePlayerMapper mapper)
     {
         _mediator = mediator;
         _mapper = mapper;
@@ -16,16 +16,23 @@ public class AddPlayerEndpoint : Endpoint<AddPlayerRequest, AddPlayerResponse>
 
     public override void Configure()
     {
-        Post("/api/players");
+        Put("/api/players/{id}");
         AllowAnonymous();
     }
 
     public override async Task HandleAsync(
-        AddPlayerRequest req,
+        UpdatePlayerRequest req,
         CancellationToken ct)
     {
         var command = _mapper.ToCommand(req);
         var response = await _mediator.Send(command, ct);
+
+        if (response is null)
+        {
+            await Send.NotFoundAsync(ct);
+            return;
+        }
+
         await Send.OkAsync(response, ct);
     }
 }
