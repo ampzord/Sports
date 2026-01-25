@@ -7,8 +7,12 @@ using Sports.Api.Entities;
 public partial class UpdatePlayerMapper
 {
     public partial UpdatePlayerCommand ToCommand(UpdatePlayerRequest request);
+
     public partial UpdatePlayerResponse ToResponse(Player player);
 
     [MapperIgnoreTarget(nameof(Player.Id))]
-    public partial void Apply(UpdatePlayerCommand command, Player player);
+    [MapperIgnoreSource(nameof(UpdatePlayerCommand.Id))]
+    public partial void Apply(
+        UpdatePlayerCommand command,
+        Player player);
 }
