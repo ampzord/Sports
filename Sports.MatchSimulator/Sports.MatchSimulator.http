@@ -1,0 +1,6 @@
+@Sports.MatchSimulator_HostAddress = http://localhost:5000
+
+GET {{Sports.MatchSimulator_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

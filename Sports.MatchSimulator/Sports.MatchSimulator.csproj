@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Hangfire.AspNetCore" Version="1.8.22" />
+		<PackageReference Include="Hangfire.Core" Version="1.8.22" />
+		<PackageReference Include="Hangfire.SqlServer" Version="1.8.22" />
+		<PackageReference Include="Riok.Mapperly" Version="4.3.1" />
+		<PackageReference Include="FastEndpoints" Version="7.2.0" />
+		<PackageReference Include="MediatR" Version="14.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Sports.Api\Sports.Api.csproj" />
+	</ItemGroup>
+
+</Project>
