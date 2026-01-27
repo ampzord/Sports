@@ -18,9 +18,7 @@ public class GetLeagueHandler : IRequestHandler<GetLeagueQuery, GetLeagueRespons
         GetLeagueQuery query,
         CancellationToken cancellationToken)
     {
-        var league = await _db.Leagues.FindAsync(
-            new object[] { query.Id },
-            cancellationToken);
+        var league = await _db.Leagues.FindAsync(query.Id, cancellationToken);
 
         if (league is null)
             return null;

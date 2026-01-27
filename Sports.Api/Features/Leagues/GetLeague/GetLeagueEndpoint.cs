@@ -18,6 +18,9 @@ public class GetLeagueEndpoint : Endpoint<GetLeagueRequest, GetLeagueResponse>
     {
         Get("/api/leagues/{id}");
         AllowAnonymous();
+        Description(b => b
+            .Produces<GetLeagueResponse>(200)
+            .Produces(404));
     }
 
     public override async Task HandleAsync(

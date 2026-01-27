@@ -18,6 +18,9 @@ public class DeleteLeagueEndpoint : Endpoint<DeleteLeagueRequest, DeleteLeagueRe
     {
         Delete("/api/leagues/{id}");
         AllowAnonymous();
+        Description(b => b
+            .Produces(204)
+            .Produces(404));
     }
 
     public override async Task HandleAsync(

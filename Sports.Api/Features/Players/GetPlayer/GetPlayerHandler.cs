@@ -1,7 +1,6 @@
 ﻿namespace Sports.Api.Features.Players.GetPlayer;
 
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
 
 public class GetPlayerHandler : IRequestHandler<GetPlayerQuery, GetPlayerResponse?>
@@ -19,8 +18,7 @@ public class GetPlayerHandler : IRequestHandler<GetPlayerQuery, GetPlayerRespons
         GetPlayerQuery query,
         CancellationToken cancellationToken)
     {
-        var player = await _db.Players
-            .FirstOrDefaultAsync(p => p.Id == query.Id, cancellationToken);
+        var player = await _db.Players.FindAsync(query.Id, cancellationToken);
 
         if (player is null)
             return null;

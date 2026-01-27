@@ -3,28 +3,25 @@
 using FastEndpoints;
 using MediatR;
 
-public class DeletePlayerEndpoint : Endpoint<DeletePlayerRequest>
+public class DeletePlayerEndpoint : EndpointWithoutRequest
 {
     private readonly IMediator _mediator;
-    private readonly DeletePlayerMapper _mapper;
 
-    public DeletePlayerEndpoint(IMediator mediator, DeletePlayerMapper mapper)
-    {
-        _mediator = mediator;
-        _mapper = mapper;
-    }
+    public DeletePlayerEndpoint(IMediator mediator) => _mediator = mediator;
 
     public override void Configure()
     {
         Delete("/api/players/{id}");
         AllowAnonymous();
+        Description(b => b
+            .Produces(204)
+            .Produces(404));
     }
 
-    public override async Task HandleAsync(
-        DeletePlayerRequest req,
-        CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
-        var command = _mapper.ToCommand(req);
+        var id = Route<int>("id");
+        var command = new DeletePlayerCommand(id);
         var deleted = await _mediator.Send(command, ct);
 
         if (!deleted)

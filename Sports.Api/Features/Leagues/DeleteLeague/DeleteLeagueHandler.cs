@@ -13,9 +13,7 @@ public class DeleteLeagueHandler : IRequestHandler<DeleteLeagueCommand, DeleteLe
         DeleteLeagueCommand command,
         CancellationToken cancellationToken)
     {
-        var league = await _db.Leagues.FindAsync(
-            new object[] { command.Id },
-            cancellationToken);
+        var league = await _db.Leagues.FindAsync(command.Id, cancellationToken);
 
         if (league is null)
             return new DeleteLeagueResponse { Success = false };

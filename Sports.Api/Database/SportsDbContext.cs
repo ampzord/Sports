@@ -22,8 +22,11 @@ public class SportsDbContext : DbContext
         modelBuilder.Entity<Player>(entity =>
         {
             entity.HasKey(p => p.Id);
-            entity.Property(p => p.Name).IsRequired().HasMaxLength(100);
-            entity.Property(p => p.Position).IsRequired().HasMaxLength(50);
+            entity.Property(p => p.Name)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(p => p.Position)
+                .HasConversion<string>();
 
             entity.HasOne<Team>()
                 .WithMany(t => t.Players)
@@ -34,7 +37,9 @@ public class SportsDbContext : DbContext
         modelBuilder.Entity<Team>(entity =>
         {
             entity.HasKey(t => t.Id);
-            entity.Property(t => t.Name).IsRequired().HasMaxLength(100);
+            entity.Property(t => t.Name)
+                .IsRequired()
+                .HasMaxLength(100);
 
             entity.HasOne<League>()
                 .WithMany(l => l.Teams)
@@ -45,7 +50,9 @@ public class SportsDbContext : DbContext
         modelBuilder.Entity<League>(entity =>
         {
             entity.HasKey(l => l.Id);
-            entity.Property(l => l.Name).IsRequired().HasMaxLength(100);
+            entity.Property(l => l.Name)
+                .IsRequired()
+                .HasMaxLength(100);
         });
 
         modelBuilder.Entity<Match>(entity =>

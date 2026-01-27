@@ -13,9 +13,7 @@ public class DeleteMatchHandler : IRequestHandler<DeleteMatchCommand, DeleteMatc
         DeleteMatchCommand command,
         CancellationToken cancellationToken)
     {
-        var match = await _db.Matches.FindAsync(
-            new object[] { command.Id },
-            cancellationToken);
+        var match = await _db.Matches.FindAsync(command.Id, cancellationToken);
 
         if (match is null)
             return new DeleteMatchResponse { Success = false };

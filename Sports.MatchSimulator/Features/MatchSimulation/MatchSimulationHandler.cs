@@ -1,5 +1,4 @@
-﻿
-using Hangfire;
+﻿using Hangfire;
 using MediatR;
 
 namespace Sports.MatchSimulator.Features.MatchSimulation;

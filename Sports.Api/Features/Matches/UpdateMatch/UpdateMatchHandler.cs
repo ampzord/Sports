@@ -18,9 +18,7 @@ public class UpdateMatchHandler : IRequestHandler<UpdateMatchCommand, UpdateMatc
         UpdateMatchCommand command,
         CancellationToken cancellationToken)
     {
-        var match = await _db.Matches.FindAsync(
-            new object[] { command.Id },
-            cancellationToken);
+        var match = await _db.Matches.FindAsync(command.Id, cancellationToken);
 
         if (match is null)
             return null;

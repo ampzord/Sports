@@ -8,6 +8,7 @@ public class MatchSimulationJob
 {
     private const int MinTotalPasses = 100;
     private const int MaxTotalPasses = 1001;
+    private const int BatchSize = 5000;
 
     private readonly SportsDbContext _db;
     private readonly ILogger<MatchSimulationJob> _logger;
@@ -26,32 +27,41 @@ public class MatchSimulationJob
 
         try
         {
-            List<Match> matchesWithoutPasses = await _db.Matches
-                .Where(m => m.TotalPasses == null)
-                .ToListAsync();
-
-            if (matchesWithoutPasses.Count == 0)
-            {
-                _logger.LogInformation("No matches to simulate");
-                return;
-            }
-
+            int processed = 0;
             Random random = new();
 
-            foreach (Match? match in matchesWithoutPasses)
+            while (true)
             {
-                match.TotalPasses = random.Next(MinTotalPasses, MaxTotalPasses);
-                _logger.LogInformation(
-                    "Simulated match {MatchId} with {Passes} passes",
-                    match.Id,
-                    match.TotalPasses);
-            }
+                List<Match> batch = await _db.Matches
+                    .Where(m => m.TotalPasses == null)
+                    .Take(BatchSize)
+                    .ToListAsync();
 
-            _ = await _db.SaveChangesAsync();
+                if (batch.Count == 0)
+                {
+                    break;
+                }
+
+                foreach (Match match in batch)
+                {
+                    match.TotalPasses = random.Next(
+                        MinTotalPasses,
+                        MaxTotalPasses);
+                }
+
+                _ = await _db.SaveChangesAsync();
+                processed += batch.Count;
+
+                _logger.LogInformation(
+                    "Processed {Count} matches",
+                    processed);
+
+                _db.ChangeTracker.Clear();
+            }
 
             _logger.LogInformation(
                 "Completed simulation for {Count} matches",
-                matchesWithoutPasses.Count);
+                processed);
         }
         catch (Exception ex)
         {

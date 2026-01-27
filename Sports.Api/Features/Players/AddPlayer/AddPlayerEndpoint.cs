@@ -18,6 +18,9 @@ public class AddPlayerEndpoint : Endpoint<AddPlayerRequest, AddPlayerResponse>
     {
         Post("/api/players");
         AllowAnonymous();
+        Description(b => b
+            .Produces<AddPlayerResponse>(201)
+            .Produces(400));
     }
 
     public override async Task HandleAsync(

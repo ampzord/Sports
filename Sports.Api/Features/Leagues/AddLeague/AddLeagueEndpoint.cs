@@ -18,6 +18,9 @@ public class AddLeagueEndpoint : Endpoint<AddLeagueRequest, AddLeagueResponse>
     {
         Post("/api/leagues");
         AllowAnonymous();
+        Description(b => b
+            .Produces<AddLeagueResponse>(201)
+            .Produces(400));
     }
 
     public override async Task HandleAsync(

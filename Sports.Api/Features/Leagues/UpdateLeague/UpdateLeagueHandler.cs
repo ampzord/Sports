@@ -18,9 +18,7 @@ public class UpdateLeagueHandler : IRequestHandler<UpdateLeagueCommand, UpdateLe
         UpdateLeagueCommand command,
         CancellationToken cancellationToken)
     {
-        var league = await _db.Leagues.FindAsync(
-            new object[] { command.Id },
-            cancellationToken);
+        var league = await _db.Leagues.FindAsync(command.Id, cancellationToken);
 
         if (league is null)
             return null;

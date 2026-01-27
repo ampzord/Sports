@@ -3,7 +3,7 @@
 using FastEndpoints;
 using MediatR;
 
-public class GetPlayerEndpoint : Endpoint<GetPlayerRequest, GetPlayerResponse>
+public class GetPlayerEndpoint : EndpointWithoutRequest<GetPlayerResponse>
 {
     private readonly IMediator _mediator;
     private readonly GetPlayerMapper _mapper;
@@ -18,13 +18,15 @@ public class GetPlayerEndpoint : Endpoint<GetPlayerRequest, GetPlayerResponse>
     {
         Get("/api/players/{id}");
         AllowAnonymous();
+        Description(b => b
+            .Produces<GetPlayerResponse>(200)
+            .Produces(404));
     }
 
-    public override async Task HandleAsync(
-        GetPlayerRequest req,
-        CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
-        var query = _mapper.ToQuery(req);
+        var id = Route<int>("id");
+        var query = new GetPlayerQuery(id);
         var response = await _mediator.Send(query, ct);
 
         if (response is null)
