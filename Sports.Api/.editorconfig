@@ -17,6 +17,16 @@ insert_final_newline = false
 
 #### .NET Coding Conventions ####
 
+# Exclude Migrations folder from certain rules
+[Migrations/*.cs]
+csharp_using_directive_placement = silent
+csharp_style_expression_bodied_accessors = silent
+csharp_style_expression_bodied_methods = silent
+csharp_style_expression_bodied_properties = silent
+dotnet_diagnostic.IDE0065.severity = silent
+dotnet_diagnostic.IDE0053.severity = silent
+dotnet_diagnostic.IDE0022.severity = silent
+
 # Organize usings
 dotnet_separate_import_directive_groups = false
 dotnet_sort_system_directives_first = false
