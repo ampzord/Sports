@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Packages.props" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="Sports.Api/Sports.Api.csproj" />
     <Project Path="Sports.MatchSimulator/Sports.MatchSimulator.csproj" Id="29542228-a292-473a-98a9-03ba841e0074" />

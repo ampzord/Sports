@@ -1,15 +1,15 @@
-﻿namespace Sports.Api.Behaviours;
+﻿namespace Sports.Api.Behaviors;
 
 using MediatR;
 using System.Diagnostics;
 
-public class LoggingBehaviour<TRequest, TResponse>
+public class LoggingBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
-    private readonly ILogger<LoggingBehaviour<TRequest, TResponse>> _logger;
+    private readonly ILogger<LoggingBehavior<TRequest, TResponse>> _logger;
 
-    public LoggingBehaviour(ILogger<LoggingBehaviour<TRequest, TResponse>> logger) => _logger = logger;
+    public LoggingBehavior(ILogger<LoggingBehavior<TRequest, TResponse>> logger) => _logger = logger;
 
     public async Task<TResponse> Handle(
         TRequest request,

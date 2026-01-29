@@ -7,15 +7,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Hangfire.AspNetCore" Version="1.8.22" />
-		<PackageReference Include="Hangfire.Core" Version="1.8.22" />
-		<PackageReference Include="Hangfire.SqlServer" Version="1.8.22" />
-		<PackageReference Include="Riok.Mapperly" Version="4.3.1" />
-		<PackageReference Include="FastEndpoints" Version="7.2.0" />
-		<PackageReference Include="MediatR" Version="14.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.2" />
+		<PackageReference Include="FastEndpoints" />
+		<PackageReference Include="Hangfire.AspNetCore" />
+		<PackageReference Include="Hangfire.Core" />
+		<PackageReference Include="Hangfire.SqlServer" />
+		<PackageReference Include="MediatR" />
+		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+		<PackageReference Include="Riok.Mapperly" />
 	</ItemGroup>
 
 	<ItemGroup>

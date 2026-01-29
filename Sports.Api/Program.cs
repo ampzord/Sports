@@ -3,7 +3,7 @@ using FastEndpoints.Swagger;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using Sports.Api.Behaviours;
+using Sports.Api.Behaviors;
 using Sports.Api.Database;
 using Sports.Api.Features.Leagues.AddLeague;
 using Sports.Api.Features.Leagues.DeleteLeague;
@@ -43,7 +43,9 @@ builder.Services.AddMediatR(config =>
         typeof(Program).Assembly);
 
     config.AddOpenBehavior(
-        typeof(LoggingBehaviour<,>));
+        typeof(ExceptionHandlingBehavior<,>));
+    config.AddOpenBehavior(
+        typeof(LoggingBehavior<,>));
 });
 
 builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.Converters.Add(
