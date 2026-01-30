@@ -1,6 +1,7 @@
 ﻿
 using FastEndpoints;
 using MediatR;
+using Sports.Api.Extensions;
 
 namespace Sports.Api.Features.Leagues.UpdateLeague;
 
@@ -34,7 +35,8 @@ public class UpdateLeagueEndpoint : Endpoint<UpdateLeagueRequest, UpdateLeagueRe
 
         if (response is null)
         {
-            ThrowError("League not found", "NOT_FOUND", statusCode: StatusCodes.Status404NotFound);
+            //ThrowError("League not found", "NOT_FOUND", statusCode: StatusCodes.Status404NotFound);
+            this.ThrowNotFound("League not found");
             return;
         }
 
