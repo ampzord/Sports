@@ -1,7 +1,6 @@
-﻿namespace Sports.Api.Features.Players.UpdatePlayer;
-
-using Riok.Mapperly.Abstractions;
+﻿using Riok.Mapperly.Abstractions;
 using Sports.Api.Entities;
+using Sports.Api.Features.Players.UpdatePlayer;
 
 [Mapper]
 public partial class UpdatePlayerMapper

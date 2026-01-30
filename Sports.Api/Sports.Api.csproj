@@ -22,4 +22,12 @@
 		<Folder Include="Migrations\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <EditorConfigFiles Remove="C:\Users\anton\OneDrive\Documentos\ProgrammingProjects\Sports\Sports.Api\.editorconfig" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="C:\Users\anton\OneDrive\Documentos\ProgrammingProjects\Sports\Sports.Api\.editorconfig" />
+	</ItemGroup>
+
 </Project>

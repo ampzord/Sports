@@ -1,7 +1,8 @@
-﻿namespace Sports.Api.Features.Leagues.UpdateLeague;
-
+﻿
 using FastEndpoints;
 using MediatR;
+
+namespace Sports.Api.Features.Leagues.UpdateLeague;
 
 public class UpdateLeagueEndpoint : Endpoint<UpdateLeagueRequest, UpdateLeagueResponse>
 {
@@ -28,12 +29,12 @@ public class UpdateLeagueEndpoint : Endpoint<UpdateLeagueRequest, UpdateLeagueRe
         UpdateLeagueRequest req,
         CancellationToken ct)
     {
-        var command = _mapper.ToCommand(req);
-        var response = await _mediator.Send(command, ct);
+        UpdateLeagueCommand command = _mapper.ToCommand(req);
+        UpdateLeagueResponse? response = await _mediator.Send(command, ct);
 
         if (response is null)
         {
-            await Send.NotFoundAsync(ct);
+            ThrowError("League not found", "NOT_FOUND", statusCode: StatusCodes.Status404NotFound);
             return;
         }
 

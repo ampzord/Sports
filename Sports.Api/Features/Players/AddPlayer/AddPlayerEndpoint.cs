@@ -1,7 +1,8 @@
-﻿namespace Sports.Api.Features.Players.AddPlayer;
-
+﻿
 using FastEndpoints;
 using MediatR;
+
+namespace Sports.Api.Features.Players.AddPlayer;
 
 public class AddPlayerEndpoint : Endpoint<AddPlayerRequest, AddPlayerResponse>
 {
@@ -27,8 +28,8 @@ public class AddPlayerEndpoint : Endpoint<AddPlayerRequest, AddPlayerResponse>
         AddPlayerRequest req,
         CancellationToken ct)
     {
-        var command = _mapper.ToCommand(req);
-        var response = await _mediator.Send(command, ct);
-        await Send.OkAsync(response, ct);
+        AddPlayerCommand command = _mapper.ToCommand(req);
+        AddPlayerResponse response = await _mediator.Send(command, ct);
+        _ = await Send.OkAsync(response, ct);
     }
 }

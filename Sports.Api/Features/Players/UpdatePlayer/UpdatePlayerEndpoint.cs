@@ -1,7 +1,8 @@
-﻿namespace Sports.Api.Features.Players.UpdatePlayer;
-
+﻿
 using FastEndpoints;
 using MediatR;
+
+namespace Sports.Api.Features.Players.UpdatePlayer;
 
 public class UpdatePlayerEndpoint : Endpoint<UpdatePlayerRequest, UpdatePlayerResponse>
 {
@@ -28,16 +29,15 @@ public class UpdatePlayerEndpoint : Endpoint<UpdatePlayerRequest, UpdatePlayerRe
         UpdatePlayerRequest req,
         CancellationToken ct)
     {
-        req.Id = Route<int>("id");
-        var command = _mapper.ToCommand(req);
-        var response = await _mediator.Send(command, ct);
+        UpdatePlayerCommand command = _mapper.ToCommand(req);
+        UpdatePlayerResponse? response = await _mediator.Send(command, ct);
 
         if (response is null)
         {
-            await Send.NotFoundAsync(ct);
+            _ = await Send.NotFoundAsync(ct);
             return;
         }
 
-        await Send.OkAsync(response, ct);
+        _ = await Send.OkAsync(response, ct);
     }
 }

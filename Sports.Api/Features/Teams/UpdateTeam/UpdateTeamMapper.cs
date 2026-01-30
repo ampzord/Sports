@@ -1,12 +1,17 @@
-﻿namespace Sports.Api.Features.Teams.UpdateTeam;
-
-using Riok.Mapperly.Abstractions;
+﻿using Riok.Mapperly.Abstractions;
 using Sports.Api.Entities;
+using Sports.Api.Features.Teams.UpdateTeam;
 
 [Mapper]
 public partial class UpdateTeamMapper
 {
-    public partial UpdateTeamCommand ToCommand(UpdateTeamRequest request);
+    public UpdateTeamCommand ToCommand(UpdateTeamRequest request)
+    {
+        return new UpdateTeamCommand(
+            request.Id,
+            request.Name,
+            request.LeagueId);
+    }
 
     [MapperIgnoreSource(nameof(Team.Players))]
     public partial UpdateTeamResponse ToResponse(Team team);

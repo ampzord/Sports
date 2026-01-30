@@ -1,25 +1,16 @@
 <Project>
 	<PropertyGroup>
-		<!-- Target Framework -->
 		<TargetFramework>net10.0</TargetFramework>
-
-		<!-- Language Features -->
 		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-
-		<!-- Assembly Info -->
 		<Company>Sports</Company>
 		<Product>Sports API</Product>
 		<AssemblyVersion>1.0.0.0</AssemblyVersion>
-
-		<!-- Code Quality -->
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<AnalysisLevel>latest</AnalysisLevel>
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-
-		<!-- Build Output - Keep project-specific structure -->
 		<OutputPath>bin\$(Configuration)\</OutputPath>
 		<IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
 	</PropertyGroup>

@@ -2,7 +2,6 @@
   <Folder Name="/Solution Items/">
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
-    <File Path="Sports.Api/.editorconfig" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="Sports.Api/Sports.Api.csproj" />

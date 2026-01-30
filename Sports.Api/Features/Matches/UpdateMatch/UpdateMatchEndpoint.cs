@@ -1,7 +1,8 @@
-﻿namespace Sports.Api.Features.Matches.UpdateMatch;
-
+﻿
 using FastEndpoints;
 using MediatR;
+
+namespace Sports.Api.Features.Matches.UpdateMatch;
 
 public class UpdateMatchEndpoint : Endpoint<UpdateMatchRequest, UpdateMatchResponse>
 {
@@ -18,21 +19,25 @@ public class UpdateMatchEndpoint : Endpoint<UpdateMatchRequest, UpdateMatchRespo
     {
         Put("/api/matches/{id}");
         AllowAnonymous();
+        Description(b => b
+            .Produces<UpdateMatchResponse>(200)
+            .Produces(400)
+            .Produces(404));
     }
 
     public override async Task HandleAsync(
         UpdateMatchRequest req,
         CancellationToken ct)
     {
-        var command = _mapper.ToCommand(req);
-        var response = await _mediator.Send(command, ct);
+        UpdateMatchCommand command = _mapper.ToCommand(req);
+        UpdateMatchResponse? response = await _mediator.Send(command, ct);
 
         if (response is null)
         {
-            await Send.NotFoundAsync(ct);
+            _ = await Send.NotFoundAsync(ct);
             return;
         }
 
-        await Send.OkAsync(response, ct);
+        _ = await Send.OkAsync(response, ct);
     }
 }

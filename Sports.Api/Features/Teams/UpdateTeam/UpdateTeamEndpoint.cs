@@ -1,7 +1,8 @@
-﻿namespace Sports.Api.Features.Teams.UpdateTeam;
-
+﻿
 using FastEndpoints;
 using MediatR;
+
+namespace Sports.Api.Features.Teams.UpdateTeam;
 
 public class UpdateTeamEndpoint : Endpoint<UpdateTeamRequest, UpdateTeamResponse>
 {
@@ -24,15 +25,15 @@ public class UpdateTeamEndpoint : Endpoint<UpdateTeamRequest, UpdateTeamResponse
         UpdateTeamRequest req,
         CancellationToken ct)
     {
-        var command = _mapper.ToCommand(req);
-        var response = await _mediator.Send(command, ct);
+        UpdateTeamCommand command = _mapper.ToCommand(req);
+        UpdateTeamResponse? response = await _mediator.Send(command, ct);
 
         if (response is null)
         {
-            await Send.NotFoundAsync(ct);
+            _ = await Send.NotFoundAsync(ct);
             return;
         }
 
-        await Send.OkAsync(response, ct);
+        _ = await Send.OkAsync(response, ct);
     }
 }
