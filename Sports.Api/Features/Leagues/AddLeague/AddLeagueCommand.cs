@@ -1,7 +1,10 @@
-﻿namespace Sports.Api.Features.Leagues.AddLeague;
+namespace Sports.Api.Features.Leagues.AddLeague;
 
+using Sports.Api.Features.Leagues._Shared.Responses;
+
+using ErrorOr;
 using MediatR;
 
 public record AddLeagueCommand(
     string Name
-) : IRequest<AddLeagueResponse>;
+) : IRequest<ErrorOr<LeagueResponse>>;

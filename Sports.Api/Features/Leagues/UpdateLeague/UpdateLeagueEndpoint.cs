@@ -1,45 +1,45 @@
-﻿
+
 using FastEndpoints;
 using MediatR;
 using Sports.Api.Extensions;
 
 namespace Sports.Api.Features.Leagues.UpdateLeague;
 
-public class UpdateLeagueEndpoint : Endpoint<UpdateLeagueRequest, UpdateLeagueResponse>
-{
-    private readonly IMediator _mediator;
-    private readonly UpdateLeagueMapper _mapper;
+using Sports.Api.Features.Leagues._Shared.Responses;
 
-    public UpdateLeagueEndpoint(IMediator mediator, UpdateLeagueMapper mapper)
-    {
-        _mediator = mediator;
-        _mapper = mapper;
-    }
+public class UpdateLeagueEndpoint(IMediator mediator, UpdateLeagueMapper mapper) : Endpoint<UpdateLeagueRequest, LeagueResponse>
+{
 
     public override void Configure()
     {
         Put("/api/leagues/{id}");
         AllowAnonymous();
         Description(b => b
-            .Produces<UpdateLeagueResponse>(200)
+            .Produces<LeagueResponse>(200)
             .Produces(400)
-            .Produces(404));
+            .Produces(404)
+            .Produces(409)
+            .WithTags("Leagues"));
+        Summary(s =>
+        {
+            s.Summary = "Update an existing league";
+            s.ExampleRequest = UpdateLeagueRequest.Example;
+        });
     }
 
     public override async Task HandleAsync(
         UpdateLeagueRequest req,
         CancellationToken ct)
     {
-        UpdateLeagueCommand command = _mapper.ToCommand(req);
-        UpdateLeagueResponse? response = await _mediator.Send(command, ct);
+        var command = mapper.ToCommand(req);
+        var result = await mediator.Send(command, ct);
 
-        if (response is null)
+        if (result.IsError)
         {
-            //ThrowError("League not found", "NOT_FOUND", statusCode: StatusCodes.Status404NotFound);
-            this.ThrowNotFound("League not found");
+            await this.SendErrorAsync(result.FirstError, ct);
             return;
         }
 
-        await Send.OkAsync(response, ct);
+        await Send.OkAsync(result.Value, ct);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Sports.Api.Features.Leagues.DeleteLeague;
 
-public class DeleteLeagueRequest
+public record DeleteLeagueRequest(int Id)
 {
-    public int Id { get; set; }
+    public static DeleteLeagueRequest Example => new(1);
 }

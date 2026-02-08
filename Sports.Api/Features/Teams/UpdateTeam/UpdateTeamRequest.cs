@@ -2,11 +2,10 @@
 
 namespace Sports.Api.Features.Teams.UpdateTeam;
 
-public class UpdateTeamRequest
+public record UpdateTeamRequest(
+    [FromRoute] int Id,
+    string Name,
+    int? LeagueId = null)
 {
-    [FromRoute]
-    public int Id { get; set; }
-
-    public string Name { get; set; } = string.Empty;
-    public int? LeagueId { get; set; }
+    public static UpdateTeamRequest Example => new(1, "FC Barcelona", 1);
 }

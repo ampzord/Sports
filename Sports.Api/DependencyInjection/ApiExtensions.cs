@@ -3,27 +3,44 @@
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 public static class ApiExtensions
 {
     public static IServiceCollection RegisterApi(
         this IServiceCollection services)
     {
-        services.ConfigureHttpJsonOptions(options =>
-            options.SerializerOptions.Converters.Add(
-                new System.Text.Json.Serialization.JsonStringEnumConverter(
-                    allowIntegerValues: false)));
-
         services.AddFluentValidationAutoValidation();
         services.AddOpenApi();
+
+        services.Configure<JsonOptions>(options =>
+        {
+            options.SerializerOptions.PropertyNameCaseInsensitive = true;
+            options.SerializerOptions.Converters.Add(
+                new JsonStringEnumConverter(allowIntegerValues: false));
+        });
+
         services.AddFastEndpoints();
 
-        services.SwaggerDocument(o => o.DocumentSettings = s =>
+        services.SwaggerDocument(o =>
         {
-            s.Title = "Sports API";
-            s.Version = "v1";
-            s.Description = "API for managing players, teams, "
-                + "leagues and matches";
+            o.SerializerSettings = s =>
+            {
+                s.Converters.Add(
+                    new JsonStringEnumConverter(
+                        allowIntegerValues: false));
+            };
+
+            o.DocumentSettings = s =>
+            {
+                s.Title = "Sports API";
+                s.Version = "v1";
+                s.Description =
+                    "API for managing players, teams, "
+                    + "leagues and matches";
+            };
         });
 
         return services;

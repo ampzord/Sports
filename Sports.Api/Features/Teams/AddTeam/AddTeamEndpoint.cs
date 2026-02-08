@@ -1,31 +1,45 @@
-﻿namespace Sports.Api.Features.Teams.AddTeam;
+namespace Sports.Api.Features.Teams.AddTeam;
+
+using Sports.Api.Features.Teams._Shared.Responses;
 
 using FastEndpoints;
 using MediatR;
+using Sports.Api.Extensions;
+using Sports.Api.Features.Teams.GetTeamById;
 
-public class AddTeamEndpoint : Endpoint<AddTeamRequest, AddTeamResponse>
+public class AddTeamEndpoint(IMediator mediator, AddTeamMapper mapper) : Endpoint<AddTeamRequest, TeamResponse>
 {
-    private readonly IMediator _mediator;
-    private readonly AddTeamMapper _mapper;
-
-    public AddTeamEndpoint(IMediator mediator, AddTeamMapper mapper)
-    {
-        _mediator = mediator;
-        _mapper = mapper;
-    }
 
     public override void Configure()
     {
         Post("/api/teams");
         AllowAnonymous();
+        Description(b => b
+            .Produces<TeamResponse>(201)
+            .Produces(400)
+            .Produces(409)
+            .WithTags("Teams"));
+        Summary(s =>
+        {
+            s.Summary = "Create a new team";
+            s.ExampleRequest = AddTeamRequest.Example;
+        });
     }
 
     public override async Task HandleAsync(
         AddTeamRequest req,
         CancellationToken ct)
     {
-        var command = _mapper.ToCommand(req);
-        var response = await _mediator.Send(command, ct);
-        await Send.OkAsync(response, ct);
+        var command = mapper.ToCommand(req);
+        var result = await mediator.Send(command, ct);
+
+        if (result.IsError)
+        {
+            await this.SendErrorAsync(result.FirstError, ct);
+            return;
+        }
+
+        await this.SendCreatedAtAsync<GetTeamByIdEndpoint>(
+            result.Value.Id, result.Value, ct);
     }
 }

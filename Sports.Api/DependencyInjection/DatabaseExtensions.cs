@@ -2,6 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
+using Sports.Shared.Configuration;
 
 public static class DatabaseExtensions
 {
@@ -11,7 +12,7 @@ public static class DatabaseExtensions
     {
         services.AddDbContext<SportsDbContext>(options =>
             options.UseSqlServer(
-                configuration.GetConnectionString("DefaultConnection")
+                configuration.GetConnectionString(ConnectionStrings.SportsDB)
             )
         );
 

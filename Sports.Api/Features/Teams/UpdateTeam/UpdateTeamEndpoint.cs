@@ -1,39 +1,45 @@
-﻿
+
 using FastEndpoints;
 using MediatR;
+using Sports.Api.Extensions;
 
 namespace Sports.Api.Features.Teams.UpdateTeam;
 
-public class UpdateTeamEndpoint : Endpoint<UpdateTeamRequest, UpdateTeamResponse>
-{
-    private readonly IMediator _mediator;
-    private readonly UpdateTeamMapper _mapper;
+using Sports.Api.Features.Teams._Shared.Responses;
 
-    public UpdateTeamEndpoint(IMediator mediator, UpdateTeamMapper mapper)
-    {
-        _mediator = mediator;
-        _mapper = mapper;
-    }
+public class UpdateTeamEndpoint(IMediator mediator, UpdateTeamMapper mapper) : Endpoint<UpdateTeamRequest, TeamResponse>
+{
 
     public override void Configure()
     {
         Put("/api/teams/{id}");
         AllowAnonymous();
+        Description(b => b
+            .Produces<TeamResponse>(200)
+            .Produces(400)
+            .Produces(404)
+            .Produces(409)
+            .WithTags("Teams"));
+        Summary(s =>
+        {
+            s.Summary = "Update an existing team";
+            s.ExampleRequest = UpdateTeamRequest.Example;
+        });
     }
 
     public override async Task HandleAsync(
         UpdateTeamRequest req,
         CancellationToken ct)
     {
-        UpdateTeamCommand command = _mapper.ToCommand(req);
-        UpdateTeamResponse? response = await _mediator.Send(command, ct);
+        var command = mapper.ToCommand(req);
+        var result = await mediator.Send(command, ct);
 
-        if (response is null)
+        if (result.IsError)
         {
-            _ = await Send.NotFoundAsync(ct);
+            await this.SendErrorAsync(result.FirstError, ct);
             return;
         }
 
-        _ = await Send.OkAsync(response, ct);
+        await Send.OkAsync(result.Value, ct);
     }
 }

@@ -1,7 +1,8 @@
 ﻿namespace Sports.Api.Features.Teams.AddTeam;
 
-public class AddTeamRequest
+public record AddTeamRequest(
+    int LeagueId,
+    string Name)
 {
-    public string Name { get; set; } = string.Empty;
-    public int? LeagueId { get; set; }
+    public static AddTeamRequest Example => new(1, "FC Barcelona");
 }

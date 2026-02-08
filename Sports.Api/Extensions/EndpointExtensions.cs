@@ -4,12 +4,16 @@ namespace Sports.Api.Extensions;
 
 public static class EndpointExtensions
 {
-    public static void ThrowNotFound<TRequest, TResponse>(
-        this Endpoint<TRequest, TResponse> endpoint,
-        string message = "Resource not found",
-        string errorCode = "NOT_FOUND") where TRequest : notnull
+    public static async Task SendCreatedAtAsync<TGetEndpoint>(
+        this IEndpoint endpoint,
+        int id,
+        object response,
+        CancellationToken ct)
+        where TGetEndpoint : IEndpoint
     {
-        endpoint.ThrowError(message, errorCode,
-            statusCode: StatusCodes.Status404NotFound);
+        await endpoint.HttpContext.Response.SendCreatedAtAsync<TGetEndpoint>(
+            new { id },
+            response,
+            cancellation: ct);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Sports.Api.Features.Leagues.UpdateLeague;
 
-public class UpdateLeagueRequest
+public record UpdateLeagueRequest(
+    [FromRoute] int Id,
+    string Name)
 {
-    [FromRoute]
-    public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
+    public static UpdateLeagueRequest Example => new(1, "La Liga");
 }

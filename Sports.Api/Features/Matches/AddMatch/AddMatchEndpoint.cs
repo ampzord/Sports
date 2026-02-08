@@ -1,31 +1,45 @@
-﻿namespace Sports.Api.Features.Matches.AddMatch;
+namespace Sports.Api.Features.Matches.AddMatch;
+
+using Sports.Api.Features.Matches._Shared.Responses;
 
 using FastEndpoints;
 using MediatR;
+using Sports.Api.Extensions;
+using Sports.Api.Features.Matches.GetMatchById;
 
-public class AddMatchEndpoint : Endpoint<AddMatchRequest, AddMatchResponse>
+public class AddMatchEndpoint(IMediator mediator, AddMatchMapper mapper) : Endpoint<AddMatchRequest, MatchResponse>
 {
-    private readonly IMediator _mediator;
-    private readonly AddMatchMapper _mapper;
-
-    public AddMatchEndpoint(IMediator mediator, AddMatchMapper mapper)
-    {
-        _mediator = mediator;
-        _mapper = mapper;
-    }
 
     public override void Configure()
     {
         Post("/api/matches");
         AllowAnonymous();
+        Description(b => b
+            .Produces<MatchResponse>(201)
+            .Produces(400)
+            .Produces(409)
+            .WithTags("Matches"));
+        Summary(s =>
+        {
+            s.Summary = "Create a new match";
+            s.ExampleRequest = AddMatchRequest.Example;
+        });
     }
 
     public override async Task HandleAsync(
         AddMatchRequest req,
         CancellationToken ct)
     {
-        var command = _mapper.ToCommand(req);
-        var response = await _mediator.Send(command, ct);
-        await Send.OkAsync(response, ct);
+        var command = mapper.ToCommand(req);
+        var result = await mediator.Send(command, ct);
+
+        if (result.IsError)
+        {
+            await this.SendErrorAsync(result.FirstError, ct);
+            return;
+        }
+
+        await this.SendCreatedAtAsync<GetMatchByIdEndpoint>(
+            result.Value.Id, result.Value, ct);
     }
 }

@@ -2,11 +2,11 @@
 
 namespace Sports.Api.Features.Matches.UpdateMatch;
 
-public class UpdateMatchRequest
+public record UpdateMatchRequest(
+    [FromRoute] int Id,
+    int HomeTeamId,
+    int AwayTeamId,
+    int? TotalPasses = null)
 {
-    [FromRoute]
-    public int Id { get; set; }
-    public int HomeTeamId { get; set; }
-    public int AwayTeamId { get; set; }
-    public int? TotalPasses { get; set; }
+    public static UpdateMatchRequest Example => new(1, 1, 2, 500);
 }

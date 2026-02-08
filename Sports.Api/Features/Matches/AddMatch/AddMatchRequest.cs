@@ -1,8 +1,10 @@
 ﻿namespace Sports.Api.Features.Matches.AddMatch;
 
-public class AddMatchRequest
+public record AddMatchRequest(
+    int LeagueId,
+    int HomeTeamId,
+    int AwayTeamId,
+    int? TotalPasses = null)
 {
-    public int HomeTeamId { get; set; }
-    public int AwayTeamId { get; set; }
-    public int? TotalPasses { get; set; }
+    public static AddMatchRequest Example => new(1, 1, 2);
 }

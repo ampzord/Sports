@@ -1,26 +1,31 @@
-﻿namespace Sports.Api.Features.Leagues.DeleteLeague;
+namespace Sports.Api.Features.Leagues.DeleteLeague;
 
+using ErrorOr;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
 
-public class DeleteLeagueHandler : IRequestHandler<DeleteLeagueCommand, DeleteLeagueResponse>
+public class DeleteLeagueHandler(SportsDbContext db)
+    : IRequestHandler<DeleteLeagueCommand, ErrorOr<Deleted>>
 {
-    private readonly SportsDbContext _db;
-
-    public DeleteLeagueHandler(SportsDbContext db) => _db = db;
-
-    public async Task<DeleteLeagueResponse> Handle(
+    public async Task<ErrorOr<Deleted>> Handle(
         DeleteLeagueCommand command,
         CancellationToken cancellationToken)
     {
-        var league = await _db.Leagues.FindAsync(command.Id, cancellationToken);
+        var league = await db.Leagues.FindAsync(command.Id, cancellationToken);
 
         if (league is null)
-            return new DeleteLeagueResponse { Success = false };
+            return Error.NotFound("League.NotFound", "League not found");
 
-        _db.Leagues.Remove(league);
-        await _db.SaveChangesAsync(cancellationToken);
+        var hasTeams = await db.Teams.AnyAsync(
+            t => t.LeagueId == command.Id, cancellationToken);
 
-        return new DeleteLeagueResponse { Success = true };
+        if (hasTeams)
+            return Error.Conflict("League.HasTeams", "Cannot delete a league that has teams");
+
+        db.Leagues.Remove(league);
+        await db.SaveChangesAsync(cancellationToken);
+
+        return Result.Deleted;
     }
 }

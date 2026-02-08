@@ -1,6 +1,6 @@
 ﻿namespace Sports.Api.DependencyInjection;
 
-using Sports.Api.Behaviors;
+using Sports.Shared.Behaviors;
 
 public static class MediatRExtensions
 {

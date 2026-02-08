@@ -2,17 +2,10 @@
 
 using FastEndpoints;
 using MediatR;
+using Sports.Api.Extensions;
 
-public class DeleteLeagueEndpoint : Endpoint<DeleteLeagueRequest, DeleteLeagueResponse>
+public class DeleteLeagueEndpoint(IMediator mediator, DeleteLeagueMapper mapper) : Endpoint<DeleteLeagueRequest>
 {
-    private readonly IMediator _mediator;
-    private readonly DeleteLeagueMapper _mapper;
-
-    public DeleteLeagueEndpoint(IMediator mediator, DeleteLeagueMapper mapper)
-    {
-        _mediator = mediator;
-        _mapper = mapper;
-    }
 
     public override void Configure()
     {
@@ -20,15 +13,29 @@ public class DeleteLeagueEndpoint : Endpoint<DeleteLeagueRequest, DeleteLeagueRe
         AllowAnonymous();
         Description(b => b
             .Produces(204)
-            .Produces(404));
+            .Produces(404)
+            .Produces(409)
+            .WithTags("Leagues"));
+        Summary(s =>
+        {
+            s.Summary = "Delete a league";
+            s.ExampleRequest = DeleteLeagueRequest.Example;
+        });
     }
 
     public override async Task HandleAsync(
         DeleteLeagueRequest req,
         CancellationToken ct)
     {
-        var command = _mapper.ToCommand(req);
-        var response = await _mediator.Send(command, ct);
-        await Send.OkAsync(response, ct);
+        var command = mapper.ToCommand(req);
+        var result = await mediator.Send(command, ct);
+
+        if (result.IsError)
+        {
+            await this.SendErrorAsync(result.FirstError, ct);
+            return;
+        }
+
+        await Send.NoContentAsync(ct);
     }
 }

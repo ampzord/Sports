@@ -12,7 +12,7 @@ public class UpdatePlayerValidator : Validator<UpdatePlayerRequest>
             .GreaterThan(0).WithMessage("Id must be greater than 0");
 
         RuleFor(x => x.Name).ValidatePlayerName();
-        RuleFor(x => x.Position).ValidatePlayerPosition();
+        //RuleFor(x => x.Position).ValidatePlayerPosition();
         RuleFor(x => x.TeamId)
             .GreaterThan(0).When(x => x.TeamId.HasValue)
             .WithMessage("TeamId must be greater than 0");

@@ -2,11 +2,11 @@
 
 namespace Sports.Api.Features.Players.UpdatePlayer;
 
-public class UpdatePlayerRequest
+public record UpdatePlayerRequest(
+    [FromRoute] int Id,
+    string Name,
+    string Position,
+    int? TeamId = null)
 {
-    [FromRoute]
-    public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string Position { get; set; } = string.Empty;
-    public int? TeamId { get; set; }
+    public static UpdatePlayerRequest Example => new(1, "Lionel Messi", "RW", 1);
 }

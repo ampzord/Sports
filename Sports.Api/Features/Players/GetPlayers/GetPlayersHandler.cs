@@ -1,33 +1,36 @@
-﻿namespace Sports.Api.Features.Players.GetPlayers;
+namespace Sports.Api.Features.Players.GetPlayers;
 
+using Sports.Api.Features.Players._Shared.Responses;
+
+using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
 
-public class GetPlayersHandler : IRequestHandler<GetPlayersQuery, List<GetPlayersResponse>>
+public class GetPlayersHandler(SportsDbContext db, GetPlayersMapper mapper, ILogger<GetPlayersHandler> logger)
+    : IRequestHandler<GetPlayersQuery, ErrorOr<List<PlayerResponse>>>
 {
-    private readonly SportsDbContext _db;
-    private readonly GetPlayersMapper _mapper;
-    private readonly ILogger<GetPlayersHandler> _logger;
-
-    public GetPlayersHandler(
-        SportsDbContext db,
-        GetPlayersMapper mapper,
-        ILogger<GetPlayersHandler> logger)
-    {
-        _db = db;
-        _mapper = mapper;
-        _logger = logger;
-    }
-
-    public async Task<List<GetPlayersResponse>> Handle(
+    public async Task<ErrorOr<List<PlayerResponse>>> Handle(
         GetPlayersQuery query,
         CancellationToken cancellationToken)
     {
-        var players = await _db.Players.ToListAsync(cancellationToken);
+        if (query.TeamId is not null)
+        {
+            var teamExists = await db.Teams.AnyAsync(
+                t => t.Id == query.TeamId, cancellationToken);
 
-        _logger.LogInformation("Retrieved {Count} players", players.Count);
+            if (!teamExists)
+                return Error.NotFound("Team.NotFound", "Team not found");
+        }
 
-        return _mapper.ToResponseList(players);
+        var players = await db.Players
+            .AsNoTracking()
+            .WhereIf(query.TeamId.HasValue,
+                p => p.TeamId == query.TeamId)
+            .ToListAsync(cancellationToken);
+
+        logger.LogInformation("Retrieved {Count} players", players.Count);
+
+        return mapper.ToResponseList(players);
     }
 }

@@ -1,31 +1,26 @@
-﻿namespace Sports.Api.Features.Matches.UpdateMatch;
+namespace Sports.Api.Features.Matches.UpdateMatch;
 
+using Sports.Api.Features.Matches._Shared.Responses;
+
+using ErrorOr;
 using MediatR;
 using Sports.Api.Database;
 
-public class UpdateMatchHandler : IRequestHandler<UpdateMatchCommand, UpdateMatchResponse?>
+public class UpdateMatchHandler(SportsDbContext db, UpdateMatchMapper mapper)
+    : IRequestHandler<UpdateMatchCommand, ErrorOr<MatchResponse>>
 {
-    private readonly SportsDbContext _db;
-    private readonly UpdateMatchMapper _mapper;
-
-    public UpdateMatchHandler(SportsDbContext db, UpdateMatchMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
-    public async Task<UpdateMatchResponse?> Handle(
+    public async Task<ErrorOr<MatchResponse>> Handle(
         UpdateMatchCommand command,
         CancellationToken cancellationToken)
     {
-        var match = await _db.Matches.FindAsync(command.Id, cancellationToken);
+        var match = await db.Matches.FindAsync(command.Id, cancellationToken);
 
         if (match is null)
-            return null;
+            return Error.NotFound("Match.NotFound", "Match not found");
 
-        _mapper.Apply(command, match);
-        await _db.SaveChangesAsync(cancellationToken);
+        mapper.Apply(command, match);
+        await db.SaveChangesAsync(cancellationToken);
 
-        return _mapper.ToResponse(match);
+        return mapper.ToResponse(match);
     }
 }

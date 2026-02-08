@@ -2,12 +2,10 @@
 
 using FastEndpoints;
 using MediatR;
+using Sports.Api.Extensions;
 
-public class DeletePlayerEndpoint : EndpointWithoutRequest
+public class DeletePlayerEndpoint(IMediator mediator) : Endpoint<DeletePlayerRequest>
 {
-    private readonly IMediator _mediator;
-
-    public DeletePlayerEndpoint(IMediator mediator) => _mediator = mediator;
 
     public override void Configure()
     {
@@ -15,18 +13,24 @@ public class DeletePlayerEndpoint : EndpointWithoutRequest
         AllowAnonymous();
         Description(b => b
             .Produces(204)
-            .Produces(404));
+            .Produces(404)
+            .WithTags("Players"));
+        Summary(s =>
+        {
+            s.Summary = "Delete a player";
+        });
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(
+        DeletePlayerRequest req,
+        CancellationToken ct)
     {
-        var id = Route<int>("id");
-        var command = new DeletePlayerCommand(id);
-        var deleted = await _mediator.Send(command, ct);
+        var command = new DeletePlayerCommand(req.Id);
+        var result = await mediator.Send(command, ct);
 
-        if (!deleted)
+        if (result.IsError)
         {
-            await Send.NotFoundAsync(ct);
+            await this.SendErrorAsync(result.FirstError, ct);
             return;
         }
 

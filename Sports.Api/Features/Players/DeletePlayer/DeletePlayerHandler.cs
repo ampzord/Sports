@@ -1,42 +1,24 @@
-﻿namespace Sports.Api.Features.Players.DeletePlayer;
+namespace Sports.Api.Features.Players.DeletePlayer;
 
+using ErrorOr;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
 
-public class DeletePlayerHandler : IRequestHandler<DeletePlayerCommand, bool>
+public class DeletePlayerHandler(SportsDbContext db)
+    : IRequestHandler<DeletePlayerCommand, ErrorOr<Deleted>>
 {
-    private readonly SportsDbContext _db;
-    private readonly ILogger<DeletePlayerHandler> _logger;
-
-    public DeletePlayerHandler(
-        SportsDbContext db,
-        ILogger<DeletePlayerHandler> logger)
-    {
-        _db = db;
-        _logger = logger;
-    }
-
-    public async Task<bool> Handle(
+    public async Task<ErrorOr<Deleted>> Handle(
         DeletePlayerCommand command,
         CancellationToken cancellationToken)
     {
-        var player = await _db.Players.FindAsync(command.Id, cancellationToken);
+        var player = await db.Players.FindAsync(command.Id, cancellationToken);
 
         if (player is null)
-        {
-            _logger.LogWarning("Delete failed: Player Id:{PlayerId} not found", command.Id);
-            return false;
-        }
+            return Error.NotFound("Player.NotFound", "Player not found");
 
-        _db.Players.Remove(player);
-        await _db.SaveChangesAsync(cancellationToken);
+        db.Players.Remove(player);
+        await db.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation(
-            "Player deleted with Id:{PlayerId} and Name:{PlayerName}",
-            player.Id,
-            player.Name);
-
-        return true;
+        return Result.Deleted;
     }
 }

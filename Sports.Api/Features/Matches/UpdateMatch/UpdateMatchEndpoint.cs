@@ -1,43 +1,45 @@
-﻿
+
 using FastEndpoints;
 using MediatR;
+using Sports.Api.Extensions;
 
 namespace Sports.Api.Features.Matches.UpdateMatch;
 
-public class UpdateMatchEndpoint : Endpoint<UpdateMatchRequest, UpdateMatchResponse>
-{
-    private readonly IMediator _mediator;
-    private readonly UpdateMatchMapper _mapper;
+using Sports.Api.Features.Matches._Shared.Responses;
 
-    public UpdateMatchEndpoint(IMediator mediator, UpdateMatchMapper mapper)
-    {
-        _mediator = mediator;
-        _mapper = mapper;
-    }
+public class UpdateMatchEndpoint(IMediator mediator, UpdateMatchMapper mapper) : Endpoint<UpdateMatchRequest, MatchResponse>
+{
 
     public override void Configure()
     {
         Put("/api/matches/{id}");
         AllowAnonymous();
         Description(b => b
-            .Produces<UpdateMatchResponse>(200)
+            .Produces<MatchResponse>(200)
             .Produces(400)
-            .Produces(404));
+            .Produces(404)
+            .Produces(409)
+            .WithTags("Matches"));
+        Summary(s =>
+        {
+            s.Summary = "Update an existing match";
+            s.ExampleRequest = UpdateMatchRequest.Example;
+        });
     }
 
     public override async Task HandleAsync(
         UpdateMatchRequest req,
         CancellationToken ct)
     {
-        UpdateMatchCommand command = _mapper.ToCommand(req);
-        UpdateMatchResponse? response = await _mediator.Send(command, ct);
+        var command = mapper.ToCommand(req);
+        var result = await mediator.Send(command, ct);
 
-        if (response is null)
+        if (result.IsError)
         {
-            _ = await Send.NotFoundAsync(ct);
+            await this.SendErrorAsync(result.FirstError, ct);
             return;
         }
 
-        _ = await Send.OkAsync(response, ct);
+        await Send.OkAsync(result.Value, ct);
     }
 }

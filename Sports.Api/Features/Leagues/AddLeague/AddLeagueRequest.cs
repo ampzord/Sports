@@ -1,6 +1,6 @@
 ﻿namespace Sports.Api.Features.Leagues.AddLeague;
 
-public class AddLeagueRequest
+public record AddLeagueRequest(string Name)
 {
-    public string Name { get; set; } = string.Empty;
+    public static AddLeagueRequest Example => new("La Liga");
 }

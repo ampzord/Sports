@@ -1,7 +1,7 @@
-﻿namespace Sports.Api.Features.Players._Shared;
+namespace Sports.Api.Features.Players._Shared;
 
 using FluentValidation;
-using Sports.Api.Entities;
+using Sports.Shared.Entities;
 
 public static class PlayerPropertyValidator
 {
@@ -10,11 +10,9 @@ public static class PlayerPropertyValidator
             .NotEmpty().WithMessage("Name is required")
             .MaximumLength(100).WithMessage("Name must not exceed 100 characters");
 
-    public static IRuleBuilderOptions<T, string> ValidatePlayerPosition<T>(
-        this IRuleBuilder<T, string> ruleBuilder) => ruleBuilder
-            .NotEmpty().WithMessage("Position is required")
-            .Must(IsValidPosition)
-            .WithMessage("Position must be one of: GK, CB, LB, RB, LWB, RWB, CDM, CM, CAM, LM, RM, LW, RW, ST, CF");
+    public static IRuleBuilderOptions<T, PlayerPosition> ValidatePlayerPosition<T>(
+        this IRuleBuilder<T, PlayerPosition> ruleBuilder) => ruleBuilder
+            .IsInEnum().WithMessage("Position must be a valid player position");
 
     private static bool IsValidPosition(string position)
     {

@@ -8,6 +8,5 @@ public class AddTeamValidator : Validator<AddTeamRequest>
     public AddTeamValidator()
     {
         RuleFor(x => x.Name).ValidateTeamName();
-        RuleFor(x => x.LeagueId).ValidateLeagueId();
     }
 }

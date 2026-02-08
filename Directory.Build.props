@@ -11,6 +11,7 @@
 		<AnalysisLevel>latest</AnalysisLevel>
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<NoWarn>NU1902;NU1903</NoWarn>
 		<OutputPath>bin\$(Configuration)\</OutputPath>
 		<IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
 	</PropertyGroup>

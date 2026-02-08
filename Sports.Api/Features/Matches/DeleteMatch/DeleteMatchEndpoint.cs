@@ -2,30 +2,38 @@
 
 using FastEndpoints;
 using MediatR;
+using Sports.Api.Extensions;
 
-public class DeleteMatchEndpoint : Endpoint<DeleteMatchRequest, DeleteMatchResponse>
+public class DeleteMatchEndpoint(IMediator mediator, DeleteMatchMapper mapper) : Endpoint<DeleteMatchRequest>
 {
-    private readonly IMediator _mediator;
-    private readonly DeleteMatchMapper _mapper;
-
-    public DeleteMatchEndpoint(IMediator mediator, DeleteMatchMapper mapper)
-    {
-        _mediator = mediator;
-        _mapper = mapper;
-    }
-
     public override void Configure()
     {
         Delete("/api/matches/{id}");
         AllowAnonymous();
+        Description(b => b
+            .Produces(204)
+            .Produces(404)
+            .WithTags("Matches"));
+        Summary(s =>
+        {
+            s.Summary = "Delete a match";
+            s.ExampleRequest = DeleteMatchRequest.Example;
+        });
     }
 
     public override async Task HandleAsync(
         DeleteMatchRequest req,
         CancellationToken ct)
     {
-        var command = _mapper.ToCommand(req);
-        var response = await _mediator.Send(command, ct);
-        await Send.OkAsync(response, ct);
+        var command = mapper.ToCommand(req);
+        var result = await mediator.Send(command, ct);
+
+        if (result.IsError)
+        {
+            await this.SendErrorAsync(result.FirstError, ct);
+            return;
+        }
+
+        await Send.NoContentAsync(ct);
     }
 }

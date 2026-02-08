@@ -1,14 +1,22 @@
-﻿namespace Sports.Api.Features.Players.AddPlayer;
+namespace Sports.Api.Features.Players.AddPlayer;
+
+using Sports.Api.Features.Players._Shared.Responses;
 
 using Riok.Mapperly.Abstractions;
-using Sports.Api.Entities;
+using Sports.Shared.Entities;
 
 [Mapper]
 public partial class AddPlayerMapper
 {
-    public partial AddPlayerCommand ToCommand(AddPlayerRequest request);
-    public partial AddPlayerResponse ToResponse(Player player);
+    public AddPlayerCommand ToCommand(AddPlayerRequest request)
+    {
+        return new AddPlayerCommand(request.Name, request.Position, request.TeamId);
+    }
+
+    [MapperIgnoreSource(nameof(Player.Team))]
+    public partial PlayerResponse ToResponse(Player player);
 
     [MapperIgnoreTarget(nameof(Player.Id))]
+    [MapperIgnoreTarget(nameof(Player.Team))]
     public partial Player ToEntity(AddPlayerCommand command);
 }

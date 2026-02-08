@@ -1,28 +1,38 @@
-﻿namespace Sports.Api.Features.Teams.AddTeam;
+namespace Sports.Api.Features.Teams.AddTeam;
 
+using Sports.Api.Features.Teams._Shared.Responses;
+
+using ErrorOr;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
 
-public class AddTeamHandler : IRequestHandler<AddTeamCommand, AddTeamResponse>
+public class AddTeamHandler(SportsDbContext db, AddTeamMapper mapper)
+    : IRequestHandler<AddTeamCommand, ErrorOr<TeamResponse>>
 {
-    private readonly SportsDbContext _db;
-    private readonly AddTeamMapper _mapper;
 
-    public AddTeamHandler(SportsDbContext db, AddTeamMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
-    public async Task<AddTeamResponse> Handle(
+    public async Task<ErrorOr<TeamResponse>> Handle(
         AddTeamCommand command,
         CancellationToken cancellationToken)
     {
-        var team = _mapper.ToEntity(command);
+        var leagueExists = await db.Leagues.AnyAsync(
+            l => l.Id == command.LeagueId,
+            cancellationToken);
 
-        _db.Teams.Add(team);
-        await _db.SaveChangesAsync(cancellationToken);
+        if (!leagueExists)
+            return Error.NotFound("League.NotFound", "League not found");
 
-        return _mapper.ToResponse(team);
+        var nameExists = await db.Teams.AnyAsync(
+            t => t.Name == command.Name,
+            cancellationToken);
+
+        if (nameExists)
+            return Error.Conflict("Team.NameConflict", $"A team with the name '{command.Name}' already exists");
+
+        var team = mapper.ToEntity(command);
+        db.Teams.Add(team);
+        await db.SaveChangesAsync(cancellationToken);
+
+        return mapper.ToResponse(team);
     }
 }

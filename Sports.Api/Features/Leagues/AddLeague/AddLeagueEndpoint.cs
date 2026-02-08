@@ -1,34 +1,45 @@
-﻿namespace Sports.Api.Features.Leagues.AddLeague;
+namespace Sports.Api.Features.Leagues.AddLeague;
+
+using Sports.Api.Features.Leagues._Shared.Responses;
 
 using FastEndpoints;
 using MediatR;
+using Sports.Api.Extensions;
+using Sports.Api.Features.Leagues.GetLeagueById;
 
-public class AddLeagueEndpoint : Endpoint<AddLeagueRequest, AddLeagueResponse>
+public class AddLeagueEndpoint(IMediator mediator, AddLeagueMapper mapper) : Endpoint<AddLeagueRequest, LeagueResponse>
 {
-    private readonly IMediator _mediator;
-    private readonly AddLeagueMapper _mapper;
-
-    public AddLeagueEndpoint(IMediator mediator, AddLeagueMapper mapper)
-    {
-        _mediator = mediator;
-        _mapper = mapper;
-    }
 
     public override void Configure()
     {
         Post("/api/leagues");
         AllowAnonymous();
         Description(b => b
-            .Produces<AddLeagueResponse>(201)
-            .Produces(400));
+            .Produces<LeagueResponse>(201)
+            .Produces(400)
+            .Produces(409)
+            .WithTags("Leagues"));
+        Summary(s =>
+        {
+            s.Summary = "Create a new league";
+            s.ExampleRequest = AddLeagueRequest.Example;
+        });
     }
 
     public override async Task HandleAsync(
         AddLeagueRequest req,
         CancellationToken ct)
     {
-        var command = _mapper.ToCommand(req);
-        var response = await _mediator.Send(command, ct);
-        await Send.OkAsync(response, ct);
+        var command = mapper.ToCommand(req);
+        var result = await mediator.Send(command, ct);
+
+        if (result.IsError)
+        {
+            await this.SendErrorAsync(result.FirstError, ct);
+            return;
+        }
+
+        await this.SendCreatedAtAsync<GetLeagueByIdEndpoint>(
+            result.Value.Id, result.Value, ct);
     }
 }

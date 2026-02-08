@@ -1,25 +1,41 @@
-﻿namespace Sports.Api.Features.Players.GetPlayers;
+namespace Sports.Api.Features.Players.GetPlayers;
+
+using Sports.Api.Features.Players._Shared.Responses;
 
 using FastEndpoints;
 using MediatR;
+using Sports.Api.Extensions;
 
-public class GetPlayersEndpoint : EndpointWithoutRequest<List<GetPlayersResponse>>
+public class GetPlayersEndpoint(IMediator mediator) :
+    Endpoint<GetPlayersRequest, List<PlayerResponse>>
 {
-    private readonly IMediator _mediator;
-
-    public GetPlayersEndpoint(IMediator mediator) => _mediator = mediator;
 
     public override void Configure()
     {
         Get("/api/players");
         AllowAnonymous();
-        Description(b => b.Produces<List<GetPlayersResponse>>(200));
+        Description(b => b
+            .Produces<List<PlayerResponse>>(200)
+            .WithTags("Players"));
+        Summary(s =>
+        {
+            s.Summary = "Get all players";
+        });
     }
 
-    public override async Task HandleAsync(CancellationToken ct)
+    public override async Task HandleAsync(
+        GetPlayersRequest req,
+        CancellationToken ct)
     {
-        var query = new GetPlayersQuery();
-        var response = await _mediator.Send(query, ct);
-        await Send.OkAsync(response, ct);
+        var query = new GetPlayersQuery(req.TeamId);
+        var result = await mediator.Send(query, ct);
+
+        if (result.IsError)
+        {
+            await this.SendErrorAsync(result.FirstError, ct);
+            return;
+        }
+
+        await Send.OkAsync(result.Value, ct);
     }
 }

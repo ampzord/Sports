@@ -1,5 +1,8 @@
-﻿namespace Sports.Api.Features.Matches.UpdateMatch;
+namespace Sports.Api.Features.Matches.UpdateMatch;
 
+using Sports.Api.Features.Matches._Shared.Responses;
+
+using ErrorOr;
 using MediatR;
 
 public record UpdateMatchCommand(
@@ -7,4 +10,4 @@ public record UpdateMatchCommand(
     int HomeTeamId,
     int AwayTeamId,
     int? TotalPasses
-) : IRequest<UpdateMatchResponse?>;
+) : IRequest<ErrorOr<MatchResponse>>;

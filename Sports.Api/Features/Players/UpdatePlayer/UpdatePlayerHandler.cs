@@ -1,37 +1,39 @@
-﻿namespace Sports.Api.Features.Players.UpdatePlayer;
+namespace Sports.Api.Features.Players.UpdatePlayer;
 
+using Sports.Api.Features.Players._Shared.Responses;
+
+using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
 
-public class UpdatePlayerHandler
-    : IRequestHandler<UpdatePlayerCommand, UpdatePlayerResponse?>
+public class UpdatePlayerHandler(SportsDbContext db, UpdatePlayerMapper mapper)
+    : IRequestHandler<UpdatePlayerCommand, ErrorOr<PlayerResponse>>
 {
-    private readonly SportsDbContext _db;
-    private readonly UpdatePlayerMapper _mapper;
 
-    public UpdatePlayerHandler(SportsDbContext db, UpdatePlayerMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
-    public async Task<UpdatePlayerResponse?> Handle(
+    public async Task<ErrorOr<PlayerResponse>> Handle(
         UpdatePlayerCommand command,
         CancellationToken cancellationToken)
     {
-        var player = await _db.Players.FirstOrDefaultAsync(
+        var player = await db.Players.FirstOrDefaultAsync(
             p => p.Id == command.Id,
             cancellationToken
         );
 
         if (player is null)
-            return null;
+            return Error.NotFound("Player.NotFound", "Player not found");
 
-        _mapper.Apply(command, player);
+        var nameExists = await db.Players.AnyAsync(
+            p => p.Name == command.Name && p.Id != command.Id,
+            cancellationToken);
 
-        await _db.SaveChangesAsync(cancellationToken);
+        if (nameExists)
+            return Error.Conflict("Player.NameConflict", $"A player with the name '{command.Name}' already exists");
 
-        return _mapper.ToResponse(player);
+        mapper.Apply(command, player);
+
+        await db.SaveChangesAsync(cancellationToken);
+
+        return mapper.ToResponse(player);
     }
 }
