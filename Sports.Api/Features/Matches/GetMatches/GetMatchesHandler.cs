@@ -1,13 +1,13 @@
 namespace Sports.Api.Features.Matches.GetMatches;
 
+using Sports.Api.Features.Matches._Shared;
 using Sports.Api.Features.Matches._Shared.Responses;
-
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
 
-public class GetMatchesHandler(SportsDbContext db, GetMatchesMapper mapper)
+public class GetMatchesHandler(SportsDbContext db, MatchMapper mapper)
     : IRequestHandler<GetMatchesQuery, ErrorOr<List<MatchResponse>>>
 {
     public async Task<ErrorOr<List<MatchResponse>>> Handle(

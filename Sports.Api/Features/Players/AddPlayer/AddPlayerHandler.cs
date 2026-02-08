@@ -1,5 +1,6 @@
 namespace Sports.Api.Features.Players.AddPlayer;
 
+using Sports.Api.Features.Players._Shared;
 using Sports.Api.Features.Players._Shared.Responses;
 
 using ErrorOr;
@@ -7,7 +8,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
 
-public class AddPlayerHandler(SportsDbContext db, AddPlayerMapper mapper)
+public class AddPlayerHandler(SportsDbContext db, PlayerMapper mapper)
     : IRequestHandler<AddPlayerCommand, ErrorOr<PlayerResponse>>
 {
 

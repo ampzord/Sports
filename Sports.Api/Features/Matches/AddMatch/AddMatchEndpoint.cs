@@ -1,5 +1,6 @@
 namespace Sports.Api.Features.Matches.AddMatch;
 
+using Sports.Api.Features.Matches._Shared;
 using Sports.Api.Features.Matches._Shared.Responses;
 
 using FastEndpoints;
@@ -7,7 +8,7 @@ using MediatR;
 using Sports.Api.Extensions;
 using Sports.Api.Features.Matches.GetMatchById;
 
-public class AddMatchEndpoint(IMediator mediator, AddMatchMapper mapper) : Endpoint<AddMatchRequest, MatchResponse>
+public class AddMatchEndpoint(IMediator mediator, MatchMapper mapper) : Endpoint<AddMatchRequest, MatchResponse>
 {
 
     public override void Configure()

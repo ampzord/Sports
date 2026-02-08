@@ -1,5 +1,6 @@
 namespace Sports.Api.Features.Leagues.AddLeague;
 
+using Sports.Api.Features.Leagues._Shared;
 using Sports.Api.Features.Leagues._Shared.Responses;
 
 using FastEndpoints;
@@ -7,7 +8,7 @@ using MediatR;
 using Sports.Api.Extensions;
 using Sports.Api.Features.Leagues.GetLeagueById;
 
-public class AddLeagueEndpoint(IMediator mediator, AddLeagueMapper mapper) : Endpoint<AddLeagueRequest, LeagueResponse>
+public class AddLeagueEndpoint(IMediator mediator, LeagueMapper mapper) : Endpoint<AddLeagueRequest, LeagueResponse>
 {
 
     public override void Configure()

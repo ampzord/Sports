@@ -1,5 +1,6 @@
 namespace Sports.Api.Features.Leagues.AddLeague;
 
+using Sports.Api.Features.Leagues._Shared;
 using Sports.Api.Features.Leagues._Shared.Responses;
 
 using ErrorOr;
@@ -7,7 +8,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
 
-public class AddLeagueHandler(SportsDbContext db, AddLeagueMapper mapper)
+public class AddLeagueHandler(SportsDbContext db, LeagueMapper mapper)
     : IRequestHandler<AddLeagueCommand, ErrorOr<LeagueResponse>>
 {
     public async Task<ErrorOr<LeagueResponse>> Handle(

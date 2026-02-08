@@ -1,12 +1,13 @@
 namespace Sports.Api.Features.Matches.GetMatchById;
 
+using Sports.Api.Features.Matches._Shared;
 using Sports.Api.Features.Matches._Shared.Responses;
 
 using ErrorOr;
 using MediatR;
 using Sports.Api.Database;
 
-public class GetMatchByIdHandler(SportsDbContext db, GetMatchByIdMapper mapper)
+public class GetMatchByIdHandler(SportsDbContext db, MatchMapper mapper)
     : IRequestHandler<GetMatchByIdQuery, ErrorOr<MatchResponse>>
 {
     public async Task<ErrorOr<MatchResponse>> Handle(

@@ -1,5 +1,6 @@
 namespace Sports.Api.Features.Teams.AddTeam;
 
+using Sports.Api.Features.Teams._Shared;
 using Sports.Api.Features.Teams._Shared.Responses;
 
 using FastEndpoints;
@@ -7,7 +8,7 @@ using MediatR;
 using Sports.Api.Extensions;
 using Sports.Api.Features.Teams.GetTeamById;
 
-public class AddTeamEndpoint(IMediator mediator, AddTeamMapper mapper) : Endpoint<AddTeamRequest, TeamResponse>
+public class AddTeamEndpoint(IMediator mediator, TeamMapper mapper) : Endpoint<AddTeamRequest, TeamResponse>
 {
 
     public override void Configure()

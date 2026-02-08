@@ -3,8 +3,9 @@
 using FastEndpoints;
 using MediatR;
 using Sports.Api.Extensions;
+using Sports.Api.Features.Teams._Shared;
 
-public class DeleteTeamEndpoint(IMediator mediator, DeleteTeamMapper mapper) : Endpoint<DeleteTeamRequest>
+public class DeleteTeamEndpoint(IMediator mediator, TeamMapper mapper) : Endpoint<DeleteTeamRequest>
 {
 
     public override void Configure()

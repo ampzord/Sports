@@ -1,12 +1,13 @@
 namespace Sports.Api.Features.Leagues.GetLeagueById;
 
+using Sports.Api.Features.Leagues._Shared;
 using Sports.Api.Features.Leagues._Shared.Responses;
 
 using ErrorOr;
 using MediatR;
 using Sports.Api.Database;
 
-public class GetLeagueByIdHandler(SportsDbContext db, GetLeagueByIdMapper mapper)
+public class GetLeagueByIdHandler(SportsDbContext db, LeagueMapper mapper)
     : IRequestHandler<GetLeagueByIdQuery, ErrorOr<LeagueResponse>>
 {
     public async Task<ErrorOr<LeagueResponse>> Handle(

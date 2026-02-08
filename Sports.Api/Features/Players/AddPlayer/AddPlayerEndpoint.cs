@@ -1,5 +1,6 @@
 namespace Sports.Api.Features.Players.AddPlayer;
 
+using Sports.Api.Features.Players._Shared;
 using Sports.Api.Features.Players._Shared.Responses;
 
 using FastEndpoints;
@@ -7,7 +8,7 @@ using MediatR;
 using Sports.Api.Extensions;
 using Sports.Api.Features.Players.GetPlayerById;
 
-public class AddPlayerEndpoint(IMediator mediator, AddPlayerMapper mapper) : Endpoint<AddPlayerRequest, PlayerResponse>
+public class AddPlayerEndpoint(IMediator mediator, PlayerMapper mapper) : Endpoint<AddPlayerRequest, PlayerResponse>
 {
 
     public override void Configure()

@@ -1,5 +1,6 @@
 namespace Sports.Api.Features.Matches.AddMatch;
 
+using Sports.Api.Features.Matches._Shared;
 using Sports.Api.Features.Matches._Shared.Responses;
 
 using ErrorOr;
@@ -7,7 +8,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
 
-public class AddMatchHandler(SportsDbContext db, AddMatchMapper mapper)
+public class AddMatchHandler(SportsDbContext db, MatchMapper mapper)
     : IRequestHandler<AddMatchCommand, ErrorOr<MatchResponse>>
 {
 

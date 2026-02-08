@@ -1,5 +1,6 @@
 namespace Sports.Api.Features.Leagues.UpdateLeague;
 
+using Sports.Api.Features.Leagues._Shared;
 using Sports.Api.Features.Leagues._Shared.Responses;
 
 using ErrorOr;
@@ -7,7 +8,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
 
-public class UpdateLeagueHandler(SportsDbContext db, UpdateLeagueMapper mapper)
+public class UpdateLeagueHandler(SportsDbContext db, LeagueMapper mapper)
     : IRequestHandler<UpdateLeagueCommand, ErrorOr<LeagueResponse>>
 {
 

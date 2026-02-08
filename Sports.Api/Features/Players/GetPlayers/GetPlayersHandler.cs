@@ -1,5 +1,6 @@
 namespace Sports.Api.Features.Players.GetPlayers;
 
+using Sports.Api.Features.Players._Shared;
 using Sports.Api.Features.Players._Shared.Responses;
 
 using ErrorOr;
@@ -7,7 +8,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
 
-public class GetPlayersHandler(SportsDbContext db, GetPlayersMapper mapper, ILogger<GetPlayersHandler> logger)
+public class GetPlayersHandler(SportsDbContext db, PlayerMapper mapper, ILogger<GetPlayersHandler> logger)
     : IRequestHandler<GetPlayersQuery, ErrorOr<List<PlayerResponse>>>
 {
     public async Task<ErrorOr<List<PlayerResponse>>> Handle(

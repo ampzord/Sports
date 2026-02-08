@@ -1,12 +1,13 @@
 namespace Sports.Api.Features.Leagues.GetLeagues;
 
+using Sports.Api.Features.Leagues._Shared;
 using Sports.Api.Features.Leagues._Shared.Responses;
 
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
 
-public class GetLeaguesHandler(SportsDbContext db, GetLeaguesMapper mapper)
+public class GetLeaguesHandler(SportsDbContext db, LeagueMapper mapper)
     : IRequestHandler<GetLeaguesQuery, List<LeagueResponse>>
 {
 

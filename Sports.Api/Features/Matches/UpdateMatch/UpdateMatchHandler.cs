@@ -1,12 +1,13 @@
 namespace Sports.Api.Features.Matches.UpdateMatch;
 
+using Sports.Api.Features.Matches._Shared;
 using Sports.Api.Features.Matches._Shared.Responses;
 
 using ErrorOr;
 using MediatR;
 using Sports.Api.Database;
 
-public class UpdateMatchHandler(SportsDbContext db, UpdateMatchMapper mapper)
+public class UpdateMatchHandler(SportsDbContext db, MatchMapper mapper)
     : IRequestHandler<UpdateMatchCommand, ErrorOr<MatchResponse>>
 {
     public async Task<ErrorOr<MatchResponse>> Handle(

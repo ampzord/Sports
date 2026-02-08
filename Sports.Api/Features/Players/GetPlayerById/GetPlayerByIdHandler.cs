@@ -1,12 +1,13 @@
 namespace Sports.Api.Features.Players.GetPlayerById;
 
+using Sports.Api.Features.Players._Shared;
 using Sports.Api.Features.Players._Shared.Responses;
 
 using ErrorOr;
 using MediatR;
 using Sports.Api.Database;
 
-public class GetPlayerByIdHandler(SportsDbContext db, GetPlayerByIdMapper mapper)
+public class GetPlayerByIdHandler(SportsDbContext db, PlayerMapper mapper)
     : IRequestHandler<GetPlayerByIdQuery, ErrorOr<PlayerResponse>>
 {
     public async Task<ErrorOr<PlayerResponse>> Handle(

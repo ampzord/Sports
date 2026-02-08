@@ -1,5 +1,6 @@
 namespace Sports.Api.Features.Teams.UpdateTeam;
 
+using Sports.Api.Features.Teams._Shared;
 using Sports.Api.Features.Teams._Shared.Responses;
 
 using ErrorOr;
@@ -7,7 +8,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
 
-public class UpdateTeamHandler(SportsDbContext db, UpdateTeamMapper mapper)
+public class UpdateTeamHandler(SportsDbContext db, TeamMapper mapper)
     : IRequestHandler<UpdateTeamCommand, ErrorOr<TeamResponse>>
 {
     public async Task<ErrorOr<TeamResponse>> Handle(
