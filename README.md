@@ -2,7 +2,7 @@
 
 A full-stack sports management application built with **.NET 10**, **Vue 3**, and **[.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/get-started/aspire-overview)** for orchestration.
 
-Manage leagues, teams, players, and matches through a REST API and a Vue SPA -- all wired together and launched with a single `dotnet run`.
+Manage leagues, teams, players, and matches with a single `dotnet run`.
 
 ---
 
@@ -60,7 +60,7 @@ dotnet run --project Sports.AppHost
 That single command starts everything:
 
 - **SQL Server** on port `14330` (password configured in `Sports.AppHost/appsettings.json`)
-- **RabbitMQ** with management UI
+- **RabbitMQ**
 - **Grafana** + **Loki** for log aggregation
 - **Sports.Api** with Swagger UI
 - **Sports.MatchSimulationWorker**
@@ -155,7 +155,7 @@ All endpoints follow a flat hierarchy. List endpoints support optional query par
 |---|---|
 | **League** | `Id`, `Name` (unique, max 100 chars) |
 | **Team** | `Id`, `Name` (unique), `LeagueId` (FK, restrict delete) |
-| **Player** | `Id`, `Name` (unique), `Position` (enum stored as string), `TeamId` (FK) |
+| **Player** | `Id`, `Name` (unique), `Position` (enum), `TeamId` (FK) |
 | **Match** | `Id`, `HomeTeamId`, `AwayTeamId` (FK), `TotalPasses` (nullable) |
 
 Relationships enforce referential integrity -- you cannot delete a league that has teams, or a team that has players or matches.
@@ -175,16 +175,16 @@ Relationships enforce referential integrity -- you cannot delete a league that h
 A `BackgroundService` that listens on a RabbitMQ queue. When triggered from the API's `/api/matches/simulate` endpoint, it:
 
 1. Picks up unprocessed matches in batches of 500
-2. Uses `UPDLOCK, ROWLOCK, READPAST` SQL hints for safe concurrent processing
-3. Assigns a random `TotalPasses` value (100-1000) to each match
-4. Supports multiple concurrent workers without double-processing
+2. Assigns a random `TotalPasses` value (100-1000) to each match
+3. Supports multiple concurrent workers without double-processing
+4. Implemented using Pessimistic Locking to prevent deadlocks
 
 ### Seed Data
 
 The database is seeded on startup with:
 - 2 leagues (Premier League, La Liga)
 - 8 teams (4 per league)
-- 88 players (full 4-3-3 lineup of 11 per team)
+- 88 players
 - 100 matches
 
 ---
@@ -220,7 +220,7 @@ A **Vue 3** single-page application.
 | `/matches/:id` | Match detail |
 | `/matches/:id/edit` | Edit match |
 
-The Vite dev server proxies all `/api` requests to the backend, so no CORS configuration is needed.
+No need for CORS since we are using Aspire.
 
 ---
 
@@ -240,7 +240,7 @@ dotnet test Sports.Worker.IntegrationTests
 dotnet test
 ```
 
-Tests use **[Testcontainers](https://dotnet.testcontainers.org/)** to spin up a real SQL Server instance -- no mocking of the database layer. Integration tests use **[FluentAssertions](https://fluentassertions.com/)** and **[FluentAssertions.Web](https://github.com/adrianiftode/FluentAssertions.Web)** for expressive HTTP assertions like `response.Should().Be200Ok()`.
+Tests use **[Testcontainers](https://dotnet.testcontainers.org/)** to spin up a real SQL Server instance -- no mocking of the database layer. Integration tests use **[FluentAssertions](https://fluentassertions.com/)** and **[FluentAssertions.Web](https://github.com/adrianiftode/FluentAssertions.Web)**.
 
 ---
 
