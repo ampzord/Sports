@@ -6,6 +6,8 @@ Manage leagues, teams, players, and matches with a single `dotnet run`.
 
 ![SportsAPI dashboard](image.png)
 
+![SportsAPI Teams Loading Gif](https://i.imgur.com/YKzqr0Z.gif)
+
 ---
 
 ## Architecture
