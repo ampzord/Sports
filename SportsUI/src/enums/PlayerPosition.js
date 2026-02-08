@@ -1,0 +1,17 @@
+export const PlayerPosition = [
+  { value: 'GK', label: 'GK' },
+  { value: 'CB', label: 'CB' },
+  { value: 'LB', label: 'LB' },
+  { value: 'RB', label: 'RB' },
+  { value: 'LWB', label: 'LWB' },
+  { value: 'RWB', label: 'RWB' },
+  { value: 'CDM', label: 'CDM' },
+  { value: 'CM', label: 'CM' },
+  { value: 'CAM', label: 'CAM' },
+  { value: 'LM', label: 'LM' },
+  { value: 'RM', label: 'RM' },
+  { value: 'LW', label: 'LW' },
+  { value: 'RW', label: 'RW' },
+  { value: 'ST', label: 'ST' },
+  { value: 'CF', label: 'CF' },
+]
