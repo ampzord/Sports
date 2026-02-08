@@ -290,7 +290,7 @@ Tests use **[Testcontainers](https://dotnet.testcontainers.org/)** to spin up a 
 - **Pagination** -- Add limit/offset or cursor-based pagination to all list endpoints.
 - **Authentication** -- Add an auth layer (e.g., JWT, OAuth) to protect write endpoints.
 - **OpenTelemetry Collector** -- Replace direct Loki/Grafana integration with a proper OpenTelemetry Collector for vendor-neutral telemetry export.
-- **Azure Key Vault for Secrets** -- Secrets such as the SQL Server password are currently stored in plain text in `Sports.AppHost/appsettings.json`. Moving them to [Azure Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/overview) would provide centralized secret management with access policies, automatic rotation, audit logging, and encryption at rest -- eliminating the risk of credentials leaking through source control or configuration files. .NET Aspire and ASP.NET Core both support Key Vault integration via the `Azure.Extensions.AspNetCore.Configuration.Secrets` package, so secrets can be consumed as regular configuration values with minimal code changes.
+- **Azure Key Vault for Secrets** -- Secrets such as the SQL Server password are currently stored in plain text in `Sports.AppHost/appsettings.json`. Moving them to [Azure Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/overview) would provide centralized secret management with access policies.
 
 ---
 
