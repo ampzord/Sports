@@ -4,6 +4,8 @@ A full-stack sports management application built with **.NET 10**, **Vue 3**, an
 
 Manage leagues, teams, players, and matches with a single `dotnet run`.
 
+![SportsAPI dashboard](image.png)
+
 ---
 
 ## Architecture
@@ -22,17 +24,17 @@ Sports.AppHost (Aspire Orchestrator)
 
 ## Projects
 
-| Project | Description |
-|---|---|
-| **Sports.AppHost** | .NET Aspire host -- orchestrates all services, databases, and containers |
-| **Sports.Api** | REST API with full CRUD for leagues, teams, players, and matches |
-| **Sports.MatchSimulationWorker** | Worker service that consumes RabbitMQ messages and simulates match pass statistics |
-| **Sports.Shared** | Shared entities, enums, MediatR behaviors, and configuration constants |
-| **Sports.ServiceDefaults** | Aspire service defaults (OpenTelemetry, health checks, resilience) |
-| **SportsUI** | Vue 3 frontend with Tailwind CSS |
-| **Sports.Api.UnitTests** | Unit tests -- domain model constraints against a real SQL Server (Testcontainers) |
-| **Sports.Api.IntegrationTests** | Integration tests -- full HTTP endpoint testing via `WebApplicationFactory` |
-| **Sports.Worker.IntegrationTests** | Integration tests for the match simulation worker |
+| Project                            | Description                                                                        |
+| ---------------------------------- | ---------------------------------------------------------------------------------- |
+| **Sports.AppHost**                 | .NET Aspire host -- orchestrates all services, databases, and containers           |
+| **Sports.Api**                     | REST API with full CRUD for leagues, teams, players, and matches                   |
+| **Sports.MatchSimulationWorker**   | Worker service that consumes RabbitMQ messages and simulates match pass statistics |
+| **Sports.Shared**                  | Shared entities, enums, MediatR behaviors, and configuration constants             |
+| **Sports.ServiceDefaults**         | Aspire service defaults (OpenTelemetry, health checks, resilience)                 |
+| **SportsUI**                       | Vue 3 frontend with Tailwind CSS                                                   |
+| **Sports.Api.UnitTests**           | Unit tests -- domain model constraints against a real SQL Server (Testcontainers)  |
+| **Sports.Api.IntegrationTests**    | Integration tests -- full HTTP endpoint testing via `WebApplicationFactory`        |
+| **Sports.Worker.IntegrationTests** | Integration tests for the match simulation worker                                  |
 
 ---
 
@@ -70,12 +72,12 @@ The **Aspire Dashboard** opens automatically in your browser, showing all resour
 
 ### Where to Find Things
 
-| Resource | Where to find it |
-|---|---|
-| Aspire Dashboard | Opens automatically on launch (`https://localhost:17298`) |
-| Swagger UI | API resource URL + `/swagger` |
-| Grafana | Grafana resource URL (admin / admin) |
-| Vue Frontend | `sports-ui` resource URL in the Aspire dashboard |
+| Resource          | Where to find it                                                                                     |
+| ----------------- | ---------------------------------------------------------------------------------------------------- |
+| Aspire Dashboard  | Opens automatically on launch (`https://localhost:17298`)                                            |
+| Swagger UI        | API resource URL + `/swagger`                                                                        |
+| Grafana           | Grafana resource URL (admin / admin)                                                                 |
+| Vue Frontend      | `sports-ui` resource URL in the Aspire dashboard                                                     |
 | SQL Server (SSMS) | Connect to `localhost,14330` with login `sa` and the password from `Sports.AppHost/appsettings.json` |
 
 ---
@@ -111,53 +113,53 @@ All endpoints follow a flat hierarchy. List endpoints support optional query par
 
 **Leagues**
 
-| Method | Route | Description |
-|---|---|---|
-| `GET` | `/api/leagues` | List all leagues |
-| `GET` | `/api/leagues/{id}` | Get a league by ID |
-| `POST` | `/api/leagues` | Create a league |
-| `PUT` | `/api/leagues/{id}` | Update a league |
-| `DELETE` | `/api/leagues/{id}` | Delete a league |
+| Method   | Route               | Description        |
+| -------- | ------------------- | ------------------ |
+| `GET`    | `/api/leagues`      | List all leagues   |
+| `GET`    | `/api/leagues/{id}` | Get a league by ID |
+| `POST`   | `/api/leagues`      | Create a league    |
+| `PUT`    | `/api/leagues/{id}` | Update a league    |
+| `DELETE` | `/api/leagues/{id}` | Delete a league    |
 
 **Teams**
 
-| Method | Route | Description |
-|---|---|---|
-| `GET` | `/api/teams?leagueId={id}` | List all teams (optionally filter by league) |
-| `GET` | `/api/teams/{id}` | Get a team by ID |
-| `POST` | `/api/teams` | Create a team |
-| `PUT` | `/api/teams/{id}` | Update a team |
-| `DELETE` | `/api/teams/{id}` | Delete a team |
+| Method   | Route                      | Description                                  |
+| -------- | -------------------------- | -------------------------------------------- |
+| `GET`    | `/api/teams?leagueId={id}` | List all teams (optionally filter by league) |
+| `GET`    | `/api/teams/{id}`          | Get a team by ID                             |
+| `POST`   | `/api/teams`               | Create a team                                |
+| `PUT`    | `/api/teams/{id}`          | Update a team                                |
+| `DELETE` | `/api/teams/{id}`          | Delete a team                                |
 
 **Players**
 
-| Method | Route | Description |
-|---|---|---|
-| `GET` | `/api/players?teamId={id}` | List all players (optionally filter by team) |
-| `GET` | `/api/players/{id}` | Get a player by ID |
-| `POST` | `/api/players` | Create a player |
-| `PUT` | `/api/players/{id}` | Update a player |
-| `DELETE` | `/api/players/{id}` | Delete a player |
+| Method   | Route                      | Description                                  |
+| -------- | -------------------------- | -------------------------------------------- |
+| `GET`    | `/api/players?teamId={id}` | List all players (optionally filter by team) |
+| `GET`    | `/api/players/{id}`        | Get a player by ID                           |
+| `POST`   | `/api/players`             | Create a player                              |
+| `PUT`    | `/api/players/{id}`        | Update a player                              |
+| `DELETE` | `/api/players/{id}`        | Delete a player                              |
 
 **Matches**
 
-| Method | Route | Description |
-|---|---|---|
-| `GET` | `/api/matches?leagueId={id}` | List all matches (optionally filter by league) |
-| `GET` | `/api/matches/{id}` | Get a match by ID |
-| `POST` | `/api/matches` | Create a match |
-| `PUT` | `/api/matches/{id}` | Update a match |
-| `DELETE` | `/api/matches/{id}` | Delete a match |
-| `POST` | `/api/matches/simulate` | Trigger match simulation via RabbitMQ |
+| Method   | Route                        | Description                                    |
+| -------- | ---------------------------- | ---------------------------------------------- |
+| `GET`    | `/api/matches?leagueId={id}` | List all matches (optionally filter by league) |
+| `GET`    | `/api/matches/{id}`          | Get a match by ID                              |
+| `POST`   | `/api/matches`               | Create a match                                 |
+| `PUT`    | `/api/matches/{id}`          | Update a match                                 |
+| `DELETE` | `/api/matches/{id}`          | Delete a match                                 |
+| `POST`   | `/api/matches/simulate`      | Trigger match simulation via RabbitMQ          |
 
 ### Domain Model
 
-| Entity | Key Fields |
-|---|---|
-| **League** | `Id`, `Name` (unique, max 100 chars) |
-| **Team** | `Id`, `Name` (unique), `LeagueId` (FK, restrict delete) |
-| **Player** | `Id`, `Name` (unique), `Position` (enum), `TeamId` (FK) |
-| **Match** | `Id`, `HomeTeamId`, `AwayTeamId` (FK), `TotalPasses` (nullable) |
+| Entity     | Key Fields                                                      |
+| ---------- | --------------------------------------------------------------- |
+| **League** | `Id`, `Name` (unique, max 100 chars)                            |
+| **Team**   | `Id`, `Name` (unique), `LeagueId` (FK, restrict delete)         |
+| **Player** | `Id`, `Name` (unique), `Position` (enum), `TeamId` (FK)         |
+| **Match**  | `Id`, `HomeTeamId`, `AwayTeamId` (FK), `TotalPasses` (nullable) |
 
 Relationships enforce referential integrity -- you cannot delete a league that has teams, or a team that has players or matches.
 
@@ -183,6 +185,7 @@ A `BackgroundService` that listens on a RabbitMQ queue. When triggered from the 
 ### Seed Data
 
 The database is seeded on startup with:
+
 - 2 leagues (Premier League, La Liga)
 - 8 teams (4 per league)
 - 88 players
@@ -201,25 +204,25 @@ A **Vue 3** single-page application.
 
 ### Routes
 
-| Route | View |
-|---|---|
-| `/home` | Dashboard |
-| `/leagues` | League list |
-| `/leagues/create` | Create league |
-| `/leagues/:id` | League detail |
-| `/leagues/:id/edit` | Edit league |
-| `/teams` | Team list |
-| `/teams/create` | Create team |
-| `/teams/:id` | Team detail |
-| `/teams/:id/edit` | Edit team |
-| `/players` | Player list |
-| `/players/create` | Create player |
-| `/players/:id` | Player detail |
-| `/players/:id/edit` | Edit player |
-| `/matches` | Match list |
-| `/matches/create` | Create match |
-| `/matches/:id` | Match detail |
-| `/matches/:id/edit` | Edit match |
+| Route               | View          |
+| ------------------- | ------------- |
+| `/home`             | Dashboard     |
+| `/leagues`          | League list   |
+| `/leagues/create`   | Create league |
+| `/leagues/:id`      | League detail |
+| `/leagues/:id/edit` | Edit league   |
+| `/teams`            | Team list     |
+| `/teams/create`     | Create team   |
+| `/teams/:id`        | Team detail   |
+| `/teams/:id/edit`   | Edit team     |
+| `/players`          | Player list   |
+| `/players/create`   | Create player |
+| `/players/:id`      | Player detail |
+| `/players/:id/edit` | Edit player   |
+| `/matches`          | Match list    |
+| `/matches/create`   | Create match  |
+| `/matches/:id`      | Match detail  |
+| `/matches/:id/edit` | Edit match    |
 
 No need for CORS since we are using Aspire.
 
@@ -249,38 +252,38 @@ Tests use **[Testcontainers](https://dotnet.testcontainers.org/)** to spin up a 
 
 ### Backend
 
-| Category | Technology |
-|---|---|
-| Runtime | .NET 10 / C# 14 |
-| API Framework | FastEndpoints |
-| Mediator | MediatR |
-| ORM | EF Core (SQL Server) |
-| Mapping | Mapperly (source-gen) |
-| Validation | FluentValidation |
-| Error Handling | ErrorOr |
-| Logging | Serilog, Grafana Loki |
-| Messaging | RabbitMQ |
-| Orchestration | .NET Aspire |
+| Category       | Technology            |
+| -------------- | --------------------- |
+| Runtime        | .NET 10 / C# 14       |
+| API Framework  | FastEndpoints         |
+| Mediator       | MediatR               |
+| ORM            | EF Core (SQL Server)  |
+| Mapping        | Mapperly (source-gen) |
+| Validation     | FluentValidation      |
+| Error Handling | ErrorOr               |
+| Logging        | Serilog, Grafana Loki |
+| Messaging      | RabbitMQ              |
+| Orchestration  | .NET Aspire           |
 
 ### Frontend
 
-| Category | Technology |
-|---|---|
-| Framework | Vue 3 (Composition API) |
-| Build Tool | Vite 7 |
-| Styling | Tailwind CSS 4 |
-| HTTP Client | Axios |
-| Routing | Vue Router 4 |
+| Category    | Technology              |
+| ----------- | ----------------------- |
+| Framework   | Vue 3 (Composition API) |
+| Build Tool  | Vite 7                  |
+| Styling     | Tailwind CSS 4          |
+| HTTP Client | Axios                   |
+| Routing     | Vue Router 4            |
 
 ### Testing
 
-| Category | Technology |
-|---|---|
-| Framework | xUnit |
-| Assertions | FluentAssertions, FluentAssertions.Web |
-| HTTP Testing | Microsoft.AspNetCore.Mvc.Testing |
-| Containers | Testcontainers (SQL Server) |
-| Mocking | Moq |
+| Category     | Technology                             |
+| ------------ | -------------------------------------- |
+| Framework    | xUnit                                  |
+| Assertions   | FluentAssertions, FluentAssertions.Web |
+| HTTP Testing | Microsoft.AspNetCore.Mvc.Testing       |
+| Containers   | Testcontainers (SQL Server)            |
+| Mocking      | Moq                                    |
 
 ---
 
@@ -299,4 +302,5 @@ Tests use **[Testcontainers](https://dotnet.testcontainers.org/)** to spin up a 
 Some libraries used in this project have changed their licensing model in recent versions:
 
 - **[FluentValidation](https://docs.fluentvalidation.net/)** -- Version 12+ requires a commercial license for commercial use. This project uses v12. See the [FluentValidation license page](https://docs.fluentvalidation.net/en/latest/licensing.html) for details.
+- **[MediatR](https://github.com/jbogard/MediatR)** -- Version 13+ requires a commercial license for commercial use. This project uses v14. See the [MediatR license page](https://www.jbogard.com/mediatr-licensing/) for details.atest/licensing.html) for details.
 - **[MediatR](https://github.com/jbogard/MediatR)** -- Version 13+ requires a commercial license for commercial use. This project uses v14. See the [MediatR license page](https://www.jbogard.com/mediatr-licensing/) for details.
