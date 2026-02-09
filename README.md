@@ -305,12 +305,15 @@ Tests use **[Testcontainers](https://dotnet.testcontainers.org/)** to spin up a 
 
 ## Future Improvements
 
+## Future Improvements
+
 - **GUIDs for IDs** -- Replace auto-increment `int` IDs with GUIDs to avoid enumeration attacks and simplify distributed scenarios.
 - **Pagination** -- Add limit/offset or cursor-based pagination to all list endpoints.
 - **Authentication** -- Add an auth layer (e.g., JWT, OAuth) to protect write endpoints.
 - **OpenTelemetry Collector** -- Traces, metrics, and logs are already exported via OTLP to the Aspire dashboard, but logs also flow separately through Serilog to Loki. Adding a standalone [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) would unify both pipelines into a single, vendor-neutral telemetry export.
 - **Azure Key Vault for Secrets** -- The SQL Server password is stored in plain text under `Parameters:sql-password` in `Sports.AppHost/appsettings.json`. Moving it to [Azure Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/overview) would provide centralized secret management with access policies.
-- **Persistent Metrics with Prometheus** -- Metrics (ASP.NET Core, HttpClient, runtime) are collected via OpenTelemetry but only visible in the Aspire dashboard, which is ephemeral. Adding [Prometheus](https://prometheus.io/) as a metrics backend with Grafana dashboards would provide persistent monitoring, alerting, and historical analysis. Custom application metrics (e.g., matches simulated, simulation duration) could also be added using `System.Diagnostics.Metrics`.
+- **Persistent Metrics with Prometheus** -- Metrics (ASP.NET Core, HttpClient, runtime) are collected via OpenTelemetry but only visible in the Aspire dashboard, which is ephemeral. Adding [Prometheus](https://prometheus.io/) as a metrics backend with Grafana dashboards would provide persistent monitoring and historical analysis. Prometheus stores numeric measurements over time (request rates, error percentages, response times) so you can answer questions like "how many requests per second is the API handling?" or "what's the p99 latency?". Custom application metrics (e.g., matches simulated, simulation duration) could also be added using `System.Diagnostics.Metrics`.
+- **Distributed Tracing with Grafana Tempo** -- Traces are currently only visible in the Aspire dashboard, which is lost on restart. Adding [Grafana Tempo](https://grafana.com/oss/tempo/) as a trace backend would provide persistent, queryable distributed tracing. While Prometheus tells you *something is slow*, Tempo tells you *exactly where and why* -- it records the full journey of a request as it flows from the API through RabbitMQ to the MatchSimulationWorker, showing how long each step took. Combined with Prometheus and Loki, this completes the observability trifecta: metrics to detect problems, traces to pinpoint them, and logs to understand the details.
 
 ---
 
