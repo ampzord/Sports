@@ -58,9 +58,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { matchAPI, teamAPI, leagueAPI } from '../../services/api'
+import { useMatch, useTeams, useLeagues, useDeleteMatch } from '../../composables/useMatchQueries'
 import { useToast } from '../../composables/useToast'
 
 const toast = useToast()
@@ -68,39 +68,25 @@ const route = useRoute()
 const router = useRouter()
 const matchId = computed(() => route.params.id)
 
-const match = ref(null)
-const teams = ref([])
-const leagues = ref([])
-
-onMounted(async () => {
-  try {
-    const [matchRes, teamsRes, leaguesRes] = await Promise.all([
-      matchAPI.getMatchById(matchId.value),
-      teamAPI.getTeams(),
-      leagueAPI.getLeagues(),
-    ])
-    match.value = matchRes.data
-    teams.value = teamsRes.data
-    leagues.value = leaguesRes.data
-  } catch (error) {
-    console.error('Failed to fetch match data:', error)
-  }
-})
+const { data: match } = useMatch(matchId)
+const { data: teams } = useTeams()
+const { data: leagues } = useLeagues()
+const deleteMutation = useDeleteMatch()
 
 const homeTeamName = computed(() => {
-  if (!match.value?.homeTeamId || !teams.value.length) return 'TBD'
+  if (!match.value?.homeTeamId || !teams.value?.length) return 'TBD'
   const team = teams.value.find((t) => t.id === match.value.homeTeamId || String(t.id) === String(match.value.homeTeamId))
   return team?.name || 'Unknown'
 })
 
 const awayTeamName = computed(() => {
-  if (!match.value?.awayTeamId || !teams.value.length) return 'TBD'
+  if (!match.value?.awayTeamId || !teams.value?.length) return 'TBD'
   const team = teams.value.find((t) => t.id === match.value.awayTeamId || String(t.id) === String(match.value.awayTeamId))
   return team?.name || 'Unknown'
 })
 
 const leagueName = computed(() => {
-  if (!match.value?.homeTeamId || !teams.value.length || !leagues.value.length) return ''
+  if (!match.value?.homeTeamId || !teams.value?.length || !leagues.value?.length) return ''
   const homeTeam = teams.value.find((t) => t.id === match.value.homeTeamId || String(t.id) === String(match.value.homeTeamId))
   if (!homeTeam?.leagueId) return 'Unknown'
   const league = leagues.value.find((l) => l.id === homeTeam.leagueId || String(l.id) === String(homeTeam.leagueId))
@@ -114,13 +100,12 @@ const matchTitle = computed(() => {
 const deleteMatchConfirm = async () => {
   if (confirm('Are you sure you want to delete this match?')) {
     try {
-      await matchAPI.deleteMatch(matchId.value)
+      await deleteMutation.mutateAsync(matchId.value)
       toast.success('Match deleted')
       router.push({ name: 'Matches' })
     } catch (error) {
       console.error('Failed to delete match:', error)
-      const msg = error.response?.data?.detail || error.response?.data?.title || 'Failed to delete match'
-      toast.error(msg)
+      toast.error(error.message || 'Failed to delete match')
     }
   }
 }

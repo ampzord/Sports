@@ -5,14 +5,9 @@
       <div class="flex items-center gap-3">
         <button
           @click="simulateAll"
-          :disabled="simulating"
-          class="bg-green-600 hover:bg-green-700 disabled:bg-green-400 disabled:cursor-not-allowed text-white px-5 py-2 rounded font-semibold transition cursor-pointer inline-flex items-center gap-2"
+          class="bg-green-600 hover:bg-green-700 active:scale-95 text-white px-5 py-2 rounded font-semibold transition cursor-pointer inline-flex items-center gap-2"
         >
-          <span
-            v-if="simulating"
-            class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"
-          ></span>
-          {{ simulating ? 'Simulating...' : '▶ Simulate All Matches' }}
+          ▶ Simulate All Matches
         </button>
         <router-link
           to="/matches/create"
@@ -24,7 +19,7 @@
     </div>
 
     <!-- Loading skeleton -->
-    <div v-if="loading" class="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+    <div v-if="isLoading" class="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
       <table class="w-full">
         <thead class="bg-blue-50">
           <tr>
@@ -45,104 +40,123 @@
       </table>
     </div>
 
-    <!-- Matches List -->
-    <div v-if="!loading" class="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
-      <table class="w-full">
-        <thead class="bg-blue-50">
-          <tr>
-            <th class="px-6 py-3 text-left text-blue-600 font-bold">Match</th>
-            <th class="px-6 py-3 text-left text-blue-600 font-bold">League</th>
-            <th class="px-6 py-3 text-left text-blue-600 font-bold">Total Passes</th>
-            <th class="px-6 py-3 text-left text-blue-600 font-bold">Actions</th>
-          </tr>
-        </thead>
-        <TransitionGroup tag="tbody" appear @before-enter="onBeforeEnter" @enter="onEnter">
-          <tr
-            v-for="(match, index) in matches ?? []"
-            :key="match.id"
-            :data-index="index"
-            class="border-t border-gray-200 hover:bg-blue-50 hover:shadow-[inset_3px_0_0_0_#3b82f6] transition-all duration-200"
+    <!-- Virtualized Matches List -->
+    <div v-if="!isLoading" class="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+      <!-- Sticky header -->
+      <div class="bg-blue-50 grid grid-cols-[1fr_1fr_1fr_1fr]">
+        <div class="px-6 py-3 text-left text-blue-600 font-bold">Match</div>
+        <div class="px-6 py-3 text-left text-blue-600 font-bold">League</div>
+        <div class="px-6 py-3 text-left text-blue-600 font-bold">Total Passes</div>
+        <div class="px-6 py-3 text-left text-blue-600 font-bold">Actions</div>
+      </div>
+
+      <!-- Scrollable virtual container -->
+      <div ref="scrollEl" class="overflow-auto" :style="{ maxHeight: '70vh' }">
+        <!-- Spacer that represents total height of all rows -->
+        <div :style="{ height: `${virtualizer.getTotalSize()}px`, position: 'relative' }">
+          <div
+            v-for="row in virtualizer.getVirtualItems()"
+            :key="matchRows[row.index].id"
+            :style="{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: `${row.size}px`,
+              transform: `translateY(${row.start}px)`,
+            }"
+            class="grid grid-cols-[1fr_1fr_1fr_1fr] items-center border-t border-gray-200 hover:bg-blue-50 hover:shadow-[inset_3px_0_0_0_#3b82f6] transition-all duration-200"
           >
-            <td class="px-6 py-4">
+            <div class="px-6 py-4">
               <router-link
-                :to="{ name: 'MatchDetail', params: { id: match.id } }"
+                :to="{ name: 'MatchDetail', params: { id: matchRows[row.index].id } }"
                 class="text-blue-600 hover:text-blue-800 font-semibold"
               >
-                {{ getTeamName(match.homeTeamId) }} vs {{ getTeamName(match.awayTeamId) }}
+                {{ getTeamName(matchRows[row.index].homeTeamId) }} vs {{ getTeamName(matchRows[row.index].awayTeamId) }}
               </router-link>
-            </td>
-            <td class="px-6 py-4 text-gray-600">{{ getMatchLeagueName(match) }}</td>
-            <td class="px-6 py-4">
-              <Transition name="cell-swap" mode="out-in">
-                <span
-                  v-if="match.totalPasses != null"
-                  :key="'passes-' + match.totalPasses"
-                  class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold inline-block"
-                >
-                  {{ match.totalPasses }}
-                </span>
-                <span v-else key="not-simulated" class="text-gray-400 text-sm inline-block">Not simulated</span>
-              </Transition>
-            </td>
-            <td class="px-6 py-4 flex gap-2">
+            </div>
+            <div class="px-6 py-4 text-gray-600">{{ getMatchLeagueName(matchRows[row.index]) }}</div>
+            <div class="px-6 py-4">
+              <span
+                v-if="matchRows[row.index].totalPasses != null"
+                class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold inline-block"
+              >
+                {{ matchRows[row.index].totalPasses }}
+              </span>
+              <span v-else class="text-gray-400 text-sm inline-block">Not simulated</span>
+            </div>
+            <div class="px-6 py-4 flex gap-2">
               <button
-                @click="editMatch(match)"
-                class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded font-semibold transition"
+                @click="editMatch(matchRows[row.index])"
+                class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded font-semibold transition cursor-pointer"
               >
                 Edit
               </button>
               <button
-                @click="deleteMatch(match.id)"
-                :disabled="deletingId === match.id"
+                @click="handleDelete(matchRows[row.index].id)"
+                :disabled="deletingId === matchRows[row.index].id"
                 class="bg-red-100 hover:bg-red-200 disabled:opacity-50 text-red-700 px-3 py-1 rounded font-semibold transition cursor-pointer inline-flex items-center gap-1.5"
               >
                 <span
-                  v-if="deletingId === match.id"
+                  v-if="deletingId === matchRows[row.index].id"
                   class="inline-block w-3 h-3 border-2 border-red-700 border-t-transparent rounded-full animate-spin"
                 ></span>
                 Delete
               </button>
-            </td>
-          </tr>
-        </TransitionGroup>
-      </table>
-      <p v-if="(matches ?? []).length === 0" class="p-6 text-gray-400 text-center">No matches found</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p v-if="matchRows.length === 0" class="p-6 text-gray-400 text-center">No matches found</p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useVirtualizer } from '@tanstack/vue-virtual'
 import { useToast } from '../../composables/useToast'
-import { useStaggerAnimation } from '../../composables/useStaggerAnimation'
-import { useMatchPolling } from '../../composables/useMatchPolling'
-import { matchAPI } from '../../services/api'
+import { useMatches, useTeams, useLeagues, useDeleteMatch, useSimulateWithPolling } from '../../composables/useMatchQueries'
+
+const ROW_HEIGHT = 52
 
 const toast = useToast()
 const router = useRouter()
-const { onBeforeEnter, onEnter } = useStaggerAnimation()
 const deletingId = ref(null)
+const scrollEl = ref(null)
 
-const { matches, teams, leagues, loading, simulating, fetchAll, fetchMatches, startSimulation } = useMatchPolling()
+const { data: matches, isLoading } = useMatches()
+const { data: teams } = useTeams()
+const { data: leagues } = useLeagues()
 
-onMounted(fetchAll)
+const deleteMutation = useDeleteMatch()
+const { simulate: simulateMutation } = useSimulateWithPolling()
+
+const matchRows = computed(() => matches.value ?? [])
+
+const virtualizer = useVirtualizer({
+  get count() {
+    return matchRows.value.length
+  },
+  getScrollElement: () => scrollEl.value,
+  estimateSize: () => ROW_HEIGHT,
+  overscan: 20,
+})
 
 // --- Actions ---
-const deleteMatch = async (id) => {
-  if (confirm('Are you sure?')) {
-    deletingId.value = id
-    try {
-      await matchAPI.deleteMatch(id)
-      toast.success('Match deleted')
-      await fetchMatches()
-    } catch (error) {
-      console.error('Failed to delete match:', error)
-      const msg = error.response?.data?.detail || error.response?.data?.title || 'Failed to delete match'
-      toast.error(msg)
-    } finally {
-      deletingId.value = null
-    }
+const handleDelete = async (id) => {
+  if (!confirm('Are you sure?')) return
+  deletingId.value = id
+  try {
+    await deleteMutation.mutateAsync(id)
+    toast.success('Match deleted')
+  } catch (error) {
+    console.error('Failed to delete match:', error)
+    toast.error(error.message || 'Failed to delete match')
+  } finally {
+    deletingId.value = null
   }
 }
 
@@ -168,29 +182,13 @@ const getTeamName = (teamId) => {
   return team?.name || 'Unknown'
 }
 
-const simulateAll = async () => {
-  try {
-    await startSimulation()
-    toast.success('Simulation started!')
-  } catch (error) {
-    console.error('Failed to simulate:', error)
-    const msg = error.response?.data?.detail || error.response?.data?.title || 'Failed to simulate matches'
-    toast.error(msg)
-  }
+const simulateAll = () => {
+  simulateMutation.mutate(undefined, {
+    onSuccess: () => toast.success('Triggered Matches Simulation'),
+    onError: (error) => {
+      console.error('Failed to simulate:', error)
+      toast.error(error.message || 'Failed to simulate matches')
+    },
+  })
 }
 </script>
-
-<style scoped>
-.cell-swap-enter-active,
-.cell-swap-leave-active {
-  transition: all 0.35s ease;
-}
-.cell-swap-enter-from {
-  opacity: 0;
-  transform: translateY(6px) scale(0.95);
-}
-.cell-swap-leave-to {
-  opacity: 0;
-  transform: translateY(-6px) scale(0.95);
-}
-</style>

@@ -28,10 +28,6 @@
 
       <div class="grid grid-cols-2 gap-6">
         <div class="bg-blue-50 p-4 rounded border-l-4 border-blue-500">
-          <p class="text-xs text-gray-500 uppercase font-bold">Player ID</p>
-          <p class="text-lg font-bold text-blue-600 mt-1">#{{ player?.id }}</p>
-        </div>
-        <div class="bg-blue-50 p-4 rounded border-l-4 border-blue-500">
           <p class="text-xs text-gray-500 uppercase font-bold">Position</p>
           <p class="text-lg font-bold text-blue-600 mt-1">
             {{ player?.position || 'Not specified' }}

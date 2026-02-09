@@ -141,6 +141,7 @@ csharp_style_throw_expression = true:suggestion
 csharp_style_unused_value_assignment_preference = discard_variable:none
 csharp_style_unused_value_expression_statement_preference = unused_variable:none
 dotnet_diagnostic.IDE0058.severity = none
+dotnet_diagnostic.CA2000.severity = error
 
 # 'using' directive preferences
 csharp_using_directive_placement = inside_namespace:warning

@@ -13,9 +13,7 @@ public class MatchSimulationConsumer(
     IServiceScopeFactory scopeFactory,
     ILogger<MatchSimulationConsumer> logger) : BackgroundService
 {
-    private int _activeJobs;
-
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override Task ExecuteAsync(CancellationToken cancellationToken)
     {
         logger.LogInformation("Match simulation consumer started, waiting for messages");
 
@@ -36,9 +34,6 @@ public class MatchSimulationConsumer(
         {
             _ = Task.Run(async () =>
             {
-                var current = Interlocked.Increment(ref _activeJobs);
-                logger.LogInformation("Simulation started — active jobs: {ActiveJobs}", current);
-
                 try
                 {
                     using var scope = scopeFactory.CreateScope();
@@ -46,16 +41,13 @@ public class MatchSimulationConsumer(
                     await job.SimulateMatchPassesAsync();
 
                     channel.BasicAck(ea.DeliveryTag, multiple: false);
-                    logger.LogInformation("Simulation completed — active jobs: {ActiveJobs}",
-                        Interlocked.Decrement(ref _activeJobs));
                 }
                 catch (Exception ex)
                 {
-                    Interlocked.Decrement(ref _activeJobs);
                     logger.LogError(ex, "Error during match simulation");
                     channel.BasicNack(ea.DeliveryTag, multiple: false, requeue: true);
                 }
-            }, stoppingToken);
+            }, cancellationToken);
         };
 
         channel.BasicConsume(
@@ -63,6 +55,6 @@ public class MatchSimulationConsumer(
             autoAck: false,
             consumer: consumer);
 
-        return Task.Delay(Timeout.Infinite, stoppingToken);
+        return Task.Delay(Timeout.Infinite, cancellationToken);
     }
 }

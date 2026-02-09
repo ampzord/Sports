@@ -31,7 +31,7 @@ var connectionString = builder.Configuration.GetConnectionString(ConnectionStrin
 builder.Services.AddDbContext<MatchSimulationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddTransient<ISimulateMatchesJob, SimulateMatchesJob>();
+builder.Services.AddTransient<ISimulateMatchesJob, SimulateMatchesJobDeadlock>();
 
 builder.Services.AddHostedService<MatchSimulationConsumer>();
 

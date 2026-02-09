@@ -32,75 +32,98 @@
       </table>
     </div>
 
+    <!-- Virtualized Players List -->
     <div v-if="!loading" class="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
-      <table class="w-full">
-        <thead class="bg-blue-50">
-          <tr>
-            <th class="px-6 py-3 text-left text-blue-600 font-bold">Player Name</th>
-            <th class="px-6 py-3 text-left text-blue-600 font-bold">Position</th>
-            <th class="px-6 py-3 text-left text-blue-600 font-bold">Team</th>
-            <th class="px-6 py-3 text-left text-blue-600 font-bold">Actions</th>
-          </tr>
-        </thead>
-        <TransitionGroup tag="tbody" appear @before-enter="onBeforeEnter" @enter="onEnter">
-          <tr
-            v-for="(player, index) in players"
-            :key="player.id"
-            :data-index="index"
-            class="border-t border-gray-200 hover:bg-blue-50 hover:shadow-[inset_3px_0_0_0_#3b82f6] transition-all duration-200"
+      <!-- Sticky header -->
+      <div class="bg-blue-50 grid grid-cols-[1fr_1fr_1fr_1fr]">
+        <div class="px-6 py-3 text-left text-blue-600 font-bold">Player Name</div>
+        <div class="px-6 py-3 text-left text-blue-600 font-bold">Position</div>
+        <div class="px-6 py-3 text-left text-blue-600 font-bold">Team</div>
+        <div class="px-6 py-3 text-left text-blue-600 font-bold">Actions</div>
+      </div>
+
+      <!-- Scrollable virtual container -->
+      <div ref="scrollEl" class="overflow-auto" :style="{ maxHeight: '70vh' }">
+        <div :style="{ height: `${virtualizer.getTotalSize()}px`, position: 'relative' }">
+          <div
+            v-for="row in virtualizer.getVirtualItems()"
+            :key="playerRows[row.index].id"
+            :style="{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: `${row.size}px`,
+              transform: `translateY(${row.start}px)`,
+            }"
+            class="grid grid-cols-[1fr_1fr_1fr_1fr] items-center border-t border-gray-200 hover:bg-blue-50 hover:shadow-[inset_3px_0_0_0_#3b82f6] transition-all duration-200"
           >
-            <td class="px-6 py-4">
-              <router-link :to="`/players/${player.id}`" class="text-blue-600 hover:text-blue-800 font-semibold">
-                {{ player.name }}
+            <div class="px-6 py-4">
+              <router-link :to="`/players/${playerRows[row.index].id}`" class="text-blue-600 hover:text-blue-800 font-semibold">
+                {{ playerRows[row.index].name }}
               </router-link>
-            </td>
-            <td class="px-6 py-4">
+            </div>
+            <div class="px-6 py-4">
               <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold">
-                {{ player.position || '-' }}
+                {{ playerRows[row.index].position || '-' }}
               </span>
-            </td>
-            <td class="px-6 py-4 text-gray-600">
-              {{ getTeamName(player.teamId) }}
-            </td>
-            <td class="px-6 py-4 flex gap-2">
+            </div>
+            <div class="px-6 py-4 text-gray-600">
+              {{ getTeamName(playerRows[row.index].teamId) }}
+            </div>
+            <div class="px-6 py-4 flex gap-2">
               <router-link
-                :to="`/players/${player.id}/edit`"
-                class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded font-semibold transition"
+                :to="`/players/${playerRows[row.index].id}/edit`"
+                class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded font-semibold transition cursor-pointer"
               >
                 Edit
               </router-link>
               <button
-                @click="deletePlayer(player.id)"
-                :disabled="deletingId === player.id"
+                @click="deletePlayer(playerRows[row.index].id)"
+                :disabled="deletingId === playerRows[row.index].id"
                 class="bg-red-100 hover:bg-red-200 disabled:opacity-50 text-red-700 px-3 py-1 rounded font-semibold transition cursor-pointer inline-flex items-center gap-1.5"
               >
                 <span
-                  v-if="deletingId === player.id"
+                  v-if="deletingId === playerRows[row.index].id"
                   class="inline-block w-3 h-3 border-2 border-red-700 border-t-transparent rounded-full animate-spin"
                 ></span>
                 Delete
               </button>
-            </td>
-          </tr>
-        </TransitionGroup>
-      </table>
-      <p v-if="players.length === 0" class="p-6 text-gray-400 text-center">No players found</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p v-if="playerRows.length === 0" class="p-6 text-gray-400 text-center">No players found</p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useVirtualizer } from '@tanstack/vue-virtual'
 import { playerAPI, teamAPI } from '../../services/api'
 import { useToast } from '../../composables/useToast'
-import { useStaggerAnimation } from '../../composables/useStaggerAnimation'
+
+const ROW_HEIGHT = 52
 
 const toast = useToast()
-const { onBeforeEnter, onEnter } = useStaggerAnimation()
 const players = ref([])
 const teams = ref([])
 const loading = ref(true)
 const deletingId = ref(null)
+const scrollEl = ref(null)
+
+const playerRows = computed(() => players.value)
+
+const virtualizer = useVirtualizer({
+  get count() {
+    return playerRows.value.length
+  },
+  getScrollElement: () => scrollEl.value,
+  estimateSize: () => ROW_HEIGHT,
+  overscan: 20,
+})
 
 const fetchPlayers = async () => {
   try {
@@ -139,5 +162,3 @@ const deletePlayer = async (id) => {
 
 onMounted(fetchPlayers)
 </script>
-
-<style scoped></style>

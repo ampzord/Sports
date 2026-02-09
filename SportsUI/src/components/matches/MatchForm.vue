@@ -85,9 +85,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { matchAPI, leagueAPI, teamAPI } from '../../services/api'
+import { useMatch, useTeams, useLeagues, useCreateMatch, useUpdateMatch } from '../../composables/useMatchQueries'
 import { useToast } from '../../composables/useToast'
 
 const toast = useToast()
@@ -95,15 +95,39 @@ const route = useRoute()
 const router = useRouter()
 
 const isEdit = computed(() => !!route.params.id)
-const loading = ref(false)
-const leagues = ref([])
-const teams = ref([])
 const selectedLeagueId = ref('')
 const form = ref({ homeTeamId: '', awayTeamId: '', totalPasses: null })
 
+const { data: teams } = useTeams()
+const { data: leagues } = useLeagues()
+const { data: existingMatch } = useMatch(computed(() => (isEdit.value ? route.params.id : null)))
+
+const createMutation = useCreateMatch()
+const updateMutation = useUpdateMatch()
+const loading = computed(() => createMutation.isPending.value || updateMutation.isPending.value)
+
+// When existing match loads, populate form
+watch(
+  existingMatch,
+  (match) => {
+    if (match) {
+      form.value = {
+        homeTeamId: match.homeTeamId,
+        awayTeamId: match.awayTeamId,
+        totalPasses: match.totalPasses,
+      }
+      const homeTeam = (teams.value || []).find((t) => t.id === match.homeTeamId || String(t.id) === String(match.homeTeamId))
+      if (homeTeam) {
+        selectedLeagueId.value = homeTeam.leagueId
+      }
+    }
+  },
+  { immediate: true },
+)
+
 const leagueTeams = computed(() => {
   if (!selectedLeagueId.value) return []
-  return teams.value.filter((t) => String(t.leagueId) === String(selectedLeagueId.value))
+  return (teams.value || []).filter((t) => String(t.leagueId) === String(selectedLeagueId.value))
 })
 
 const homeTeamOptions = computed(() => {
@@ -119,37 +143,7 @@ const onLeagueChange = () => {
   form.value.awayTeamId = ''
 }
 
-onMounted(async () => {
-  try {
-    const [leaguesRes, teamsRes] = await Promise.all([leagueAPI.getLeagues(), teamAPI.getTeams()])
-    leagues.value = leaguesRes.data
-    teams.value = teamsRes.data
-  } catch (error) {
-    console.error('Failed to load data:', error)
-  }
-
-  if (isEdit.value) {
-    try {
-      const response = await matchAPI.getMatchById(route.params.id)
-      const match = response.data
-      form.value = {
-        homeTeamId: match.homeTeamId,
-        awayTeamId: match.awayTeamId,
-        totalPasses: match.totalPasses,
-      }
-      // Derive league from home team
-      const homeTeam = teams.value.find((t) => t.id === match.homeTeamId || String(t.id) === String(match.homeTeamId))
-      if (homeTeam) {
-        selectedLeagueId.value = homeTeam.leagueId
-      }
-    } catch (error) {
-      console.error('Failed to load match:', error)
-    }
-  }
-})
-
 const handleSubmit = async () => {
-  loading.value = true
   try {
     const payload = {
       homeTeamId: form.value.homeTeamId,
@@ -157,20 +151,17 @@ const handleSubmit = async () => {
       totalPasses: form.value.totalPasses || undefined,
     }
     if (isEdit.value) {
-      await matchAPI.updateMatch(route.params.id, payload)
+      await updateMutation.mutateAsync({ id: route.params.id, data: payload })
       toast.success('Match updated')
       router.push(`/matches/${route.params.id}`)
     } else {
-      await matchAPI.addMatch(payload)
+      await createMutation.mutateAsync(payload)
       toast.success('Match created')
       router.push('/matches')
     }
   } catch (error) {
     console.error('Failed to save match:', error)
-    const msg = error.response?.data?.detail || error.response?.data?.title || 'Failed to save match'
-    toast.error(msg)
-  } finally {
-    loading.value = false
+    toast.error(error.message || 'Failed to save match')
   }
 }
 </script>
