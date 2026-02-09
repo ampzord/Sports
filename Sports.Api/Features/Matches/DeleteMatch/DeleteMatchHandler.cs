@@ -11,7 +11,7 @@ public class DeleteMatchHandler(SportsDbContext db)
         DeleteMatchCommand command,
         CancellationToken cancellationToken)
     {
-        var match = await db.Matches.FindAsync(command.Id, cancellationToken);
+        var match = await db.Matches.FindAsync([command.Id], cancellationToken);
 
         if (match is null)
             return Error.NotFound("Match.NotFound", "Match not found");

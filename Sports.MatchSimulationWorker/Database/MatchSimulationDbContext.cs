@@ -15,6 +15,16 @@ public class MatchSimulationDbContext(DbContextOptions<MatchSimulationDbContext>
         modelBuilder.Entity<Match>(entity =>
         {
             entity.HasKey(m => m.Id);
+
+            entity.HasOne(m => m.HomeTeam)
+                .WithMany()
+                .HasForeignKey(m => m.HomeTeamId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(m => m.AwayTeam)
+                .WithMany()
+                .HasForeignKey(m => m.AwayTeamId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }

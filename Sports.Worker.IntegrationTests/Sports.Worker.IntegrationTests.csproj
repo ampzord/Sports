@@ -9,6 +9,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="../Sports.MatchSimulationWorker/Sports.MatchSimulationWorker.csproj" />
+		<ProjectReference Include="../Sports.Tests.Shared/Sports.Tests.Shared.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

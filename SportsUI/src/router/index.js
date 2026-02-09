@@ -12,6 +12,7 @@ import PlayerForm from '../components/players/PlayerForm.vue'
 import MatchList from '../components/matches/MatchList.vue'
 import MatchDetail from '../components/matches/MatchDetail.vue'
 import MatchForm from '../components/matches/MatchForm.vue'
+import NotFound from '../components/NotFound.vue'
 
 const routes = [
   { path: '/', redirect: '/home' },
@@ -36,6 +37,8 @@ const routes = [
   { path: '/matches/create', name: 'MatchCreate', component: MatchForm },
   { path: '/matches/:id', name: 'MatchDetail', component: MatchDetail },
   { path: '/matches/:id/edit', name: 'MatchEdit', component: MatchForm },
+
+  { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
 ]
 
 const router = createRouter({

@@ -15,7 +15,7 @@ public class UpdateTeamHandler(SportsDbContext db, TeamMapper mapper)
         UpdateTeamCommand command,
         CancellationToken cancellationToken)
     {
-        var team = await db.Teams.FindAsync(command.Id, cancellationToken);
+        var team = await db.Teams.FindAsync([command.Id], cancellationToken);
 
         if (team is null)
             return Error.NotFound("Team.NotFound", "Team not found");

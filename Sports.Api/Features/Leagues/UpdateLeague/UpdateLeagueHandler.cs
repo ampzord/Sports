@@ -16,7 +16,7 @@ public class UpdateLeagueHandler(SportsDbContext db, LeagueMapper mapper)
         UpdateLeagueCommand command,
         CancellationToken cancellationToken)
     {
-        var league = await db.Leagues.FindAsync(command.Id, cancellationToken);
+        var league = await db.Leagues.FindAsync([command.Id], cancellationToken);
 
         if (league is null)
             return Error.NotFound("League.NotFound", "League not found");

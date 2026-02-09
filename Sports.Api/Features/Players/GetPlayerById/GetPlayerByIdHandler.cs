@@ -14,7 +14,7 @@ public class GetPlayerByIdHandler(SportsDbContext db, PlayerMapper mapper)
         GetPlayerByIdQuery query,
         CancellationToken cancellationToken)
     {
-        var player = await db.Players.FindAsync(query.Id, cancellationToken);
+        var player = await db.Players.FindAsync([query.Id], cancellationToken);
 
         if (player is null)
             return Error.NotFound("Player.NotFound", "Player not found");

@@ -110,6 +110,11 @@
 
       <p v-if="matchRows.length === 0" class="p-6 text-gray-400 text-center">No matches found</p>
     </div>
+
+    <!-- Error state -->
+    <div v-if="isError" class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+      <p class="text-red-600 font-semibold">{{ matchError?.message || 'Failed to load matches. Please try again.' }}</p>
+    </div>
   </div>
 </template>
 
@@ -127,7 +132,7 @@ const router = useRouter()
 const deletingId = ref(null)
 const scrollEl = ref(null)
 
-const { data: matches, isLoading } = useMatches()
+const { data: matches, isLoading, isError, error: matchError } = useMatches()
 const { data: teams } = useTeams()
 const { data: leagues } = useLeagues()
 

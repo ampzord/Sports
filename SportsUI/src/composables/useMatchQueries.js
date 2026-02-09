@@ -91,18 +91,26 @@ export function useDeleteMatch() {
  * Spammable — clicking again just re-triggers the API
  * and resets the "no-change stop" condition.
  */
-export function useSimulateWithPolling(interval = 2000) {
+export function useSimulateWithPolling(interval = 2000, maxPolls = 30) {
   const qc = useQueryClient()
   const polling = ref(false)
   let timer = null
+  let pollCount = 0
 
   const stopPolling = () => {
     clearInterval(timer)
     timer = null
     polling.value = false
+    pollCount = 0
   }
 
   const poll = async () => {
+    pollCount++
+    if (pollCount >= maxPolls) {
+      stopPolling()
+      return
+    }
+
     try {
       const fresh = await matchService.getMatches()
       const cached = qc.getQueryData(matchKeys.all) ?? []
@@ -128,9 +136,9 @@ export function useSimulateWithPolling(interval = 2000) {
   }
 
   const startPolling = () => {
-    // If already polling, keep going (spammable)
     if (timer) return
     polling.value = true
+    pollCount = 0
     timer = setInterval(poll, interval)
   }
 

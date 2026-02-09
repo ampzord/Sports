@@ -82,6 +82,17 @@
 
       <p v-if="leagueRows.length === 0" class="p-6 text-gray-400 text-center">No leagues found</p>
     </div>
+
+    <!-- Error state -->
+    <div v-if="error" class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+      <p class="text-red-600 font-semibold">{{ error }}</p>
+      <button
+        @click="fetchLeagues"
+        class="mt-3 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded font-semibold transition cursor-pointer"
+      >
+        Retry
+      </button>
+    </div>
   </div>
 </template>
 
@@ -96,6 +107,7 @@ const ROW_HEIGHT = 52
 const toast = useToast()
 const leagues = ref([])
 const loading = ref(true)
+const error = ref(null)
 const deletingId = ref(null)
 const scrollEl = ref(null)
 
@@ -112,10 +124,12 @@ const virtualizer = useVirtualizer({
 
 const fetchLeagues = async () => {
   try {
+    error.value = null
     const response = await leagueAPI.getLeagues()
     leagues.value = response.data
-  } catch (error) {
-    console.error('Failed to fetch leagues:', error)
+  } catch (err) {
+    console.error('Failed to fetch leagues:', err)
+    error.value = 'Failed to load leagues. Please try again.'
   } finally {
     loading.value = false
   }

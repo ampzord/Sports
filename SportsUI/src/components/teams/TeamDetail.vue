@@ -1,15 +1,23 @@
 <template>
   <div class="p-8">
+    <!-- Loading state -->
+    <div v-if="loading" class="space-y-4">
+      <div class="h-8 w-48 bg-gray-200 rounded animate-pulse"></div>
+      <div class="bg-white rounded-lg shadow p-6 border border-gray-200 space-y-3">
+        <div class="h-5 w-32 bg-gray-200 rounded animate-pulse"></div>
+        <div class="h-4 w-full bg-gray-200 rounded animate-pulse"></div>
+        <div class="h-4 w-3/4 bg-gray-200 rounded animate-pulse"></div>
+      </div>
+    </div>
+
     <!-- Breadcrumb -->
-    <div class="mb-6 text-sm">
-      <router-link to="/teams" class="text-blue-600 hover:text-blue-800 font-semibold"
-        >Teams</router-link
-      >
+    <div v-if="!loading" class="mb-6 text-sm">
+      <router-link to="/teams" class="text-blue-600 hover:text-blue-800 font-semibold">Teams</router-link>
       <span class="mx-2 text-gray-400">/</span>
       <span class="text-gray-600">{{ team?.name }}</span>
     </div>
 
-    <div class="flex justify-between items-center mb-6">
+    <div v-if="!loading" class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold text-blue-600">{{ team?.name }}</h1>
       <div class="flex gap-3">
         <router-link
@@ -28,20 +36,17 @@
     </div>
 
     <!-- League Info -->
-    <div v-if="team?.leagueId" class="mb-6">
+    <div v-if="!loading && team?.leagueId" class="mb-6">
       <p class="text-gray-600">
         League:
-        <router-link
-          :to="`/leagues/${team.leagueId}`"
-          class="text-blue-600 hover:text-blue-800 font-semibold"
-        >
+        <router-link :to="`/leagues/${team.leagueId}`" class="text-blue-600 hover:text-blue-800 font-semibold">
           {{ leagueName }}
         </router-link>
       </p>
     </div>
 
     <!-- Players in Team -->
-    <div class="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+    <div v-if="!loading" class="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
       <div class="flex justify-between items-center p-6 border-b border-gray-200">
         <h2 class="text-lg font-bold text-blue-600">Players in {{ team?.name }}</h2>
         <router-link
@@ -60,16 +65,9 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="player in players"
-            :key="player.id"
-            class="border-t border-gray-200 hover:bg-blue-50 transition"
-          >
+          <tr v-for="player in players" :key="player.id" class="border-t border-gray-200 hover:bg-blue-50 transition">
             <td class="px-6 py-4">
-              <router-link
-                :to="`/players/${player.id}`"
-                class="text-blue-600 hover:text-blue-800 font-semibold"
-              >
+              <router-link :to="`/players/${player.id}`" class="text-blue-600 hover:text-blue-800 font-semibold">
                 {{ player.name }}
               </router-link>
             </td>
@@ -91,9 +89,7 @@
           </tr>
         </tbody>
       </table>
-      <p v-if="players.length === 0" class="p-6 text-gray-400 text-center">
-        No players in this team yet
-      </p>
+      <p v-if="players.length === 0" class="p-6 text-gray-400 text-center">No players in this team yet</p>
     </div>
   </div>
 </template>
@@ -111,10 +107,11 @@ const teamId = route.params.id
 const team = ref(null)
 const leagueName = ref('')
 const players = ref([])
+const loading = ref(true)
 
 onMounted(async () => {
-  await loadTeam()
-  await loadPlayers()
+  await Promise.all([loadTeam(), loadPlayers()])
+  loading.value = false
 })
 
 const loadTeam = async () => {
@@ -147,8 +144,7 @@ const handleDelete = async () => {
       router.push('/teams')
     } catch (error) {
       console.error('Failed to delete team:', error)
-      const msg =
-        error.response?.data?.detail || error.response?.data?.title || 'Failed to delete team'
+      const msg = error.response?.data?.detail || error.response?.data?.title || 'Failed to delete team'
       toast.error(msg)
     }
   }
@@ -162,8 +158,7 @@ const deletePlayer = async (id) => {
       await loadPlayers()
     } catch (error) {
       console.error('Failed to delete player:', error)
-      const msg =
-        error.response?.data?.detail || error.response?.data?.title || 'Failed to delete player'
+      const msg = error.response?.data?.detail || error.response?.data?.title || 'Failed to delete player'
       toast.error(msg)
     }
   }

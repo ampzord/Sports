@@ -1,28 +1,24 @@
 using System.Net.Http.Json;
-using Sports.Api.Features.Leagues._Shared.Responses;
-using Sports.Api.Features.Leagues.AddLeague;
 using Sports.Api.Features.Teams._Shared.Responses;
 using Sports.Api.Features.Teams.AddTeam;
 using Sports.Api.IntegrationTests.Infrastructure;
+using Sports.Tests.Shared;
 
 namespace Sports.Api.IntegrationTests.Endpoints;
 
-[Collection("Api")]
-public class TeamEndpointsTests(SportsApiFactory factory) : IAsyncLifetime
+public class TeamEndpointsTests(SportsApiFactory factory) : IntegrationTestBase(factory)
 {
-    private readonly HttpClient _client = factory.CreateClient();
-
-    public Task InitializeAsync() => factory.ResetDatabaseAsync();
-    public Task DisposeAsync() => Task.CompletedTask;
-
     [Fact]
     public async Task GivenValidRequest_WhenAddTeam_ThenReturnsCreated()
     {
-        var league = await CreateLeagueAsync("Premier League");
+        // Arrange
+        var league = await Client.CreateLeagueAsync("Premier League");
 
-        var response = await _client.PostAsJsonAsync(
+        // Act
+        var response = await Client.PostAsJsonAsync(
             "/api/teams", new AddTeamRequest(league.Id, "Arsenal"));
 
+        // Assert
         response.Should().Be201Created();
 
         var team = await response.Content.ReadFromJsonAsync<TeamResponse>();
@@ -34,11 +30,14 @@ public class TeamEndpointsTests(SportsApiFactory factory) : IAsyncLifetime
     [Fact]
     public async Task GivenExistingTeam_WhenGetById_ThenReturnsTeam()
     {
-        var league = await CreateLeagueAsync("La Liga");
-        var created = await CreateTeamAsync(league.Id, "Barcelona");
+        // Arrange
+        var league = await Client.CreateLeagueAsync("La Liga");
+        var created = await Client.CreateTeamAsync(league.Id, "Barcelona");
 
-        var response = await _client.GetAsync($"/api/teams/{created.Id}");
+        // Act
+        var response = await Client.GetAsync($"/api/teams/{created.Id}");
 
+        // Assert
         response.Should().Be200Ok();
         var team = await response.Content.ReadFromJsonAsync<TeamResponse>();
         team!.Name.Should().Be("Barcelona");
@@ -47,12 +46,15 @@ public class TeamEndpointsTests(SportsApiFactory factory) : IAsyncLifetime
     [Fact]
     public async Task GivenTeamsInLeague_WhenGetByLeagueId_ThenReturnsFilteredTeams()
     {
-        var league = await CreateLeagueAsync("Serie A");
-        await CreateTeamAsync(league.Id, "AC Milan");
-        await CreateTeamAsync(league.Id, "Inter Milan");
+        // Arrange
+        var league = await Client.CreateLeagueAsync("Serie A");
+        await Client.CreateTeamAsync(league.Id, "AC Milan");
+        await Client.CreateTeamAsync(league.Id, "Inter Milan");
 
-        var response = await _client.GetAsync($"/api/teams?leagueId={league.Id}");
+        // Act
+        var response = await Client.GetAsync($"/api/teams?leagueId={league.Id}");
 
+        // Assert
         response.Should().Be200Ok();
         var teams = await response.Content.ReadFromJsonAsync<List<TeamResponse>>();
         teams.Should().HaveCount(2);
@@ -62,13 +64,16 @@ public class TeamEndpointsTests(SportsApiFactory factory) : IAsyncLifetime
     [Fact]
     public async Task GivenExistingTeam_WhenUpdate_ThenReturnsUpdated()
     {
-        var league = await CreateLeagueAsync("Bundesliga");
-        var created = await CreateTeamAsync(league.Id, "Original Team");
+        // Arrange
+        var league = await Client.CreateLeagueAsync("Bundesliga");
+        var created = await Client.CreateTeamAsync(league.Id, "Original Team");
 
-        var response = await _client.PutAsJsonAsync(
+        // Act
+        var response = await Client.PutAsJsonAsync(
             $"/api/teams/{created.Id}",
             new { Name = "Updated Team", LeagueId = league.Id });
 
+        // Assert
         response.Should().Be200Ok();
         var updated = await response.Content.ReadFromJsonAsync<TeamResponse>();
         updated!.Name.Should().Be("Updated Team");
@@ -77,33 +82,24 @@ public class TeamEndpointsTests(SportsApiFactory factory) : IAsyncLifetime
     [Fact]
     public async Task GivenExistingTeam_WhenDelete_ThenReturnsNoContent()
     {
-        var league = await CreateLeagueAsync("Ligue 1");
-        var created = await CreateTeamAsync(league.Id, "PSG");
+        // Arrange
+        var league = await Client.CreateLeagueAsync("Ligue 1");
+        var created = await Client.CreateTeamAsync(league.Id, "PSG");
 
-        var response = await _client.DeleteAsync($"/api/teams/{created.Id}");
+        // Act
+        var response = await Client.DeleteAsync($"/api/teams/{created.Id}");
 
+        // Assert
         response.Should().Be204NoContent();
     }
 
     [Fact]
     public async Task GivenNonExistentId_WhenGetById_ThenReturnsNotFound()
     {
-        var response = await _client.GetAsync("/api/teams/99999");
+        // Act
+        var response = await Client.GetAsync("/api/teams/99999");
 
+        // Assert
         response.Should().Be404NotFound();
-    }
-
-    private async Task<LeagueResponse> CreateLeagueAsync(string name)
-    {
-        var response = await _client.PostAsJsonAsync(
-            "/api/leagues", new AddLeagueRequest(name));
-        return (await response.Content.ReadFromJsonAsync<LeagueResponse>())!;
-    }
-
-    private async Task<TeamResponse> CreateTeamAsync(int leagueId, string name)
-    {
-        var response = await _client.PostAsJsonAsync(
-            "/api/teams", new AddTeamRequest(leagueId, name));
-        return (await response.Content.ReadFromJsonAsync<TeamResponse>())!;
     }
 }

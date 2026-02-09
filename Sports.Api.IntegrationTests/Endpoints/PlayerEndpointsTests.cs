@@ -1,42 +1,29 @@
 using System.Net.Http.Json;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Sports.Api.Features.Leagues._Shared.Responses;
-using Sports.Api.Features.Leagues.AddLeague;
 using Sports.Api.Features.Players._Shared.Responses;
-using Sports.Api.Features.Teams._Shared.Responses;
-using Sports.Api.Features.Teams.AddTeam;
 using Sports.Api.IntegrationTests.Infrastructure;
 using Sports.Shared.Entities;
+using Sports.Tests.Shared;
 
 namespace Sports.Api.IntegrationTests.Endpoints;
 
-[Collection("Api")]
-public class PlayerEndpointsTests(SportsApiFactory factory) : IAsyncLifetime
+public class PlayerEndpointsTests(SportsApiFactory factory) : IntegrationTestBase(factory)
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true,
-        Converters = { new JsonStringEnumConverter() }
-    };
-
-    private readonly HttpClient _client = factory.CreateClient();
-
-    public Task InitializeAsync() => factory.ResetDatabaseAsync();
-    public Task DisposeAsync() => Task.CompletedTask;
-
     [Fact]
     public async Task GivenValidRequest_WhenAddPlayer_ThenReturnsCreated()
     {
-        var team = await CreateTeamWithLeagueAsync();
+        // Arrange
+        var league = await Client.CreateLeagueAsync("Premier League");
+        var team = await Client.CreateTeamAsync(league.Id, "Arsenal");
 
-        var response = await _client.PostAsJsonAsync(
+        // Act
+        var response = await Client.PostAsJsonAsync(
             "/api/players",
             new { TeamId = team.Id, Name = "Bukayo Saka", Position = "RW" });
 
+        // Assert
         response.Should().Be201Created();
 
-        var player = await response.Content.ReadFromJsonAsync<PlayerResponse>(JsonOptions);
+        var player = await response.Content.ReadFromJsonAsync<PlayerResponse>(ApiHelper.JsonOptions);
         player.Should().NotBeNull();
         player!.Name.Should().Be("Bukayo Saka");
         player.Position.Should().Be(PlayerPosition.RW);
@@ -46,27 +33,35 @@ public class PlayerEndpointsTests(SportsApiFactory factory) : IAsyncLifetime
     [Fact]
     public async Task GivenExistingPlayer_WhenGetById_ThenReturnsPlayer()
     {
-        var team = await CreateTeamWithLeagueAsync();
-        var created = await CreatePlayerAsync(team.Id, "Declan Rice", PlayerPosition.CDM);
+        // Arrange
+        var league = await Client.CreateLeagueAsync("Premier League");
+        var team = await Client.CreateTeamAsync(league.Id, "Arsenal");
+        var created = await Client.CreatePlayerAsync(team.Id, "Declan Rice", PlayerPosition.CDM);
 
-        var response = await _client.GetAsync($"/api/players/{created.Id}");
+        // Act
+        var response = await Client.GetAsync($"/api/players/{created.Id}");
 
+        // Assert
         response.Should().Be200Ok();
-        var player = await response.Content.ReadFromJsonAsync<PlayerResponse>(JsonOptions);
+        var player = await response.Content.ReadFromJsonAsync<PlayerResponse>(ApiHelper.JsonOptions);
         player!.Name.Should().Be("Declan Rice");
     }
 
     [Fact]
     public async Task GivenPlayersInTeam_WhenGetByTeamId_ThenReturnsFilteredPlayers()
     {
-        var team = await CreateTeamWithLeagueAsync();
-        await CreatePlayerAsync(team.Id, "Martin Odegaard", PlayerPosition.CAM);
-        await CreatePlayerAsync(team.Id, "William Saliba", PlayerPosition.CB);
+        // Arrange
+        var league = await Client.CreateLeagueAsync("Premier League");
+        var team = await Client.CreateTeamAsync(league.Id, "Arsenal");
+        await Client.CreatePlayerAsync(team.Id, "Martin Odegaard", PlayerPosition.CAM);
+        await Client.CreatePlayerAsync(team.Id, "William Saliba", PlayerPosition.CB);
 
-        var response = await _client.GetAsync($"/api/players?teamId={team.Id}");
+        // Act
+        var response = await Client.GetAsync($"/api/players?teamId={team.Id}");
 
+        // Assert
         response.Should().Be200Ok();
-        var players = await response.Content.ReadFromJsonAsync<List<PlayerResponse>>(JsonOptions);
+        var players = await response.Content.ReadFromJsonAsync<List<PlayerResponse>>(ApiHelper.JsonOptions);
         players.Should().HaveCount(2);
         players!.Should().AllSatisfy(p => p.TeamId.Should().Be(team.Id));
     }
@@ -74,15 +69,19 @@ public class PlayerEndpointsTests(SportsApiFactory factory) : IAsyncLifetime
     [Fact]
     public async Task GivenExistingPlayer_WhenUpdate_ThenReturnsUpdated()
     {
-        var team = await CreateTeamWithLeagueAsync();
-        var created = await CreatePlayerAsync(team.Id, "Original Player", PlayerPosition.LB);
+        // Arrange
+        var league = await Client.CreateLeagueAsync("Premier League");
+        var team = await Client.CreateTeamAsync(league.Id, "Arsenal");
+        var created = await Client.CreatePlayerAsync(team.Id, "Original Player", PlayerPosition.LB);
 
-        var response = await _client.PutAsJsonAsync(
+        // Act
+        var response = await Client.PutAsJsonAsync(
             $"/api/players/{created.Id}",
             new { Name = "Updated Player", Position = "RB", TeamId = team.Id });
 
+        // Assert
         response.Should().Be200Ok();
-        var updated = await response.Content.ReadFromJsonAsync<PlayerResponse>(JsonOptions);
+        var updated = await response.Content.ReadFromJsonAsync<PlayerResponse>(ApiHelper.JsonOptions);
         updated!.Name.Should().Be("Updated Player");
         updated.Position.Should().Be(PlayerPosition.RB);
     }
@@ -90,38 +89,25 @@ public class PlayerEndpointsTests(SportsApiFactory factory) : IAsyncLifetime
     [Fact]
     public async Task GivenExistingPlayer_WhenDelete_ThenReturnsNoContent()
     {
-        var team = await CreateTeamWithLeagueAsync();
-        var created = await CreatePlayerAsync(team.Id, "To Delete Player", PlayerPosition.GK);
+        // Arrange
+        var league = await Client.CreateLeagueAsync("Premier League");
+        var team = await Client.CreateTeamAsync(league.Id, "Arsenal");
+        var created = await Client.CreatePlayerAsync(team.Id, "Aaron Ramsdale", PlayerPosition.GK);
 
-        var response = await _client.DeleteAsync($"/api/players/{created.Id}");
+        // Act
+        var response = await Client.DeleteAsync($"/api/players/{created.Id}");
 
+        // Assert
         response.Should().Be204NoContent();
     }
 
     [Fact]
     public async Task GivenNonExistentId_WhenGetById_ThenReturnsNotFound()
     {
-        var response = await _client.GetAsync("/api/players/99999");
+        // Act
+        var response = await Client.GetAsync("/api/players/99999");
 
+        // Assert
         response.Should().Be404NotFound();
-    }
-
-    private async Task<TeamResponse> CreateTeamWithLeagueAsync()
-    {
-        var leagueResponse = await _client.PostAsJsonAsync(
-            "/api/leagues", new AddLeagueRequest("Premier League"));
-        var league = (await leagueResponse.Content.ReadFromJsonAsync<LeagueResponse>())!;
-
-        var teamResponse = await _client.PostAsJsonAsync(
-            "/api/teams", new AddTeamRequest(league.Id, "Arsenal"));
-        return (await teamResponse.Content.ReadFromJsonAsync<TeamResponse>())!;
-    }
-
-    private async Task<PlayerResponse> CreatePlayerAsync(int teamId, string name, PlayerPosition position)
-    {
-        var response = await _client.PostAsJsonAsync(
-            "/api/players",
-            new { TeamId = teamId, Name = name, Position = position.ToString() });
-        return (await response.Content.ReadFromJsonAsync<PlayerResponse>(JsonOptions))!;
     }
 }

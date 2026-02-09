@@ -1,13 +1,23 @@
 <template>
   <div class="p-8">
+    <!-- Loading state -->
+    <div v-if="loading" class="space-y-4">
+      <div class="h-8 w-48 bg-gray-200 rounded animate-pulse"></div>
+      <div class="bg-white rounded-lg shadow p-6 border border-gray-200 space-y-3">
+        <div class="h-5 w-32 bg-gray-200 rounded animate-pulse"></div>
+        <div class="h-4 w-full bg-gray-200 rounded animate-pulse"></div>
+        <div class="h-4 w-3/4 bg-gray-200 rounded animate-pulse"></div>
+      </div>
+    </div>
+
     <!-- Breadcrumb -->
-    <div class="mb-6 text-sm">
+    <div v-if="!loading" class="mb-6 text-sm">
       <router-link to="/leagues" class="text-blue-600 hover:text-blue-800 font-semibold">Leagues</router-link>
       <span class="mx-2 text-gray-400">/</span>
       <span class="text-gray-600">{{ league?.name }}</span>
     </div>
 
-    <div class="flex justify-between items-center mb-6">
+    <div v-if="!loading" class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold text-blue-600">{{ league?.name }}</h1>
       <div class="flex gap-3">
         <router-link
@@ -26,7 +36,7 @@
     </div>
 
     <!-- Teams in League -->
-    <div class="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+    <div v-if="!loading" class="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
       <div class="flex justify-between items-center p-6 border-b border-gray-200">
         <h2 class="text-lg font-bold text-blue-600">Teams in {{ league?.name }}</h2>
         <router-link
@@ -84,9 +94,11 @@ const router = useRouter()
 const leagueId = route.params.id
 const league = ref(null)
 const teams = ref([])
+const loading = ref(true)
 
 onMounted(async () => {
   await Promise.all([loadLeague(), loadTeams()])
+  loading.value = false
 })
 
 const loadLeague = async () => {

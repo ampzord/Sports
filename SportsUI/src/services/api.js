@@ -5,10 +5,7 @@ export const api = axios.create({
 })
 
 api.interceptors.response.use(
-  (response) => {
-    console.log('API Response:', response.config.url, response.data)
-    return response
-  },
+  (response) => response,
   (error) => {
     console.error('API Error:', error.config?.url, error.message, error.response?.data)
     return Promise.reject(error)
@@ -37,13 +34,4 @@ export const playerAPI = {
   addPlayer: (data) => api.post('/players', data),
   updatePlayer: (id, data) => api.put(`/players/${id}`, data),
   deletePlayer: (id) => api.delete(`/players/${id}`),
-}
-
-export const matchAPI = {
-  getMatches: (params) => api.get('/matches', { params }),
-  getMatchById: (id) => api.get(`/matches/${id}`),
-  addMatch: (data) => api.post('/matches', data),
-  updateMatch: (id, data) => api.put(`/matches/${id}`, data),
-  deleteMatch: (id) => api.delete(`/matches/${id}`),
-  simulateMatches: (params) => api.post('/matches/simulate', null, { params }),
 }

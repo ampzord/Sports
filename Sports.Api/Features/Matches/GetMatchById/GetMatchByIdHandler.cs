@@ -2,7 +2,6 @@ namespace Sports.Api.Features.Matches.GetMatchById;
 
 using Sports.Api.Features.Matches._Shared;
 using Sports.Api.Features.Matches._Shared.Responses;
-
 using ErrorOr;
 using MediatR;
 using Sports.Api.Database;
@@ -14,7 +13,7 @@ public class GetMatchByIdHandler(SportsDbContext db, MatchMapper mapper)
         GetMatchByIdQuery query,
         CancellationToken cancellationToken)
     {
-        var match = await db.Matches.FindAsync(query.Id, cancellationToken);
+        var match = await db.Matches.FindAsync([query.Id], cancellationToken);
 
         if (match is null)
             return Error.NotFound("Match.NotFound", "Match not found");

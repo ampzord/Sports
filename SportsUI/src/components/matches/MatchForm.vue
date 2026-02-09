@@ -106,17 +106,17 @@ const createMutation = useCreateMatch()
 const updateMutation = useUpdateMatch()
 const loading = computed(() => createMutation.isPending.value || updateMutation.isPending.value)
 
-// When existing match loads, populate form
+// When existing match loads (and teams are ready), populate form
 watch(
-  existingMatch,
-  (match) => {
-    if (match) {
+  [existingMatch, teams],
+  ([match, teamList]) => {
+    if (match && teamList?.length) {
       form.value = {
         homeTeamId: match.homeTeamId,
         awayTeamId: match.awayTeamId,
         totalPasses: match.totalPasses,
       }
-      const homeTeam = (teams.value || []).find((t) => t.id === match.homeTeamId || String(t.id) === String(match.homeTeamId))
+      const homeTeam = teamList.find((t) => t.id === match.homeTeamId || String(t.id) === String(match.homeTeamId))
       if (homeTeam) {
         selectedLeagueId.value = homeTeam.leagueId
       }
@@ -148,7 +148,7 @@ const handleSubmit = async () => {
     const payload = {
       homeTeamId: form.value.homeTeamId,
       awayTeamId: form.value.awayTeamId,
-      totalPasses: form.value.totalPasses || undefined,
+      totalPasses: form.value.totalPasses ?? undefined,
     }
     if (isEdit.value) {
       await updateMutation.mutateAsync({ id: route.params.id, data: payload })

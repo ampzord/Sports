@@ -96,6 +96,17 @@
 
       <p v-if="playerRows.length === 0" class="p-6 text-gray-400 text-center">No players found</p>
     </div>
+
+    <!-- Error state -->
+    <div v-if="error" class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+      <p class="text-red-600 font-semibold">{{ error }}</p>
+      <button
+        @click="fetchPlayers"
+        class="mt-3 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded font-semibold transition cursor-pointer"
+      >
+        Retry
+      </button>
+    </div>
   </div>
 </template>
 
@@ -111,6 +122,7 @@ const toast = useToast()
 const players = ref([])
 const teams = ref([])
 const loading = ref(true)
+const error = ref(null)
 const deletingId = ref(null)
 const scrollEl = ref(null)
 
@@ -127,11 +139,13 @@ const virtualizer = useVirtualizer({
 
 const fetchPlayers = async () => {
   try {
+    error.value = null
     const [playersRes, teamsRes] = await Promise.all([playerAPI.getPlayers(), teamAPI.getTeams()])
     players.value = playersRes.data
     teams.value = teamsRes.data
-  } catch (error) {
-    console.error('Failed to fetch players:', error)
+  } catch (err) {
+    console.error('Failed to fetch players:', err)
+    error.value = 'Failed to load players. Please try again.'
   } finally {
     loading.value = false
   }

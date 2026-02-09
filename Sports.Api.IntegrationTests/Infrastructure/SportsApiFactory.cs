@@ -5,13 +5,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using RabbitMQ.Client;
 using Sports.Api.Database;
+using Sports.Tests.Shared;
 using Testcontainers.MsSql;
 
 namespace Sports.Api.IntegrationTests.Infrastructure;
 
 public class SportsApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly MsSqlContainer _container = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-latest")
+    private readonly MsSqlContainer _container = new MsSqlBuilder(DatabaseHelper.SqlServerImage)
         .Build();
 
     public async Task InitializeAsync()
@@ -40,17 +41,7 @@ public class SportsApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
         using var scope = Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<SportsDbContext>();
-        await db.Database.ExecuteSqlRawAsync(
-            """
-            DELETE FROM Matches;
-            DELETE FROM Players;
-            DELETE FROM Teams;
-            DELETE FROM Leagues;
-            DBCC CHECKIDENT ('Matches', RESEED, 0);
-            DBCC CHECKIDENT ('Players', RESEED, 0);
-            DBCC CHECKIDENT ('Teams', RESEED, 0);
-            DBCC CHECKIDENT ('Leagues', RESEED, 0);
-            """);
+        await db.Database.ResetAsync();
     }
 
     async Task IAsyncLifetime.DisposeAsync()

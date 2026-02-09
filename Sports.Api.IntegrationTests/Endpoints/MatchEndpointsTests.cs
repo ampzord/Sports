@@ -1,30 +1,26 @@
 using System.Net.Http.Json;
-using Sports.Api.Features.Leagues._Shared.Responses;
-using Sports.Api.Features.Leagues.AddLeague;
 using Sports.Api.Features.Matches._Shared.Responses;
 using Sports.Api.Features.Matches.AddMatch;
-using Sports.Api.Features.Teams._Shared.Responses;
-using Sports.Api.Features.Teams.AddTeam;
 using Sports.Api.IntegrationTests.Infrastructure;
+using Sports.Tests.Shared;
 
 namespace Sports.Api.IntegrationTests.Endpoints;
 
-[Collection("Api")]
-public class MatchEndpointsTests(SportsApiFactory factory) : IAsyncLifetime
+public class MatchEndpointsTests(SportsApiFactory factory) : IntegrationTestBase(factory)
 {
-    private readonly HttpClient _client = factory.CreateClient();
-
-    public Task InitializeAsync() => factory.ResetDatabaseAsync();
-    public Task DisposeAsync() => Task.CompletedTask;
-
     [Fact]
     public async Task GivenValidRequest_WhenAddMatch_ThenReturnsCreated()
     {
-        var (league, home, away) = await CreateMatchPrerequisitesAsync();
+        // Arrange
+        var league = await Client.CreateLeagueAsync("Premier League");
+        var home = await Client.CreateTeamAsync(league.Id, "Arsenal");
+        var away = await Client.CreateTeamAsync(league.Id, "Chelsea");
 
-        var response = await _client.PostAsJsonAsync(
+        // Act
+        var response = await Client.PostAsJsonAsync(
             "/api/matches", new AddMatchRequest(league.Id, home.Id, away.Id));
 
+        // Assert
         response.Should().Be201Created();
 
         var match = await response.Content.ReadFromJsonAsync<MatchResponse>();
@@ -37,11 +33,16 @@ public class MatchEndpointsTests(SportsApiFactory factory) : IAsyncLifetime
     [Fact]
     public async Task GivenExistingMatch_WhenGetById_ThenReturnsMatch()
     {
-        var (league, home, away) = await CreateMatchPrerequisitesAsync();
-        var created = await CreateMatchAsync(league.Id, home.Id, away.Id);
+        // Arrange
+        var league = await Client.CreateLeagueAsync("Premier League");
+        var home = await Client.CreateTeamAsync(league.Id, "Arsenal");
+        var away = await Client.CreateTeamAsync(league.Id, "Chelsea");
+        var created = await Client.CreateMatchAsync(league.Id, home.Id, away.Id);
 
-        var response = await _client.GetAsync($"/api/matches/{created.Id}");
+        // Act
+        var response = await Client.GetAsync($"/api/matches/{created.Id}");
 
+        // Assert
         response.Should().Be200Ok();
         var match = await response.Content.ReadFromJsonAsync<MatchResponse>();
         match!.Id.Should().Be(created.Id);
@@ -50,11 +51,16 @@ public class MatchEndpointsTests(SportsApiFactory factory) : IAsyncLifetime
     [Fact]
     public async Task GivenMatchesInLeague_WhenGetByLeagueId_ThenReturnsFilteredMatches()
     {
-        var (league, home, away) = await CreateMatchPrerequisitesAsync();
-        await CreateMatchAsync(league.Id, home.Id, away.Id);
+        // Arrange
+        var league = await Client.CreateLeagueAsync("Premier League");
+        var home = await Client.CreateTeamAsync(league.Id, "Arsenal");
+        var away = await Client.CreateTeamAsync(league.Id, "Chelsea");
+        await Client.CreateMatchAsync(league.Id, home.Id, away.Id);
 
-        var response = await _client.GetAsync($"/api/matches?leagueId={league.Id}");
+        // Act
+        var response = await Client.GetAsync($"/api/matches?leagueId={league.Id}");
 
+        // Assert
         response.Should().Be200Ok();
         var matches = await response.Content.ReadFromJsonAsync<List<MatchResponse>>();
         matches.Should().HaveCount(1);
@@ -63,13 +69,18 @@ public class MatchEndpointsTests(SportsApiFactory factory) : IAsyncLifetime
     [Fact]
     public async Task GivenExistingMatch_WhenUpdate_ThenReturnsUpdated()
     {
-        var (league, home, away) = await CreateMatchPrerequisitesAsync();
-        var created = await CreateMatchAsync(league.Id, home.Id, away.Id);
+        // Arrange
+        var league = await Client.CreateLeagueAsync("Premier League");
+        var home = await Client.CreateTeamAsync(league.Id, "Arsenal");
+        var away = await Client.CreateTeamAsync(league.Id, "Chelsea");
+        var created = await Client.CreateMatchAsync(league.Id, home.Id, away.Id);
 
-        var response = await _client.PutAsJsonAsync(
+        // Act
+        var response = await Client.PutAsJsonAsync(
             $"/api/matches/{created.Id}",
             new { HomeTeamId = away.Id, AwayTeamId = home.Id, TotalPasses = 500 });
 
+        // Assert
         response.Should().Be200Ok();
         var updated = await response.Content.ReadFromJsonAsync<MatchResponse>();
         updated!.HomeTeamId.Should().Be(away.Id);
@@ -80,43 +91,95 @@ public class MatchEndpointsTests(SportsApiFactory factory) : IAsyncLifetime
     [Fact]
     public async Task GivenExistingMatch_WhenDelete_ThenReturnsNoContent()
     {
-        var (league, home, away) = await CreateMatchPrerequisitesAsync();
-        var created = await CreateMatchAsync(league.Id, home.Id, away.Id);
+        // Arrange
+        var league = await Client.CreateLeagueAsync("Premier League");
+        var home = await Client.CreateTeamAsync(league.Id, "Arsenal");
+        var away = await Client.CreateTeamAsync(league.Id, "Chelsea");
+        var created = await Client.CreateMatchAsync(league.Id, home.Id, away.Id);
 
-        var response = await _client.DeleteAsync($"/api/matches/{created.Id}");
+        // Act
+        var response = await Client.DeleteAsync($"/api/matches/{created.Id}");
 
+        // Assert
         response.Should().Be204NoContent();
     }
 
     [Fact]
     public async Task GivenNonExistentId_WhenGetById_ThenReturnsNotFound()
     {
-        var response = await _client.GetAsync("/api/matches/99999");
+        // Act
+        var response = await Client.GetAsync("/api/matches/99999");
 
+        // Assert
         response.Should().Be404NotFound();
     }
 
-    private async Task<(LeagueResponse League, TeamResponse Home, TeamResponse Away)> CreateMatchPrerequisitesAsync()
+    [Fact]
+    public async Task GivenSameHomeAndAwayTeam_WhenAddMatch_ThenReturnsBadRequest()
     {
-        var leagueResponse = await _client.PostAsJsonAsync(
-            "/api/leagues", new AddLeagueRequest("Premier League"));
-        var league = (await leagueResponse.Content.ReadFromJsonAsync<LeagueResponse>())!;
+        // Arrange
+        var league = await Client.CreateLeagueAsync("Premier League");
+        var team = await Client.CreateTeamAsync(league.Id, "Arsenal");
 
-        var homeResponse = await _client.PostAsJsonAsync(
-            "/api/teams", new AddTeamRequest(league.Id, "Arsenal"));
-        var home = (await homeResponse.Content.ReadFromJsonAsync<TeamResponse>())!;
+        // Act
+        var response = await Client.PostAsJsonAsync(
+            "/api/matches", new AddMatchRequest(league.Id, team.Id, team.Id));
 
-        var awayResponse = await _client.PostAsJsonAsync(
-            "/api/teams", new AddTeamRequest(league.Id, "Chelsea"));
-        var away = (await awayResponse.Content.ReadFromJsonAsync<TeamResponse>())!;
-
-        return (league, home, away);
+        // Assert
+        response.Should().Be400BadRequest();
     }
 
-    private async Task<MatchResponse> CreateMatchAsync(int leagueId, int homeTeamId, int awayTeamId)
+    [Fact]
+    public async Task GivenTeamsFromDifferentLeagues_WhenAddMatch_ThenReturnsBadRequest()
     {
-        var response = await _client.PostAsJsonAsync(
-            "/api/matches", new AddMatchRequest(leagueId, homeTeamId, awayTeamId));
-        return (await response.Content.ReadFromJsonAsync<MatchResponse>())!;
+        // Arrange
+        var premierLeague = await Client.CreateLeagueAsync("Premier League");
+        var laLiga = await Client.CreateLeagueAsync("La Liga");
+        var arsenal = await Client.CreateTeamAsync(premierLeague.Id, "Arsenal");
+        var barcelona = await Client.CreateTeamAsync(laLiga.Id, "Barcelona");
+
+        // Act
+        var response = await Client.PostAsJsonAsync(
+            "/api/matches", new AddMatchRequest(premierLeague.Id, arsenal.Id, barcelona.Id));
+
+        // Assert
+        response.Should().Be400BadRequest();
+    }
+
+    [Fact]
+    public async Task GivenTeamsFromDifferentLeagues_WhenUpdateMatch_ThenReturnsBadRequest()
+    {
+        // Arrange
+        var premierLeague = await Client.CreateLeagueAsync("Premier League");
+        var laLiga = await Client.CreateLeagueAsync("La Liga");
+        var arsenal = await Client.CreateTeamAsync(premierLeague.Id, "Arsenal");
+        var chelsea = await Client.CreateTeamAsync(premierLeague.Id, "Chelsea");
+        var barcelona = await Client.CreateTeamAsync(laLiga.Id, "Barcelona");
+        var created = await Client.CreateMatchAsync(premierLeague.Id, arsenal.Id, chelsea.Id);
+
+        // Act
+        var response = await Client.PutAsJsonAsync(
+            $"/api/matches/{created.Id}",
+            new { HomeTeamId = arsenal.Id, AwayTeamId = barcelona.Id });
+
+        // Assert
+        response.Should().Be400BadRequest();
+    }
+
+    [Fact]
+    public async Task GivenTeamsNotInSpecifiedLeague_WhenAddMatch_ThenReturnsBadRequest()
+    {
+        // Arrange
+        var premierLeague = await Client.CreateLeagueAsync("Premier League");
+        var laLiga = await Client.CreateLeagueAsync("La Liga");
+        var arsenal = await Client.CreateTeamAsync(premierLeague.Id, "Arsenal");
+        var chelsea = await Client.CreateTeamAsync(premierLeague.Id, "Chelsea");
+
+        // Act — teams are in the same league, but not the one specified
+        var response = await Client.PostAsJsonAsync(
+            "/api/matches", new AddMatchRequest(laLiga.Id, arsenal.Id, chelsea.Id));
+
+        // Assert
+        response.Should().Be400BadRequest();
     }
 }

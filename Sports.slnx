@@ -15,6 +15,7 @@
   <Folder Name="/tests/">
     <Project Path="Sports.Api.IntegrationTests/Sports.Api.IntegrationTests.csproj" Id="7b0e0e3d-006e-4d8d-b744-d28e9e19a98e" />
     <Project Path="Sports.Api.UnitTests/Sports.Api.UnitTests.csproj" Id="f124e4c5-1de6-497d-877f-594907f5977b" />
+    <Project Path="Sports.Tests.Shared/Sports.Tests.Shared.csproj" />
     <Project Path="Sports.Worker.IntegrationTests/Sports.Worker.IntegrationTests.csproj" />
   </Folder>
 </Solution>

@@ -1,13 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using Sports.MatchSimulationWorker.Database;
 using Sports.Shared.Entities;
+using Sports.Tests.Shared;
 using Testcontainers.MsSql;
 
 namespace Sports.Worker.IntegrationTests.Infrastructure;
 
 public class WorkerDatabaseFixture : IAsyncLifetime
 {
-    private readonly MsSqlContainer _container = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-latest")
+    private readonly MsSqlContainer _container = new MsSqlBuilder(DatabaseHelper.SqlServerImage)
         .Build();
 
     public string ConnectionString { get; private set; } = null!;
@@ -42,6 +43,16 @@ public class WorkerDatabaseFixture : IAsyncLifetime
         await context.Database.ExecuteSqlRawAsync(
             """
             DELETE FROM Matches;
+            DELETE FROM Team;
+            DELETE FROM League;
+            IF NOT EXISTS (SELECT 1 FROM League WHERE Id = 1)
+                SET IDENTITY_INSERT League ON;
+                INSERT INTO League (Id, Name) VALUES (1, 'Test League');
+                SET IDENTITY_INSERT League OFF;
+            IF NOT EXISTS (SELECT 1 FROM Team WHERE Id = 1)
+                SET IDENTITY_INSERT Team ON;
+                INSERT INTO Team (Id, Name, LeagueId) VALUES (1, 'Home Team', 1), (2, 'Away Team', 1);
+                SET IDENTITY_INSERT Team OFF;
             DBCC CHECKIDENT ('Matches', RESEED, 0);
             """);
 
@@ -49,8 +60,8 @@ public class WorkerDatabaseFixture : IAsyncLifetime
         {
             context.Matches.Add(new Match
             {
-                HomeTeamId = 0,
-                AwayTeamId = 0,
+                HomeTeamId = 1,
+                AwayTeamId = 2,
                 TotalPasses = null
             });
         }

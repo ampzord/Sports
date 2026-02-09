@@ -1,13 +1,25 @@
 <template>
   <div class="p-8">
+    <!-- Loading state -->
+    <div v-if="loading" class="space-y-4">
+      <div class="h-8 w-48 bg-gray-200 rounded animate-pulse"></div>
+      <div class="bg-white rounded-lg shadow p-8 border border-gray-200 space-y-4">
+        <div class="h-6 w-40 bg-gray-200 rounded animate-pulse"></div>
+        <div class="grid grid-cols-2 gap-6">
+          <div class="h-20 bg-gray-200 rounded animate-pulse"></div>
+          <div class="h-20 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- Breadcrumb -->
-    <div class="mb-6 text-sm">
+    <div v-if="!loading" class="mb-6 text-sm">
       <router-link to="/players" class="text-blue-600 hover:text-blue-800 font-semibold">Players</router-link>
       <span class="mx-2 text-gray-400">/</span>
       <span class="text-gray-600">{{ player?.name }}</span>
     </div>
 
-    <div class="bg-white rounded-lg shadow p-8 border border-gray-200">
+    <div v-if="!loading" class="bg-white rounded-lg shadow p-8 border border-gray-200">
       <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-blue-600">{{ player?.name }}</h2>
         <div class="flex gap-3">
@@ -59,9 +71,11 @@ const router = useRouter()
 const playerId = route.params.id
 const player = ref(null)
 const teamName = ref('')
+const loading = ref(true)
 
 onMounted(async () => {
   await loadPlayer()
+  loading.value = false
 })
 
 const loadPlayer = async () => {
