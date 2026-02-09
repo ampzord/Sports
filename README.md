@@ -4,9 +4,7 @@ A full-stack sports management application built with **.NET 10**, **Vue 3**, an
 
 Manage leagues, teams, players, and matches with a single `dotnet run`.
 
-![SportsAPI dashboard](image.png)
-
-![SportsAPI Teams Loading Gif](https://i.imgur.com/YKzqr0Z.gif)
+![SportsAPI Dashboard Gif](https://i.imgur.com/2bYkhcH.gif)
 
 ---
 
@@ -26,17 +24,17 @@ Sports.AppHost (Aspire Orchestrator)
 
 ## Projects
 
-| Project                            | Description                                                                        |
-| ---------------------------------- | ---------------------------------------------------------------------------------- |
-| **Sports.AppHost**                 | .NET Aspire host -- orchestrates all services, databases, and containers           |
-| **Sports.Api**                     | REST API with full CRUD for leagues, teams, players, and matches                   |
-| **Sports.MatchSimulationWorker**   | Worker service that consumes RabbitMQ messages and simulates match pass statistics |
+| Project                            | Description                                                                             |
+| ---------------------------------- | --------------------------------------------------------------------------------------- |
+| **Sports.AppHost**                 | .NET Aspire host -- orchestrates all services, databases, and containers                |
+| **Sports.Api**                     | REST API with full CRUD for leagues, teams, players, and matches                        |
+| **Sports.MatchSimulationWorker**   | Worker service that consumes RabbitMQ messages and simulates match pass statistics      |
 | **Sports.Shared**                  | Shared entities, enums, EF Core entity configurations, MediatR behaviors, and constants |
-| **Sports.ServiceDefaults**         | Aspire service defaults (OpenTelemetry, health checks, resilience)                 |
-| **SportsUI**                       | Vue 3 frontend with Tailwind CSS                                                   |
-| **Sports.Api.UnitTests**           | Unit tests -- domain model constraints against a real SQL Server (Testcontainers)  |
-| **Sports.Api.IntegrationTests**    | Integration tests -- full HTTP endpoint testing via `WebApplicationFactory`        |
-| **Sports.Worker.IntegrationTests** | Integration tests for the match simulation worker                                  |
+| **Sports.ServiceDefaults**         | Aspire service defaults (OpenTelemetry, health checks, resilience)                      |
+| **SportsUI**                       | Vue 3 frontend with Tailwind CSS                                                        |
+| **Sports.Api.UnitTests**           | Unit tests -- domain model constraints against a real SQL Server (Testcontainers)       |
+| **Sports.Api.IntegrationTests**    | Integration tests -- full HTTP endpoint testing via `WebApplicationFactory`             |
+| **Sports.Worker.IntegrationTests** | Integration tests for the match simulation worker                                       |
 
 ---
 
@@ -86,14 +84,14 @@ The **Aspire Dashboard** opens automatically in your browser, showing all resour
 
 Aspire starts a SQL Server container automatically. To connect with SSMS, Azure Data Studio, or any SQL client:
 
-| Setting        | Value                          |
-| -------------- | ------------------------------ |
-| Server         | `localhost,14330`              |
-| Authentication | SQL Server Authentication      |
-| Login          | `sa`                           |
-| Password       | `Password1`                    |
-| Database       | `SportsDB`                     |
-| Trust Certificate | Yes (self-signed)           |
+| Setting           | Value                     |
+| ----------------- | ------------------------- |
+| Server            | `localhost,14330`         |
+| Authentication    | SQL Server Authentication |
+| Login             | `sa`                      |
+| Password          | `Password1`               |
+| Database          | `SportsDB`                |
+| Trust Certificate | Yes (self-signed)         |
 
 > The password is configured in `Sports.AppHost/appsettings.json`. The database is auto-migrated on startup by the API.
 

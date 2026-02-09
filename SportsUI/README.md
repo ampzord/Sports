@@ -18,16 +18,16 @@ A Vue 3 single-page application for managing sports leagues, teams, players, and
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Vue 3.5 (Composition API, `<script setup>`) |
-| Build Tool | Vite 7 |
-| Styling | Tailwind CSS v4 |
-| Routing | Vue Router 4 |
-| Server State | TanStack Vue Query |
-| List Virtualization | TanStack Vue Virtual |
-| HTTP | Axios (leagues/teams/players), native fetch (matches) |
-| Notifications | vue-toastification |
+| Layer               | Technology                                            |
+| ------------------- | ----------------------------------------------------- |
+| Framework           | Vue 3.5 (Composition API, `<script setup>`)           |
+| Build Tool          | Vite 7                                                |
+| Styling             | Tailwind CSS v4                                       |
+| Routing             | Vue Router 4                                          |
+| Server State        | TanStack Vue Query                                    |
+| List Virtualization | TanStack Vue Virtual                                  |
+| HTTP                | Axios (leagues/teams/players), native fetch (matches) |
+| Notifications       | vue-toastification                                    |
 
 ## Project Setup
 
