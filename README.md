@@ -192,12 +192,11 @@ Relationships enforce referential integrity -- you cannot delete a league that h
 
 A `BackgroundService` that listens on a RabbitMQ queue. When triggered from the API's `/api/matches/simulate` endpoint, it:
 
-1. Picks up unprocessed matches in batches of 500
+1. Picks up unprocessed matches (`where TotalPasses are NULL`) in batches of 500
 2. Assigns a random `TotalPasses` value (100-1000) to each match
-3. Supports multiple concurrent workers without double-processing
-4. Implemented using Pessimistic Locking to prevent deadlocks
-5. Idea behind this Worker being not part of `.API` is that it can be scaled (imagining the scenario where we are processing millions or billions of matches that need simulating the passes, within K8s we could enable auto scaling of this worker to help us)
-6. Currently the worker is always running and each request on the endpoint `matches/simulate` publishes a message on RabbitMQ for the Worker to consume i.e. work on simulating the total passing on matches who have not been simulated yet.
+3. Uses pessimistic locking (`UPDLOCK, ROWLOCK, READPAST`) so multiple workers can process concurrently without double-processing or deadlocks
+
+The worker is a **separate process** from the API, connected only through RabbitMQ. Each call to `/api/matches/simulate` publishes a message to the queue, and the worker consumes it and processes all remaining unprocessed matches. This decoupling means workers can be scaled independently -- in a scenario with millions of matches, Kubernetes could auto-scale worker replicas while the API remains unaffected.
 
 ### Seed Data
 
