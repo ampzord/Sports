@@ -1,6 +1,7 @@
+using Sports.Api.Features.Teams._Shared;
+
 namespace Sports.Api.Features.Teams.GetTeams;
 
-using Sports.Api.Features.Teams._Shared.Responses;
 
 using FastEndpoints;
 using MediatR;

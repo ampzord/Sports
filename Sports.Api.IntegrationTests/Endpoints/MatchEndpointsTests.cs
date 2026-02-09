@@ -1,5 +1,5 @@
 using System.Net.Http.Json;
-using Sports.Api.Features.Matches._Shared.Responses;
+using Sports.Api.Features.Matches._Shared;
 using Sports.Api.Features.Matches.AddMatch;
 using Sports.Api.IntegrationTests.Infrastructure;
 using Sports.Tests.Shared;

@@ -4,7 +4,7 @@ A full-stack sports management application built with **.NET 10**, **Vue 3**, an
 
 Manage leagues, teams, players, and matches with a single `dotnet run`.
 
-![SportsAPI Dashboard Gif](https://i.imgur.com/2bYkhcH.gif)
+![SportsAPI Dashboard Gif](https://i.imgur.com/D4RciZ3.gif)
 
 ---
 
@@ -35,6 +35,7 @@ Sports.AppHost (Aspire Orchestrator)
 | **Sports.Api.UnitTests**           | Unit tests -- domain model constraints against a real SQL Server (Testcontainers)       |
 | **Sports.Api.IntegrationTests**    | Integration tests -- full HTTP endpoint testing via `WebApplicationFactory`             |
 | **Sports.Worker.IntegrationTests** | Integration tests for the match simulation worker                                       |
+| **Sports.Tests.Shared**            | Shared test utilities -- database helpers and API helper extensions                     |
 
 ---
 
@@ -108,8 +109,7 @@ Features/
   Teams/
     _Shared/
       TeamMapper.cs            Single Mapperly mapper for all team operations
-      Responses/
-        TeamResponse.cs
+      TeamResponse.cs
     AddTeam/
       AddTeamEndpoint.cs       FastEndpoints endpoint
       AddTeamHandler.cs        MediatR handler
@@ -307,8 +307,9 @@ Tests use **[Testcontainers](https://dotnet.testcontainers.org/)** to spin up a 
 - **GUIDs for IDs** -- Replace auto-increment `int` IDs with GUIDs to avoid enumeration attacks and simplify distributed scenarios.
 - **Pagination** -- Add limit/offset or cursor-based pagination to all list endpoints.
 - **Authentication** -- Add an auth layer (e.g., JWT, OAuth) to protect write endpoints.
-- **OpenTelemetry Collector** -- Replace direct Loki/Grafana integration with a proper OpenTelemetry Collector for vendor-neutral telemetry export.
-- **Azure Key Vault for Secrets** -- Secrets such as the SQL Server password are currently stored in plain text in `Sports.AppHost/appsettings.json`. Moving them to [Azure Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/overview) would provide centralized secret management with access policies.
+- **OpenTelemetry Collector** -- Traces, metrics, and logs are already exported via OTLP to the Aspire dashboard, but logs also flow separately through Serilog to Loki. Adding a standalone [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) would unify both pipelines into a single, vendor-neutral telemetry export.
+- **Azure Key Vault for Secrets** -- The SQL Server password is stored in plain text under `Parameters:sql-password` in `Sports.AppHost/appsettings.json`. Moving it to [Azure Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/overview) would provide centralized secret management with access policies.
+- **Persistent Metrics with Prometheus** -- Metrics (ASP.NET Core, HttpClient, runtime) are collected via OpenTelemetry but only visible in the Aspire dashboard, which is ephemeral. Adding [Prometheus](https://prometheus.io/) as a metrics backend with Grafana dashboards would provide persistent monitoring, alerting, and historical analysis. Custom application metrics (e.g., matches simulated, simulation duration) could also be added using `System.Diagnostics.Metrics`.
 
 ---
 

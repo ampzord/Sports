@@ -1,7 +1,6 @@
 namespace Sports.Api.Features.Players.GetPlayerById;
 
 using Sports.Api.Features.Players._Shared;
-using Sports.Api.Features.Players._Shared.Responses;
 
 using ErrorOr;
 using MediatR;

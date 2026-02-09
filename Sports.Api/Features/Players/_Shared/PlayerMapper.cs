@@ -1,7 +1,6 @@
 namespace Sports.Api.Features.Players._Shared;
 
 using Riok.Mapperly.Abstractions;
-using Sports.Api.Features.Players._Shared.Responses;
 using Sports.Api.Features.Players.AddPlayer;
 using Sports.Api.Features.Players.UpdatePlayer;
 using Sports.Shared.Entities;

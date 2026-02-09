@@ -1,7 +1,6 @@
 namespace Sports.Api.Features.Matches.GetMatchById;
 
 using Sports.Api.Features.Matches._Shared;
-using Sports.Api.Features.Matches._Shared.Responses;
 using ErrorOr;
 using MediatR;
 using Sports.Api.Database;

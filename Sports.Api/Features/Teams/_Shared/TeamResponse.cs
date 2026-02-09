@@ -1,4 +1,4 @@
-namespace Sports.Api.Features.Teams._Shared.Responses;
+namespace Sports.Api.Features.Teams._Shared;
 
 public record TeamResponse
 {

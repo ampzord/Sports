@@ -1,7 +1,6 @@
 namespace Sports.Api.Features.Players.AddPlayer;
 
 using Sports.Api.Features.Players._Shared;
-using Sports.Api.Features.Players._Shared.Responses;
 
 using FastEndpoints;
 using MediatR;

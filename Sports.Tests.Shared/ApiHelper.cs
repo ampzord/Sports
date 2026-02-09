@@ -3,12 +3,12 @@ namespace Sports.Tests.Shared;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Sports.Api.Features.Leagues._Shared.Responses;
+using Sports.Api.Features.Leagues._Shared;
 using Sports.Api.Features.Leagues.AddLeague;
-using Sports.Api.Features.Matches._Shared.Responses;
+using Sports.Api.Features.Matches._Shared;
 using Sports.Api.Features.Matches.AddMatch;
-using Sports.Api.Features.Players._Shared.Responses;
-using Sports.Api.Features.Teams._Shared.Responses;
+using Sports.Api.Features.Players._Shared;
+using Sports.Api.Features.Teams._Shared;
 using Sports.Api.Features.Teams.AddTeam;
 using Sports.Shared.Entities;
 

@@ -1,7 +1,6 @@
 namespace Sports.Api.Features.Leagues.AddLeague;
 
 using Sports.Api.Features.Leagues._Shared;
-using Sports.Api.Features.Leagues._Shared.Responses;
 
 using FastEndpoints;
 using MediatR;

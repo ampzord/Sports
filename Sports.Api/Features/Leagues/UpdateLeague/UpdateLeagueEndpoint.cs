@@ -7,7 +7,6 @@ using Sports.Api.Extensions;
 namespace Sports.Api.Features.Leagues.UpdateLeague;
 
 using Sports.Api.Features.Leagues._Shared;
-using Sports.Api.Features.Leagues._Shared.Responses;
 
 public class UpdateLeagueEndpoint(IMediator mediator, LeagueMapper mapper) : Endpoint<UpdateLeagueRequest, LeagueResponse>
 {

@@ -1,7 +1,6 @@
 namespace Sports.Api.Features.Leagues._Shared;
 
 using Riok.Mapperly.Abstractions;
-using Sports.Api.Features.Leagues._Shared.Responses;
 using Sports.Api.Features.Leagues.AddLeague;
 using Sports.Api.Features.Leagues.DeleteLeague;
 using Sports.Api.Features.Leagues.UpdateLeague;

@@ -1,4 +1,4 @@
-namespace Sports.Api.Features.Leagues._Shared.Responses;
+namespace Sports.Api.Features.Leagues._Shared;
 
 public record LeagueResponse
 {

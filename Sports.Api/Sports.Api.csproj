@@ -33,4 +33,8 @@
     <ProjectReference Include="..\Sports.ServiceDefaults\Sports.ServiceDefaults.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Features\Leagues\_Shared\Responses\" />
+	</ItemGroup>
+
 </Project>

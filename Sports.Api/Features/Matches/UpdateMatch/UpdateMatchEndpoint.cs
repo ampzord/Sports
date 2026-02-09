@@ -7,7 +7,6 @@ using Sports.Api.Extensions;
 namespace Sports.Api.Features.Matches.UpdateMatch;
 
 using Sports.Api.Features.Matches._Shared;
-using Sports.Api.Features.Matches._Shared.Responses;
 
 public class UpdateMatchEndpoint(IMediator mediator, MatchMapper mapper) : Endpoint<UpdateMatchRequest, MatchResponse>
 {

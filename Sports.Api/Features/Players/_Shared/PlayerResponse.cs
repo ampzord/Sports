@@ -1,4 +1,4 @@
-namespace Sports.Api.Features.Players._Shared.Responses;
+namespace Sports.Api.Features.Players._Shared;
 
 using Sports.Shared.Entities;
 

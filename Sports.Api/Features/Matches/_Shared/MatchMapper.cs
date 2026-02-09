@@ -1,7 +1,6 @@
 namespace Sports.Api.Features.Matches._Shared;
 
 using Riok.Mapperly.Abstractions;
-using Sports.Api.Features.Matches._Shared.Responses;
 using Sports.Api.Features.Matches.AddMatch;
 using Sports.Api.Features.Matches.DeleteMatch;
 using Sports.Api.Features.Matches.UpdateMatch;
