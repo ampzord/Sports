@@ -15,21 +15,31 @@ public class AddMatchHandler(SportsDbContext db, MatchMapper mapper)
         AddMatchCommand command,
         CancellationToken cancellationToken)
     {
-        var homeTeam = await db.Teams.FindAsync([command.HomeTeamId], cancellationToken);
+        var errors = new List<Error>();
 
+        var league = await db.Leagues.FindAsync([command.LeagueId], cancellationToken);
+        if (league is null)
+            errors.Add(Error.NotFound("League.NotFound", "League not found"));
+
+        var homeTeam = await db.Teams.FindAsync([command.HomeTeamId], cancellationToken);
         if (homeTeam is null)
-            return Error.NotFound("HomeTeam.NotFound", "Home team not found");
+            errors.Add(Error.NotFound("HomeTeam.NotFound", "Home team not found"));
 
         var awayTeam = await db.Teams.FindAsync([command.AwayTeamId], cancellationToken);
-
         if (awayTeam is null)
-            return Error.NotFound("AwayTeam.NotFound", "Away team not found");
+            errors.Add(Error.NotFound("AwayTeam.NotFound", "Away team not found"));
 
-        if (homeTeam.LeagueId != awayTeam.LeagueId)
-            return Error.Validation("Match.DifferentLeagues", "Both teams must belong to the same league");
+        if (errors.Count > 0)
+            return errors;
+
+        if (homeTeam!.LeagueId != awayTeam!.LeagueId)
+            errors.Add(Error.Validation("Match.DifferentLeagues", "Both teams must belong to the same league"));
 
         if (homeTeam.LeagueId != command.LeagueId)
-            return Error.Validation("Match.LeagueMismatch", "Teams do not belong to the specified league");
+            errors.Add(Error.Validation("Match.LeagueMismatch", "Teams do not belong to the specified league"));
+
+        if (errors.Count > 0)
+            return errors;
 
         var match = mapper.ToEntity(command);
 

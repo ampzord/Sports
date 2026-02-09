@@ -1,6 +1,7 @@
 namespace Sports.Api.Database;
 
 using Microsoft.EntityFrameworkCore;
+using Sports.Shared.Configurations;
 using Sports.Shared.Entities;
 
 public class SportsDbContext : DbContext
@@ -19,62 +20,10 @@ public class SportsDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Player>(entity =>
-        {
-            entity.HasKey(p => p.Id);
-            entity.Property(p => p.Name)
-                .IsRequired()
-                .HasMaxLength(100);
-            entity.Property(p => p.Position)
-                .HasConversion<string>();
-            entity.HasIndex(p => p.Name)
-                .IsUnique();
-
-            entity.HasOne(p => p.Team)
-                .WithMany(t => t.Players)
-                .HasForeignKey(p => p.TeamId)
-                .OnDelete(DeleteBehavior.Restrict);
-        });
-
-        modelBuilder.Entity<Team>(entity =>
-        {
-            entity.HasKey(t => t.Id);
-            entity.Property(t => t.Name)
-                .IsRequired()
-                .HasMaxLength(100);
-            entity.HasIndex(t => t.Name)
-                .IsUnique();
-
-            entity.HasOne(t => t.League)
-                .WithMany(l => l.Teams)
-                .HasForeignKey(t => t.LeagueId)
-                .OnDelete(DeleteBehavior.Restrict);
-        });
-
-        modelBuilder.Entity<League>(entity =>
-        {
-            entity.HasKey(l => l.Id);
-            entity.Property(l => l.Name)
-                .IsRequired()
-                .HasMaxLength(100);
-            entity.HasIndex(l => l.Name)
-                .IsUnique();
-        });
-
-        modelBuilder.Entity<Match>(entity =>
-        {
-            entity.HasKey(m => m.Id);
-
-            entity.HasOne(m => m.HomeTeam)
-                .WithMany()
-                .HasForeignKey(m => m.HomeTeamId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasOne(m => m.AwayTeam)
-                .WithMany()
-                .HasForeignKey(m => m.AwayTeamId)
-                .OnDelete(DeleteBehavior.Restrict);
-        });
+        modelBuilder.ApplyConfiguration(new PlayerConfiguration());
+        modelBuilder.ApplyConfiguration(new TeamConfiguration());
+        modelBuilder.ApplyConfiguration(new LeagueConfiguration());
+        modelBuilder.ApplyConfiguration(new MatchConfiguration());
 
         SeedData(modelBuilder);
     }
@@ -194,7 +143,7 @@ public class SportsDbContext : DbContext
             new Player { Id = 88, Name = "Youssef En-Nesyri", Position = PlayerPosition.ST, TeamId = 8 });
 
         var teamIds = new[] { 1, 2, 3, 4, 5, 6, 7, 8 };
-        var matches = new Match[100];
+        var matches = new Match[250];
 
         for (var i = 0; i < matches.Length; i++)
         {

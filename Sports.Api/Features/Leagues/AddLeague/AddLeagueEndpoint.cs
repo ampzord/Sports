@@ -36,7 +36,7 @@ public class AddLeagueEndpoint(IMediator mediator, LeagueMapper mapper) : Endpoi
 
         if (result.IsError)
         {
-            await this.SendErrorAsync(result.FirstError, ct);
+            await this.SendErrorsAsync(result.Errors, ct);
             return;
         }
 

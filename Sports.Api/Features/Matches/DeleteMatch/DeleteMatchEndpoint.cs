@@ -1,4 +1,4 @@
-﻿namespace Sports.Api.Features.Matches.DeleteMatch;
+namespace Sports.Api.Features.Matches.DeleteMatch;
 
 using FastEndpoints;
 using MediatR;
@@ -31,7 +31,7 @@ public class DeleteMatchEndpoint(IMediator mediator, MatchMapper mapper) : Endpo
 
         if (result.IsError)
         {
-            await this.SendErrorAsync(result.FirstError, ct);
+            await this.SendErrorsAsync(result.Errors, ct);
             return;
         }
 

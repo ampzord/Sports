@@ -1,17 +1,22 @@
-<template>
+﻿<template>
   <div class="p-8">
     <div class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold text-blue-600">Leagues</h1>
       <router-link
         to="/leagues/create"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded font-semibold transition"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded font-semibold transition cursor-pointer"
       >
         + Create League
       </router-link>
     </div>
 
     <!-- Loading skeleton -->
-    <div v-if="loading" class="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+    <div
+      v-if="loading"
+      role="status"
+      aria-label="Loading leagues"
+      class="bg-white rounded-lg shadow overflow-hidden border border-gray-200"
+    >
       <table class="w-full">
         <thead class="bg-blue-50">
           <tr>
@@ -21,15 +26,15 @@
         </thead>
         <tbody>
           <tr v-for="n in 6" :key="n" class="border-t border-gray-200">
-            <td class="px-6 py-4"><div class="h-4 w-40 bg-gray-200 rounded animate-pulse"></div></td>
-            <td class="px-6 py-4"><div class="h-4 w-28 bg-gray-200 rounded animate-pulse"></div></td>
+            <td class="px-6 py-2.5"><div class="h-4 w-40 bg-gray-200 rounded animate-pulse"></div></td>
+            <td class="px-6 py-2.5"><div class="h-4 w-28 bg-gray-200 rounded animate-pulse"></div></td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <!-- Virtualized Leagues List -->
-    <div v-if="!loading" class="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+    <div v-if="!loading && !error" class="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
       <!-- Sticky header -->
       <div class="bg-blue-50 grid grid-cols-[1fr_1fr]">
         <div class="px-6 py-3 text-left text-blue-600 font-bold">League Name</div>
@@ -37,7 +42,11 @@
       </div>
 
       <!-- Scrollable virtual container -->
-      <div ref="scrollEl" class="overflow-auto" :style="{ maxHeight: '70vh' }">
+      <div
+        ref="scrollEl"
+        :class="needsScroll ? 'overflow-auto' : 'overflow-hidden'"
+        :style="needsScroll ? { maxHeight: '70vh' } : {}"
+      >
         <div :style="{ height: `${virtualizer.getTotalSize()}px`, position: 'relative' }">
           <div
             v-for="row in virtualizer.getVirtualItems()"
@@ -52,14 +61,15 @@
             }"
             class="grid grid-cols-[1fr_1fr] items-center border-t border-gray-200 hover:bg-blue-50 hover:shadow-[inset_3px_0_0_0_#3b82f6] transition-all duration-200"
           >
-            <div class="px-6 py-4">
+            <div class="px-6 py-2.5">
               <router-link :to="`/leagues/${leagueRows[row.index].id}`" class="text-blue-600 hover:text-blue-800 font-semibold">
                 {{ leagueRows[row.index].name }}
               </router-link>
             </div>
-            <div class="px-6 py-4 flex gap-2">
+            <div class="px-6 py-2.5 flex gap-2">
               <router-link
                 :to="`/leagues/${leagueRows[row.index].id}/edit`"
+                :aria-label="`Edit ${leagueRows[row.index].name}`"
                 class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded font-semibold transition cursor-pointer"
               >
                 Edit
@@ -67,6 +77,7 @@
               <button
                 @click="deleteLeague(leagueRows[row.index].id)"
                 :disabled="deletingId === leagueRows[row.index].id"
+                :aria-label="`Delete ${leagueRows[row.index].name}`"
                 class="bg-red-100 hover:bg-red-200 disabled:opacity-50 text-red-700 px-3 py-1 rounded font-semibold transition cursor-pointer inline-flex items-center gap-1.5"
               >
                 <span
@@ -84,7 +95,7 @@
     </div>
 
     <!-- Error state -->
-    <div v-if="error" class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+    <div v-if="error" role="alert" class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
       <p class="text-red-600 font-semibold">{{ error }}</p>
       <button
         @click="fetchLeagues"
@@ -122,7 +133,10 @@ const virtualizer = useVirtualizer({
   overscan: 20,
 })
 
+const needsScroll = computed(() => leagueRows.value.length * ROW_HEIGHT > window.innerHeight * 0.7)
+
 const fetchLeagues = async () => {
+  loading.value = true
   try {
     error.value = null
     const response = await leagueAPI.getLeagues()

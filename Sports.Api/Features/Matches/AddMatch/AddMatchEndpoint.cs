@@ -36,7 +36,7 @@ public class AddMatchEndpoint(IMediator mediator, MatchMapper mapper) : Endpoint
 
         if (result.IsError)
         {
-            await this.SendErrorAsync(result.FirstError, ct);
+            await this.SendErrorsAsync(result.Errors, ct);
             return;
         }
 

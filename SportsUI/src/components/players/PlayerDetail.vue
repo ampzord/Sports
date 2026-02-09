@@ -1,7 +1,7 @@
 <template>
   <div class="p-8">
     <!-- Loading state -->
-    <div v-if="loading" class="space-y-4">
+    <div v-if="loading" role="status" aria-label="Loading player" class="space-y-4">
       <div class="h-8 w-48 bg-gray-200 rounded animate-pulse"></div>
       <div class="bg-white rounded-lg shadow p-8 border border-gray-200 space-y-4">
         <div class="h-6 w-40 bg-gray-200 rounded animate-pulse"></div>
@@ -25,7 +25,7 @@
         <div class="flex gap-3">
           <router-link
             :to="`/players/${playerId}/edit`"
-            class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded font-semibold transition"
+            class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded font-semibold transition cursor-pointer"
           >
             Edit Player
           </router-link>
@@ -109,5 +109,3 @@ const handleDelete = async () => {
   }
 }
 </script>
-
-<style scoped></style>

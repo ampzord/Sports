@@ -32,7 +32,7 @@ public class GetPlayerByIdEndpoint(IMediator mediator) : Endpoint<GetPlayerByIdR
 
         if (result.IsError)
         {
-            await this.SendErrorAsync(result.FirstError, ct);
+            await this.SendErrorsAsync(result.Errors, ct);
             return;
         }
 

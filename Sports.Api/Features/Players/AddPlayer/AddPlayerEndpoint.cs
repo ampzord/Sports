@@ -36,7 +36,7 @@ public class AddPlayerEndpoint(IMediator mediator, PlayerMapper mapper) : Endpoi
 
         if (result.IsError)
         {
-            await this.SendErrorAsync(result.FirstError, ct);
+            await this.SendErrorsAsync(result.Errors, ct);
             return;
         }
 

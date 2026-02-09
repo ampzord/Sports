@@ -16,10 +16,7 @@ public class UpdatePlayerHandler(SportsDbContext db, PlayerMapper mapper)
         UpdatePlayerCommand command,
         CancellationToken cancellationToken)
     {
-        var player = await db.Players.FirstOrDefaultAsync(
-            p => p.Id == command.Id,
-            cancellationToken
-        );
+        var player = await db.Players.FindAsync([command.Id], cancellationToken);
 
         if (player is null)
             return Error.NotFound("Player.NotFound", "Player not found");

@@ -2,7 +2,6 @@
 
 using FastEndpoints;
 using FastEndpoints.Swagger;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,7 +11,6 @@ public static class ApiExtensions
     public static IServiceCollection RegisterApi(
         this IServiceCollection services)
     {
-        services.AddFluentValidationAutoValidation();
         services.AddOpenApi();
 
         services.Configure<JsonOptions>(options =>

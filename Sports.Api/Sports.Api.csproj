@@ -6,7 +6,6 @@
 		<PackageReference Include="FastEndpoints" />
 		<PackageReference Include="FastEndpoints.Swagger" />
 		<PackageReference Include="FluentValidation" />
-		<PackageReference Include="FluentValidation.AspNetCore" />
 		<PackageReference Include="MediatR" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
@@ -19,11 +18,6 @@
 		<PackageReference Include="Serilog.AspNetCore" />
 		<PackageReference Include="Serilog.Sinks.Console" />
 		<PackageReference Include="Serilog.Sinks.Grafana.Loki" />
-		<PackageReference Include="Swashbuckle.AspNetCore" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Migrations\" />
 	</ItemGroup>
 
 	<ItemGroup>

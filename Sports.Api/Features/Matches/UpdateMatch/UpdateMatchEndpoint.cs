@@ -38,7 +38,7 @@ public class UpdateMatchEndpoint(IMediator mediator, MatchMapper mapper) : Endpo
 
         if (result.IsError)
         {
-            await this.SendErrorAsync(result.FirstError, ct);
+            await this.SendErrorsAsync(result.Errors, ct);
             return;
         }
 

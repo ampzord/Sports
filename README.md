@@ -31,7 +31,7 @@ Sports.AppHost (Aspire Orchestrator)
 | **Sports.AppHost**                 | .NET Aspire host -- orchestrates all services, databases, and containers           |
 | **Sports.Api**                     | REST API with full CRUD for leagues, teams, players, and matches                   |
 | **Sports.MatchSimulationWorker**   | Worker service that consumes RabbitMQ messages and simulates match pass statistics |
-| **Sports.Shared**                  | Shared entities, enums, MediatR behaviors, and configuration constants             |
+| **Sports.Shared**                  | Shared entities, enums, EF Core entity configurations, MediatR behaviors, and constants |
 | **Sports.ServiceDefaults**         | Aspire service defaults (OpenTelemetry, health checks, resilience)                 |
 | **SportsUI**                       | Vue 3 frontend with Tailwind CSS                                                   |
 | **Sports.Api.UnitTests**           | Unit tests -- domain model constraints against a real SQL Server (Testcontainers)  |
@@ -81,6 +81,21 @@ The **Aspire Dashboard** opens automatically in your browser, showing all resour
 | Grafana           | Grafana resource URL (admin / admin)                                                                 |
 | Vue Frontend      | `sports-ui` resource URL in the Aspire dashboard                                                     |
 | SQL Server (SSMS) | Connect to `localhost,14330` with login `sa` and the password from `Sports.AppHost/appsettings.json` |
+
+### Connecting to the Database
+
+Aspire starts a SQL Server container automatically. To connect with SSMS, Azure Data Studio, or any SQL client:
+
+| Setting        | Value                          |
+| -------------- | ------------------------------ |
+| Server         | `localhost,14330`              |
+| Authentication | SQL Server Authentication      |
+| Login          | `sa`                           |
+| Password       | `Password1`                    |
+| Database       | `SportsDB`                     |
+| Trust Certificate | Yes (self-signed)           |
+
+> The password is configured in `Sports.AppHost/appsettings.json`. The database is auto-migrated on startup by the API.
 
 ---
 
@@ -163,7 +178,7 @@ All endpoints follow a flat hierarchy. List endpoints support optional query par
 | **Player** | `Id`, `Name` (unique), `Position` (enum), `TeamId` (FK)         |
 | **Match**  | `Id`, `HomeTeamId`, `AwayTeamId` (FK), `TotalPasses` (nullable) |
 
-Relationships enforce referential integrity -- you cannot delete a league that has teams, or a team that has players or matches.
+Relationships enforce referential integrity -- you cannot delete a league that has teams, or a team that has players or matches. Changing a team's league is also blocked if the team has existing matches.
 
 ### Key Libraries
 
@@ -191,7 +206,7 @@ The database is seeded on startup with:
 - 2 leagues (Premier League, La Liga)
 - 8 teams (4 per league)
 - 88 players
-- 100 matches
+- 250 matches
 
 ---
 
@@ -304,5 +319,4 @@ Tests use **[Testcontainers](https://dotnet.testcontainers.org/)** to spin up a 
 Some libraries used in this project have changed their licensing model in recent versions:
 
 - **[FluentValidation](https://docs.fluentvalidation.net/)** -- Version 12+ requires a commercial license for commercial use. This project uses v12. See the [FluentValidation license page](https://docs.fluentvalidation.net/en/latest/licensing.html) for details.
-- **[MediatR](https://github.com/jbogard/MediatR)** -- Version 13+ requires a commercial license for commercial use. This project uses v14. See the [MediatR license page](https://www.jbogard.com/mediatr-licensing/) for details.atest/licensing.html) for details.
 - **[MediatR](https://github.com/jbogard/MediatR)** -- Version 13+ requires a commercial license for commercial use. This project uses v14. See the [MediatR license page](https://www.jbogard.com/mediatr-licensing/) for details.

@@ -11,51 +11,46 @@
 
       <form @submit.prevent="handleSubmit" class="space-y-6">
         <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">League (filter teams)</label>
-          <select
+          <label for="match-league" class="block text-sm font-semibold text-gray-700 mb-2">League (filter teams)</label>
+          <CustomSelect
+            id="match-league"
             v-model="selectedLeagueId"
+            :options="leagueOptions"
+            placeholder="Select League"
+            :disabled="!leagues?.length"
+            required
             @change="onLeagueChange"
-            required
-            class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition cursor-pointer"
-          >
-            <option value="">Select League</option>
-            <option v-for="league in leagues" :key="league.id" :value="league.id">
-              {{ league.name }}
-            </option>
-          </select>
+          />
         </div>
 
         <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">Home Team</label>
-          <select
+          <label for="match-home-team" class="block text-sm font-semibold text-gray-700 mb-2">Home Team</label>
+          <CustomSelect
+            id="match-home-team"
             v-model="form.homeTeamId"
+            :options="homeTeamSelectOptions"
+            placeholder="Select Home Team"
+            :disabled="leagueTeams.length === 0"
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition cursor-pointer"
-          >
-            <option value="">Select Home Team</option>
-            <option v-for="team in homeTeamOptions" :key="team.id" :value="team.id">
-              {{ team.name }}
-            </option>
-          </select>
+          />
         </div>
 
         <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">Away Team</label>
-          <select
+          <label for="match-away-team" class="block text-sm font-semibold text-gray-700 mb-2">Away Team</label>
+          <CustomSelect
+            id="match-away-team"
             v-model="form.awayTeamId"
+            :options="awayTeamSelectOptions"
+            placeholder="Select Away Team"
+            :disabled="leagueTeams.length === 0"
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition cursor-pointer"
-          >
-            <option value="">Select Away Team</option>
-            <option v-for="team in awayTeamOptions" :key="team.id" :value="team.id">
-              {{ team.name }}
-            </option>
-          </select>
+          />
         </div>
 
         <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">Total Passes (optional)</label>
+          <label for="match-total-passes" class="block text-sm font-semibold text-gray-700 mb-2">Total Passes (optional)</label>
           <input
+            id="match-total-passes"
             v-model.number="form.totalPasses"
             type="number"
             min="0"
@@ -74,7 +69,7 @@
           </button>
           <router-link
             to="/matches"
-            class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded transition text-center"
+            class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded transition text-center cursor-pointer"
           >
             Cancel
           </router-link>
@@ -89,6 +84,7 @@ import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useMatch, useTeams, useLeagues, useCreateMatch, useUpdateMatch } from '../../composables/useMatchQueries'
 import { useToast } from '../../composables/useToast'
+import CustomSelect from '../ui/CustomSelect.vue'
 
 const toast = useToast()
 const route = useRoute()
@@ -138,6 +134,12 @@ const awayTeamOptions = computed(() => {
   return leagueTeams.value.filter((t) => String(t.id) !== String(form.value.homeTeamId))
 })
 
+const leagueOptions = computed(() => (leagues.value || []).map((l) => ({ value: l.id, label: l.name })))
+
+const homeTeamSelectOptions = computed(() => homeTeamOptions.value.map((t) => ({ value: t.id, label: t.name })))
+
+const awayTeamSelectOptions = computed(() => awayTeamOptions.value.map((t) => ({ value: t.id, label: t.name })))
+
 const onLeagueChange = () => {
   form.value.homeTeamId = ''
   form.value.awayTeamId = ''
@@ -146,18 +148,19 @@ const onLeagueChange = () => {
 const handleSubmit = async () => {
   try {
     const payload = {
+      leagueId: selectedLeagueId.value,
       homeTeamId: form.value.homeTeamId,
       awayTeamId: form.value.awayTeamId,
-      totalPasses: form.value.totalPasses ?? undefined,
+      totalPasses: form.value.totalPasses != null && form.value.totalPasses !== '' ? form.value.totalPasses : undefined,
     }
     if (isEdit.value) {
       await updateMutation.mutateAsync({ id: route.params.id, data: payload })
       toast.success('Match updated')
       router.push(`/matches/${route.params.id}`)
     } else {
-      await createMutation.mutateAsync(payload)
+      const created = await createMutation.mutateAsync(payload)
       toast.success('Match created')
-      router.push('/matches')
+      router.push(`/matches/${created.id}`)
     }
   } catch (error) {
     console.error('Failed to save match:', error)

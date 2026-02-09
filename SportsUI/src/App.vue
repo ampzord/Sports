@@ -1,11 +1,17 @@
 <template>
   <div class="min-h-screen bg-white">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 bg-blue-600 text-white px-4 py-2 rounded font-semibold"
+    >
+      Skip to content
+    </a>
     <header class="bg-blue-600 text-white py-4 px-6 shadow">
       <div class="max-w-6xl mx-auto flex justify-between items-center">
         <router-link to="/home" class="text-2xl font-bold text-white no-underline flex items-center gap-2">
           ⚽ Sports API
         </router-link>
-        <nav class="flex gap-6">
+        <nav aria-label="Main navigation" class="flex gap-6">
           <router-link to="/home" class="nav-link">Home</router-link>
           <router-link to="/leagues" class="nav-link">Leagues</router-link>
           <router-link to="/teams" class="nav-link">Teams</router-link>
@@ -15,7 +21,7 @@
       </div>
     </header>
 
-    <main class="max-w-6xl mx-auto p-6">
+    <main id="main-content" class="max-w-6xl mx-auto p-6">
       <router-view v-slot="{ Component }">
         <Transition name="page" mode="out-in">
           <component :is="Component" :key="$route.path" />
@@ -24,8 +30,6 @@
     </main>
   </div>
 </template>
-
-<script setup></script>
 
 <style>
 .nav-link {

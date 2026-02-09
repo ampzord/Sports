@@ -11,8 +11,9 @@
 
       <form @submit.prevent="handleSubmit" class="space-y-6">
         <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">Player Name</label>
+          <label for="player-name" class="block text-sm font-semibold text-gray-700 mb-2">Player Name</label>
           <input
+            id="player-name"
             v-model="form.name"
             type="text"
             placeholder="Enter player name"
@@ -22,44 +23,39 @@
         </div>
 
         <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">Position</label>
-          <select
+          <label for="player-position" class="block text-sm font-semibold text-gray-700 mb-2">Position</label>
+          <CustomSelect
+            id="player-position"
             v-model="form.position"
+            :options="positionOptions"
+            placeholder="Select Position"
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition cursor-pointer"
-          >
-            <option value="">Select Position</option>
-            <option v-for="pos in PlayerPosition" :key="pos.value" :value="pos.value">
-              {{ pos.label }}
-            </option>
-          </select>
+          />
         </div>
 
         <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">Team</label>
-          <select
+          <label for="player-team" class="block text-sm font-semibold text-gray-700 mb-2">Team</label>
+          <CustomSelect
+            id="player-team"
             v-model="form.teamId"
+            :options="teamOptions"
+            placeholder="Select Team"
+            :disabled="teams.length === 0"
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition cursor-pointer"
-          >
-            <option value="" disabled>Select Team</option>
-            <option v-for="team in teams" :key="team.id" :value="team.id">
-              {{ team.name }}
-            </option>
-          </select>
+          />
         </div>
 
         <div class="flex gap-3 pt-4 border-t border-gray-200">
           <button
             type="submit"
             :disabled="loading"
-            class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded transition disabled:opacity-50"
+            class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded transition disabled:opacity-50 cursor-pointer"
           >
             {{ isEdit ? 'Update' : 'Create' }}
           </button>
           <router-link
             to="/players"
-            class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded transition text-center"
+            class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded transition text-center cursor-pointer"
           >
             Cancel
           </router-link>
@@ -75,6 +71,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { playerAPI, teamAPI } from '../../services/api'
 import { useToast } from '../../composables/useToast'
 import { PlayerPosition } from '../../enums/PlayerPosition'
+import CustomSelect from '../ui/CustomSelect.vue'
 
 const toast = useToast()
 const route = useRoute()
@@ -84,6 +81,10 @@ const isEdit = computed(() => !!route.params.id)
 const loading = ref(false)
 const teams = ref([])
 const form = ref({ name: '', position: '', teamId: '' })
+
+const positionOptions = computed(() => PlayerPosition.map((p) => ({ value: p.value, label: p.label })))
+
+const teamOptions = computed(() => teams.value.map((t) => ({ value: t.id, label: t.name })))
 
 onMounted(async () => {
   try {
@@ -117,13 +118,13 @@ const handleSubmit = async () => {
       toast.success('Player updated')
       router.push(`/players/${route.params.id}`)
     } else {
-      await playerAPI.addPlayer({
+      const response = await playerAPI.addPlayer({
         name: form.value.name,
         position: form.value.position,
         teamId: form.value.teamId,
       })
       toast.success('Player created')
-      router.push('/players')
+      router.push(`/players/${response.data.id}`)
     }
   } catch (error) {
     console.error('Failed to save player:', error)

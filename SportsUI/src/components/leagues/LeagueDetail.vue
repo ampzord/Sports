@@ -1,7 +1,7 @@
 <template>
   <div class="p-8">
     <!-- Loading state -->
-    <div v-if="loading" class="space-y-4">
+    <div v-if="loading" role="status" aria-label="Loading league" class="space-y-4">
       <div class="h-8 w-48 bg-gray-200 rounded animate-pulse"></div>
       <div class="bg-white rounded-lg shadow p-6 border border-gray-200 space-y-3">
         <div class="h-5 w-32 bg-gray-200 rounded animate-pulse"></div>
@@ -22,12 +22,14 @@
       <div class="flex gap-3">
         <router-link
           :to="`/leagues/${leagueId}/edit`"
-          class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded font-semibold transition"
+          aria-label="Edit league"
+          class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded font-semibold transition cursor-pointer"
         >
           Edit League
         </router-link>
         <button
           @click="handleDelete"
+          aria-label="Delete league"
           class="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded font-semibold transition cursor-pointer"
         >
           Delete League
@@ -41,7 +43,7 @@
         <h2 class="text-lg font-bold text-blue-600">Teams in {{ league?.name }}</h2>
         <router-link
           :to="`/teams/create?leagueId=${leagueId}`"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition"
+          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition cursor-pointer"
         >
           + Add Team
         </router-link>
@@ -63,12 +65,14 @@
             <td class="px-6 py-4 flex gap-2">
               <router-link
                 :to="`/teams/${team.id}/edit`"
-                class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded font-semibold transition"
+                :aria-label="`Edit ${team.name}`"
+                class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded font-semibold transition cursor-pointer"
               >
                 Edit
               </router-link>
               <button
                 @click="deleteTeam(team.id)"
+                :aria-label="`Delete ${team.name}`"
                 class="bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded font-semibold transition cursor-pointer"
               >
                 Delete
@@ -147,5 +151,3 @@ const deleteTeam = async (id) => {
   }
 }
 </script>
-
-<style scoped></style>

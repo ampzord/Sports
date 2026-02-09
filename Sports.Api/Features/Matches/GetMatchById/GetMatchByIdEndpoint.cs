@@ -32,7 +32,7 @@ public class GetMatchByIdEndpoint(IMediator mediator) : Endpoint<GetMatchByIdReq
 
         if (result.IsError)
         {
-            await this.SendErrorAsync(result.FirstError, ct);
+            await this.SendErrorsAsync(result.Errors, ct);
             return;
         }
 

@@ -4,7 +4,7 @@ import { matchService } from '../services/matchService'
 import { teamAPI, leagueAPI } from '../services/api'
 
 // ── Query keys ──────────────────────────────────────────────
-export const matchKeys = {
+const matchKeys = {
   all: ['matches'],
   detail: (id) => ['matches', id],
   teams: ['teams'],
@@ -17,6 +17,7 @@ export function useMatches() {
   return useQuery({
     queryKey: matchKeys.all,
     queryFn: () => matchService.getMatches(),
+    retry: 1,
   })
 }
 
@@ -26,6 +27,7 @@ export function useMatch(id) {
     queryKey: computed(() => matchKeys.detail(resolvedId.value)),
     queryFn: () => matchService.getMatchById(resolvedId.value),
     enabled: computed(() => !!resolvedId.value),
+    staleTime: 30_000,
   })
 }
 
@@ -57,7 +59,11 @@ export function useCreateMatch() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (data) => matchService.addMatch(data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: matchKeys.all }),
+    onSuccess: (newMatch) => {
+      // Seed the detail cache so MatchDetail renders instantly
+      qc.setQueryData(matchKeys.detail(newMatch.id), newMatch)
+      qc.invalidateQueries({ queryKey: matchKeys.all })
+    },
   })
 }
 

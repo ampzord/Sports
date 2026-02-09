@@ -9,6 +9,7 @@ public class AddPlayerValidator : Validator<AddPlayerRequest>
     public AddPlayerValidator()
     {
         RuleFor(x => x.Name).ValidatePlayerName();
-        //RuleFor(x => x.Position).ValidatePlayerPosition();
+        RuleFor(x => x.TeamId)
+            .GreaterThan(0).WithMessage("TeamId must be greater than 0");
     }
 }

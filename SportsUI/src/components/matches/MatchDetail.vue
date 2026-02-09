@@ -13,12 +13,14 @@
         <div class="flex gap-2">
           <router-link
             :to="`/matches/${matchId}/edit`"
-            class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded font-semibold transition"
+            aria-label="Edit match"
+            class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded font-semibold transition cursor-pointer"
           >
             Edit
           </router-link>
           <button
             @click="deleteMatchConfirm"
+            aria-label="Delete match"
             class="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded font-semibold transition cursor-pointer"
           >
             Delete
@@ -40,9 +42,9 @@
           <label class="block text-sm font-semibold text-blue-600 mb-1">League</label>
           <p class="text-gray-800">{{ leagueName }}</p>
         </div>
-        <div v-if="match?.totalPasses != null" class="bg-blue-50 p-4 rounded">
+        <div class="bg-blue-50 p-4 rounded">
           <label class="block text-sm font-semibold text-blue-600 mb-1">Total Passes</label>
-          <p class="text-gray-800">{{ match.totalPasses }}</p>
+          <p class="text-gray-800">{{ match?.totalPasses != null ? match.totalPasses : 'Not simulated' }}</p>
         </div>
         <div v-if="match?.date" class="bg-blue-50 p-4 rounded">
           <label class="block text-sm font-semibold text-blue-600 mb-1">Date</label>
@@ -110,5 +112,3 @@ const deleteMatchConfirm = async () => {
   }
 }
 </script>
-
-<style scoped></style>

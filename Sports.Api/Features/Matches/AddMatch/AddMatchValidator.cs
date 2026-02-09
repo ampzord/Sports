@@ -8,6 +8,8 @@ public class AddMatchValidator : Validator<AddMatchRequest>
 {
     public AddMatchValidator()
     {
+        RuleFor(x => x.LeagueId)
+            .GreaterThan(0).WithMessage("LeagueId must be greater than 0");
         RuleFor(x => x.HomeTeamId).ValidateTeamId();
         RuleFor(x => x.AwayTeamId).ValidateTeamId();
         RuleFor(x => x.AwayTeamId)

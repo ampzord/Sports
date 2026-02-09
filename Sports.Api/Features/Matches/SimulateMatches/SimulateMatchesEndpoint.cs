@@ -10,10 +10,15 @@ public class SimulateMatchesEndpoint(IMediator mediator)
     public override void Configure()
     {
         Post("/api/matches/simulate");
+        AllowAnonymous();
         Description(x => x
             .Produces<SimulateMatchesResponse>(200)
             .WithTags("Matches"));
-        AllowAnonymous();
+        Summary(s =>
+        {
+            s.Summary = "Trigger all matches simulation";
+        });
+        
     }
 
     public override async Task HandleAsync(CancellationToken ct)
@@ -23,7 +28,7 @@ public class SimulateMatchesEndpoint(IMediator mediator)
 
         if (result.IsError)
         {
-            await this.SendErrorAsync(result.FirstError, ct);
+            await this.SendErrorsAsync(result.Errors, ct);
             return;
         }
 

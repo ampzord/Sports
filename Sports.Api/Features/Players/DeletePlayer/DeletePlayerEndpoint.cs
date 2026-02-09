@@ -1,4 +1,4 @@
-﻿namespace Sports.Api.Features.Players.DeletePlayer;
+namespace Sports.Api.Features.Players.DeletePlayer;
 
 using FastEndpoints;
 using MediatR;
@@ -30,7 +30,7 @@ public class DeletePlayerEndpoint(IMediator mediator) : Endpoint<DeletePlayerReq
 
         if (result.IsError)
         {
-            await this.SendErrorAsync(result.FirstError, ct);
+            await this.SendErrorsAsync(result.Errors, ct);
             return;
         }
 

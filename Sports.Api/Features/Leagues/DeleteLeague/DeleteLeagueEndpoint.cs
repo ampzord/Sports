@@ -1,4 +1,4 @@
-﻿namespace Sports.Api.Features.Leagues.DeleteLeague;
+namespace Sports.Api.Features.Leagues.DeleteLeague;
 
 using FastEndpoints;
 using MediatR;
@@ -33,7 +33,7 @@ public class DeleteLeagueEndpoint(IMediator mediator, LeagueMapper mapper) : End
 
         if (result.IsError)
         {
-            await this.SendErrorAsync(result.FirstError, ct);
+            await this.SendErrorsAsync(result.Errors, ct);
             return;
         }
 

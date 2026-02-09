@@ -1,9 +1,7 @@
 <template>
   <div class="max-w-xl mx-auto py-8">
     <div class="mb-6">
-      <router-link to="/leagues" class="text-blue-600 hover:text-blue-800 font-semibold">
-        ← Back to Leagues
-      </router-link>
+      <router-link to="/leagues" class="text-blue-600 hover:text-blue-800 font-semibold"> ← Back to Leagues </router-link>
     </div>
 
     <div class="bg-white rounded-lg shadow p-8 border border-gray-200">
@@ -13,8 +11,9 @@
 
       <form @submit.prevent="handleSubmit" class="space-y-6">
         <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">League Name</label>
+          <label for="league-name" class="block text-sm font-semibold text-gray-700 mb-2">League Name</label>
           <input
+            id="league-name"
             v-model="form.name"
             type="text"
             placeholder="Enter league name"
@@ -27,13 +26,13 @@
           <button
             type="submit"
             :disabled="loading"
-            class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded transition disabled:opacity-50"
+            class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded transition disabled:opacity-50 cursor-pointer"
           >
             {{ isEdit ? 'Update' : 'Create' }}
           </button>
           <router-link
             to="/leagues"
-            class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded transition text-center"
+            class="flex-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded transition text-center cursor-pointer"
           >
             Cancel
           </router-link>
@@ -74,15 +73,15 @@ const handleSubmit = async () => {
     if (isEdit.value) {
       await leagueAPI.updateLeague(route.params.id, form.value)
       toast.success('League updated')
+      router.push(`/leagues/${route.params.id}`)
     } else {
-      await leagueAPI.addLeague(form.value)
+      const response = await leagueAPI.addLeague(form.value)
       toast.success('League created')
+      router.push(`/leagues/${response.data.id}`)
     }
-    router.push('/leagues')
   } catch (error) {
     console.error('Failed to save league:', error)
-    const msg =
-      error.response?.data?.detail || error.response?.data?.title || 'Failed to save league'
+    const msg = error.response?.data?.detail || error.response?.data?.title || 'Failed to save league'
     toast.error(msg)
   } finally {
     loading.value = false

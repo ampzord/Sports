@@ -36,7 +36,7 @@ public class AddTeamEndpoint(IMediator mediator, TeamMapper mapper) : Endpoint<A
 
         if (result.IsError)
         {
-            await this.SendErrorAsync(result.FirstError, ct);
+            await this.SendErrorsAsync(result.Errors, ct);
             return;
         }
 

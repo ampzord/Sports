@@ -32,7 +32,7 @@ public class GetTeamByIdEndpoint(IMediator mediator) : Endpoint<GetTeamByIdReque
 
         if (result.IsError)
         {
-            await this.SendErrorAsync(result.FirstError, ct);
+            await this.SendErrorsAsync(result.Errors, ct);
             return;
         }
 

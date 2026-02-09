@@ -16,19 +16,24 @@ public class AddTeamHandler(SportsDbContext db, TeamMapper mapper)
         AddTeamCommand command,
         CancellationToken cancellationToken)
     {
+        var errors = new List<Error>();
+
         var leagueExists = await db.Leagues.AnyAsync(
             l => l.Id == command.LeagueId,
             cancellationToken);
 
         if (!leagueExists)
-            return Error.NotFound("League.NotFound", "League not found");
+            errors.Add(Error.NotFound("League.NotFound", "League not found"));
 
         var nameExists = await db.Teams.AnyAsync(
             t => t.Name == command.Name,
             cancellationToken);
 
         if (nameExists)
-            return Error.Conflict("Team.NameConflict", $"A team with the name '{command.Name}' already exists");
+            errors.Add(Error.Conflict("Team.NameConflict", $"A team with the name '{command.Name}' already exists"));
+
+        if (errors.Count > 0)
+            return errors;
 
         var team = mapper.ToEntity(command);
         db.Teams.Add(team);

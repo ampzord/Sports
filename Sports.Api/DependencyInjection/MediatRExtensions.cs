@@ -13,8 +13,6 @@ public static class MediatRExtensions
                 typeof(Program).Assembly);
 
             config.AddOpenBehavior(
-                typeof(ExceptionHandlingBehavior<,>));
-            config.AddOpenBehavior(
                 typeof(LoggingBehavior<,>));
         });
 

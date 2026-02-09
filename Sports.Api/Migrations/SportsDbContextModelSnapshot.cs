@@ -679,6 +679,906 @@ namespace Sports.Api.Migrations
                             Id = 100,
                             AwayTeamId = 1,
                             HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 101,
+                            AwayTeamId = 2,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 102,
+                            AwayTeamId = 3,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 103,
+                            AwayTeamId = 4,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 104,
+                            AwayTeamId = 5,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 105,
+                            AwayTeamId = 7,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 106,
+                            AwayTeamId = 8,
+                            HomeTeamId = 2
+                        },
+                        new
+                        {
+                            Id = 107,
+                            AwayTeamId = 1,
+                            HomeTeamId = 3
+                        },
+                        new
+                        {
+                            Id = 108,
+                            AwayTeamId = 2,
+                            HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 109,
+                            AwayTeamId = 3,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 110,
+                            AwayTeamId = 4,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 111,
+                            AwayTeamId = 5,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 112,
+                            AwayTeamId = 6,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 113,
+                            AwayTeamId = 8,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 114,
+                            AwayTeamId = 1,
+                            HomeTeamId = 2
+                        },
+                        new
+                        {
+                            Id = 115,
+                            AwayTeamId = 2,
+                            HomeTeamId = 3
+                        },
+                        new
+                        {
+                            Id = 116,
+                            AwayTeamId = 3,
+                            HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 117,
+                            AwayTeamId = 4,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 118,
+                            AwayTeamId = 5,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 119,
+                            AwayTeamId = 6,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 120,
+                            AwayTeamId = 7,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 121,
+                            AwayTeamId = 2,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 122,
+                            AwayTeamId = 3,
+                            HomeTeamId = 2
+                        },
+                        new
+                        {
+                            Id = 123,
+                            AwayTeamId = 4,
+                            HomeTeamId = 3
+                        },
+                        new
+                        {
+                            Id = 124,
+                            AwayTeamId = 5,
+                            HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 125,
+                            AwayTeamId = 6,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 126,
+                            AwayTeamId = 7,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 127,
+                            AwayTeamId = 8,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 128,
+                            AwayTeamId = 1,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 129,
+                            AwayTeamId = 2,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 130,
+                            AwayTeamId = 3,
+                            HomeTeamId = 2
+                        },
+                        new
+                        {
+                            Id = 131,
+                            AwayTeamId = 4,
+                            HomeTeamId = 3
+                        },
+                        new
+                        {
+                            Id = 132,
+                            AwayTeamId = 5,
+                            HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 133,
+                            AwayTeamId = 6,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 134,
+                            AwayTeamId = 7,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 135,
+                            AwayTeamId = 8,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 136,
+                            AwayTeamId = 1,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 137,
+                            AwayTeamId = 3,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 138,
+                            AwayTeamId = 4,
+                            HomeTeamId = 2
+                        },
+                        new
+                        {
+                            Id = 139,
+                            AwayTeamId = 5,
+                            HomeTeamId = 3
+                        },
+                        new
+                        {
+                            Id = 140,
+                            AwayTeamId = 6,
+                            HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 141,
+                            AwayTeamId = 7,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 142,
+                            AwayTeamId = 8,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 143,
+                            AwayTeamId = 1,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 144,
+                            AwayTeamId = 2,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 145,
+                            AwayTeamId = 4,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 146,
+                            AwayTeamId = 5,
+                            HomeTeamId = 2
+                        },
+                        new
+                        {
+                            Id = 147,
+                            AwayTeamId = 6,
+                            HomeTeamId = 3
+                        },
+                        new
+                        {
+                            Id = 148,
+                            AwayTeamId = 7,
+                            HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 149,
+                            AwayTeamId = 8,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 150,
+                            AwayTeamId = 1,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 151,
+                            AwayTeamId = 2,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 152,
+                            AwayTeamId = 3,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 153,
+                            AwayTeamId = 5,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 154,
+                            AwayTeamId = 6,
+                            HomeTeamId = 2
+                        },
+                        new
+                        {
+                            Id = 155,
+                            AwayTeamId = 7,
+                            HomeTeamId = 3
+                        },
+                        new
+                        {
+                            Id = 156,
+                            AwayTeamId = 8,
+                            HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 157,
+                            AwayTeamId = 1,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 158,
+                            AwayTeamId = 2,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 159,
+                            AwayTeamId = 3,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 160,
+                            AwayTeamId = 4,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 161,
+                            AwayTeamId = 6,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 162,
+                            AwayTeamId = 7,
+                            HomeTeamId = 2
+                        },
+                        new
+                        {
+                            Id = 163,
+                            AwayTeamId = 8,
+                            HomeTeamId = 3
+                        },
+                        new
+                        {
+                            Id = 164,
+                            AwayTeamId = 1,
+                            HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 165,
+                            AwayTeamId = 2,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 166,
+                            AwayTeamId = 3,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 167,
+                            AwayTeamId = 4,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 168,
+                            AwayTeamId = 5,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 169,
+                            AwayTeamId = 7,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 170,
+                            AwayTeamId = 8,
+                            HomeTeamId = 2
+                        },
+                        new
+                        {
+                            Id = 171,
+                            AwayTeamId = 1,
+                            HomeTeamId = 3
+                        },
+                        new
+                        {
+                            Id = 172,
+                            AwayTeamId = 2,
+                            HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 173,
+                            AwayTeamId = 3,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 174,
+                            AwayTeamId = 4,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 175,
+                            AwayTeamId = 5,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 176,
+                            AwayTeamId = 6,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 177,
+                            AwayTeamId = 8,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 178,
+                            AwayTeamId = 1,
+                            HomeTeamId = 2
+                        },
+                        new
+                        {
+                            Id = 179,
+                            AwayTeamId = 2,
+                            HomeTeamId = 3
+                        },
+                        new
+                        {
+                            Id = 180,
+                            AwayTeamId = 3,
+                            HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 181,
+                            AwayTeamId = 4,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 182,
+                            AwayTeamId = 5,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 183,
+                            AwayTeamId = 6,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 184,
+                            AwayTeamId = 7,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 185,
+                            AwayTeamId = 2,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 186,
+                            AwayTeamId = 3,
+                            HomeTeamId = 2
+                        },
+                        new
+                        {
+                            Id = 187,
+                            AwayTeamId = 4,
+                            HomeTeamId = 3
+                        },
+                        new
+                        {
+                            Id = 188,
+                            AwayTeamId = 5,
+                            HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 189,
+                            AwayTeamId = 6,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 190,
+                            AwayTeamId = 7,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 191,
+                            AwayTeamId = 8,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 192,
+                            AwayTeamId = 1,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 193,
+                            AwayTeamId = 2,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 194,
+                            AwayTeamId = 3,
+                            HomeTeamId = 2
+                        },
+                        new
+                        {
+                            Id = 195,
+                            AwayTeamId = 4,
+                            HomeTeamId = 3
+                        },
+                        new
+                        {
+                            Id = 196,
+                            AwayTeamId = 5,
+                            HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 197,
+                            AwayTeamId = 6,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 198,
+                            AwayTeamId = 7,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 199,
+                            AwayTeamId = 8,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 200,
+                            AwayTeamId = 1,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 201,
+                            AwayTeamId = 3,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 202,
+                            AwayTeamId = 4,
+                            HomeTeamId = 2
+                        },
+                        new
+                        {
+                            Id = 203,
+                            AwayTeamId = 5,
+                            HomeTeamId = 3
+                        },
+                        new
+                        {
+                            Id = 204,
+                            AwayTeamId = 6,
+                            HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 205,
+                            AwayTeamId = 7,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 206,
+                            AwayTeamId = 8,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 207,
+                            AwayTeamId = 1,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 208,
+                            AwayTeamId = 2,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 209,
+                            AwayTeamId = 4,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 210,
+                            AwayTeamId = 5,
+                            HomeTeamId = 2
+                        },
+                        new
+                        {
+                            Id = 211,
+                            AwayTeamId = 6,
+                            HomeTeamId = 3
+                        },
+                        new
+                        {
+                            Id = 212,
+                            AwayTeamId = 7,
+                            HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 213,
+                            AwayTeamId = 8,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 214,
+                            AwayTeamId = 1,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 215,
+                            AwayTeamId = 2,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 216,
+                            AwayTeamId = 3,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 217,
+                            AwayTeamId = 5,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 218,
+                            AwayTeamId = 6,
+                            HomeTeamId = 2
+                        },
+                        new
+                        {
+                            Id = 219,
+                            AwayTeamId = 7,
+                            HomeTeamId = 3
+                        },
+                        new
+                        {
+                            Id = 220,
+                            AwayTeamId = 8,
+                            HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 221,
+                            AwayTeamId = 1,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 222,
+                            AwayTeamId = 2,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 223,
+                            AwayTeamId = 3,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 224,
+                            AwayTeamId = 4,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 225,
+                            AwayTeamId = 6,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 226,
+                            AwayTeamId = 7,
+                            HomeTeamId = 2
+                        },
+                        new
+                        {
+                            Id = 227,
+                            AwayTeamId = 8,
+                            HomeTeamId = 3
+                        },
+                        new
+                        {
+                            Id = 228,
+                            AwayTeamId = 1,
+                            HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 229,
+                            AwayTeamId = 2,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 230,
+                            AwayTeamId = 3,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 231,
+                            AwayTeamId = 4,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 232,
+                            AwayTeamId = 5,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 233,
+                            AwayTeamId = 7,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 234,
+                            AwayTeamId = 8,
+                            HomeTeamId = 2
+                        },
+                        new
+                        {
+                            Id = 235,
+                            AwayTeamId = 1,
+                            HomeTeamId = 3
+                        },
+                        new
+                        {
+                            Id = 236,
+                            AwayTeamId = 2,
+                            HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 237,
+                            AwayTeamId = 3,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 238,
+                            AwayTeamId = 4,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 239,
+                            AwayTeamId = 5,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 240,
+                            AwayTeamId = 6,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 241,
+                            AwayTeamId = 8,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 242,
+                            AwayTeamId = 1,
+                            HomeTeamId = 2
+                        },
+                        new
+                        {
+                            Id = 243,
+                            AwayTeamId = 2,
+                            HomeTeamId = 3
+                        },
+                        new
+                        {
+                            Id = 244,
+                            AwayTeamId = 3,
+                            HomeTeamId = 4
+                        },
+                        new
+                        {
+                            Id = 245,
+                            AwayTeamId = 4,
+                            HomeTeamId = 5
+                        },
+                        new
+                        {
+                            Id = 246,
+                            AwayTeamId = 5,
+                            HomeTeamId = 6
+                        },
+                        new
+                        {
+                            Id = 247,
+                            AwayTeamId = 6,
+                            HomeTeamId = 7
+                        },
+                        new
+                        {
+                            Id = 248,
+                            AwayTeamId = 7,
+                            HomeTeamId = 8
+                        },
+                        new
+                        {
+                            Id = 249,
+                            AwayTeamId = 2,
+                            HomeTeamId = 1
+                        },
+                        new
+                        {
+                            Id = 250,
+                            AwayTeamId = 3,
+                            HomeTeamId = 2
                         });
                 });
 

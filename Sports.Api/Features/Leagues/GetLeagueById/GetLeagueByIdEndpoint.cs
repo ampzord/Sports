@@ -32,7 +32,7 @@ public class GetLeagueByIdEndpoint(IMediator mediator) : Endpoint<GetLeagueByIdR
 
         if (result.IsError)
         {
-            await this.SendErrorAsync(result.FirstError, ct);
+            await this.SendErrorsAsync(result.Errors, ct);
             return;
         }
 
