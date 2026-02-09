@@ -196,6 +196,7 @@ A `BackgroundService` that listens on a RabbitMQ queue. When triggered from the 
 2. Assigns a random `TotalPasses` value (100-1000) to each match
 3. Supports multiple concurrent workers without double-processing
 4. Implemented using Pessimistic Locking to prevent deadlocks
+5. Idea behind this Worker being not part of .API is that it can be scaled (imagining the scenario where we are processing millions or billions of matches that need simulating the passes, within K8s we could enable auto scaling of this worker to help us, currently its triggered by the endpoint `matches/simulate` every request triggers a Worker of this).
 
 ### Seed Data
 
