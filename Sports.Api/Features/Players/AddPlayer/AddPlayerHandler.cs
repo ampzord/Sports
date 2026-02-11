@@ -1,6 +1,7 @@
 namespace Sports.Api.Features.Players.AddPlayer;
 
 using Sports.Api.Features.Players._Shared;
+using Sports.Api.Features.Teams._Shared;
 
 using ErrorOr;
 using MediatR;
@@ -22,14 +23,14 @@ public class AddPlayerHandler(SportsDbContext db, PlayerMapper mapper)
             cancellationToken);
 
         if (!teamExists)
-            errors.Add(Error.NotFound("Team.NotFound", "Team not found"));
+            errors.Add(TeamErrors.NotFound);
 
         var nameExists = await db.Players.AnyAsync(
             p => p.Name == command.Name,
             cancellationToken);
 
         if (nameExists)
-            errors.Add(Error.Conflict("Player.NameConflict", $"A player with the name '{command.Name}' already exists"));
+            errors.Add(PlayerErrors.NameConflict);
 
         if (errors.Count > 0)
             return errors;

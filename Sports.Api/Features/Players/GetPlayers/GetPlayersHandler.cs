@@ -2,6 +2,7 @@ namespace Sports.Api.Features.Players.GetPlayers;
 
 using System.Collections.Immutable;
 using Sports.Api.Features.Players._Shared;
+using Sports.Api.Features.Teams._Shared;
 
 using ErrorOr;
 using MediatR;
@@ -21,7 +22,7 @@ public class GetPlayersHandler(SportsDbContext db, PlayerMapper mapper, ILogger<
                 t => t.Id == query.TeamId, cancellationToken);
 
             if (!teamExists)
-                return Error.NotFound("Team.NotFound", "Team not found");
+                return TeamErrors.NotFound;
         }
 
         var players = await db.Players

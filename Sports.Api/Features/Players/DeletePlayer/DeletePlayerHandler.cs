@@ -3,6 +3,7 @@ namespace Sports.Api.Features.Players.DeletePlayer;
 using ErrorOr;
 using MediatR;
 using Sports.Api.Database;
+using Sports.Api.Features.Players._Shared;
 
 public class DeletePlayerHandler(SportsDbContext db)
     : IRequestHandler<DeletePlayerCommand, ErrorOr<Deleted>>
@@ -14,7 +15,7 @@ public class DeletePlayerHandler(SportsDbContext db)
         var player = await db.Players.FindAsync([command.Id], cancellationToken);
 
         if (player is null)
-            return Error.NotFound("Player.NotFound", "Player not found");
+            return PlayerErrors.NotFound;
 
         db.Players.Remove(player);
         await db.SaveChangesAsync(cancellationToken);

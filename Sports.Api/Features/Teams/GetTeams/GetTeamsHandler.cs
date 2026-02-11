@@ -1,6 +1,7 @@
 namespace Sports.Api.Features.Teams.GetTeams;
 
 using System.Collections.Immutable;
+using Sports.Api.Features.Leagues._Shared;
 using Sports.Api.Features.Teams._Shared;
 using ErrorOr;
 using MediatR;
@@ -20,7 +21,7 @@ public class GetTeamsHandler(SportsDbContext db, TeamMapper mapper)
                 l => l.Id == query.LeagueId, cancellationToken);
 
             if (!leagueExists)
-                return Error.NotFound("League.NotFound", "League not found");
+                return LeagueErrors.NotFound;
         }
 
         var teams = await db.Teams

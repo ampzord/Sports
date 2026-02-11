@@ -4,6 +4,7 @@ using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
+using Sports.Api.Features.Leagues._Shared;
 
 public class DeleteLeagueHandler(SportsDbContext db)
     : IRequestHandler<DeleteLeagueCommand, ErrorOr<Deleted>>
@@ -15,13 +16,13 @@ public class DeleteLeagueHandler(SportsDbContext db)
         var league = await db.Leagues.FindAsync([command.Id], cancellationToken);
 
         if (league is null)
-            return Error.NotFound("League.NotFound", "League not found");
+            return LeagueErrors.NotFound;
 
         var hasTeams = await db.Teams.AnyAsync(
             t => t.LeagueId == command.Id, cancellationToken);
 
         if (hasTeams)
-            return Error.Conflict("League.HasTeams", "Cannot delete a league that has teams");
+            return LeagueErrors.HasTeams;
 
         db.Leagues.Remove(league);
         await db.SaveChangesAsync(cancellationToken);

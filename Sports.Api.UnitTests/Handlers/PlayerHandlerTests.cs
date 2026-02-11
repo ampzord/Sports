@@ -1,10 +1,10 @@
-using ErrorOr;
 using Sports.Api.Database;
 using Sports.Api.Features.Players._Shared;
 using Sports.Api.Features.Players.AddPlayer;
 using Sports.Api.Features.Players.DeletePlayer;
 using Sports.Api.Features.Players.GetPlayerById;
 using Sports.Api.Features.Players.UpdatePlayer;
+using Sports.Api.Features.Teams._Shared;
 using Sports.Api.UnitTests.Infrastructure;
 using Sports.Shared.Entities;
 
@@ -29,18 +29,18 @@ public class PlayerHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("Team.NotFound");
-        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Should().Be(TeamErrors.NotFound);
     }
 
     [Fact]
     public async Task GivenDuplicateName_WhenAddPlayer_ThenReturnsConflict()
     {
         // Arrange
-        _db.Leagues.Add(new League { Id = 1, Name = "Premier League" });
-        _db.Teams.Add(new Team { Id = 1, Name = "Arsenal", LeagueId = 1 });
-        _db.Players.Add(new Player { Id = 1, Name = "Saka", Position = PlayerPosition.RW, TeamId = 1 });
-        await _db.SaveChangesAsync();
+        await new TestDataBuilder(_db)
+            .WithLeague()
+            .WithTeam()
+            .WithPlayer()
+            .SaveAsync();
 
         var handler = new AddPlayerHandler(_db, _mapper);
 
@@ -50,8 +50,7 @@ public class PlayerHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("Player.NameConflict");
-        result.FirstError.Type.Should().Be(ErrorType.Conflict);
+        result.FirstError.Should().Be(PlayerErrors.NameConflict);
     }
 
     [Fact]
@@ -66,8 +65,7 @@ public class PlayerHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("Player.NotFound");
-        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Should().Be(PlayerErrors.NotFound);
     }
 
     [Fact]
@@ -82,19 +80,19 @@ public class PlayerHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("Player.NotFound");
-        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Should().Be(PlayerErrors.NotFound);
     }
 
     [Fact]
     public async Task GivenDuplicateName_WhenUpdatePlayer_ThenReturnsConflict()
     {
         // Arrange
-        _db.Leagues.Add(new League { Id = 1, Name = "Premier League" });
-        _db.Teams.Add(new Team { Id = 1, Name = "Arsenal", LeagueId = 1 });
-        _db.Players.Add(new Player { Id = 1, Name = "Saka", Position = PlayerPosition.RW, TeamId = 1 });
-        _db.Players.Add(new Player { Id = 2, Name = "Odegaard", Position = PlayerPosition.CAM, TeamId = 1 });
-        await _db.SaveChangesAsync();
+        await new TestDataBuilder(_db)
+            .WithLeague()
+            .WithTeam()
+            .WithPlayer(1, "Saka")
+            .WithPlayer(2, "Odegaard", PlayerPosition.CAM)
+            .SaveAsync();
 
         var handler = new UpdatePlayerHandler(_db, _mapper);
 
@@ -104,8 +102,7 @@ public class PlayerHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("Player.NameConflict");
-        result.FirstError.Type.Should().Be(ErrorType.Conflict);
+        result.FirstError.Should().Be(PlayerErrors.NameConflict);
     }
 
     [Fact]
@@ -120,7 +117,6 @@ public class PlayerHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("Player.NotFound");
-        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Should().Be(PlayerErrors.NotFound);
     }
 }

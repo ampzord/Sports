@@ -4,6 +4,7 @@ using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
+using Sports.Api.Features.Teams._Shared;
 
 public class DeleteTeamHandler(SportsDbContext db)
     : IRequestHandler<DeleteTeamCommand, ErrorOr<Deleted>>
@@ -15,19 +16,19 @@ public class DeleteTeamHandler(SportsDbContext db)
         var team = await db.Teams.FindAsync([command.Id], cancellationToken);
 
         if (team is null)
-            return Error.NotFound("Team.NotFound", "Team not found");
+            return TeamErrors.NotFound;
 
         var hasPlayers = await db.Players.AnyAsync(
             p => p.TeamId == command.Id, cancellationToken);
 
         if (hasPlayers)
-            return Error.Conflict("Team.HasPlayers", "Cannot delete a team that has players");
+            return TeamErrors.HasPlayers;
 
         var hasMatches = await db.Matches.AnyAsync(
             m => m.HomeTeamId == command.Id || m.AwayTeamId == command.Id, cancellationToken);
 
         if (hasMatches)
-            return Error.Conflict("Team.HasMatches", "Cannot delete a team that has matches");
+            return TeamErrors.HasMatches;
 
         db.Teams.Remove(team);
         await db.SaveChangesAsync(cancellationToken);

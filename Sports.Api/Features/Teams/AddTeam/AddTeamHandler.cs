@@ -1,5 +1,6 @@
 namespace Sports.Api.Features.Teams.AddTeam;
 
+using Sports.Api.Features.Leagues._Shared;
 using Sports.Api.Features.Teams._Shared;
 
 using ErrorOr;
@@ -22,14 +23,14 @@ public class AddTeamHandler(SportsDbContext db, TeamMapper mapper)
             cancellationToken);
 
         if (!leagueExists)
-            errors.Add(Error.NotFound("League.NotFound", "League not found"));
+            errors.Add(LeagueErrors.NotFound);
 
         var nameExists = await db.Teams.AnyAsync(
             t => t.Name == command.Name,
             cancellationToken);
 
         if (nameExists)
-            errors.Add(Error.Conflict("Team.NameConflict", $"A team with the name '{command.Name}' already exists"));
+            errors.Add(TeamErrors.NameConflict);
 
         if (errors.Count > 0)
             return errors;

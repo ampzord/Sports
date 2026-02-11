@@ -1,5 +1,6 @@
 namespace Sports.Api.Features.Matches.AddMatch;
 
+using Sports.Api.Features.Leagues._Shared;
 using Sports.Api.Features.Matches._Shared;
 
 using ErrorOr;
@@ -18,24 +19,24 @@ public class AddMatchHandler(SportsDbContext db, MatchMapper mapper)
 
         var league = await db.Leagues.FindAsync([command.LeagueId], cancellationToken);
         if (league is null)
-            errors.Add(Error.NotFound("League.NotFound", "League not found"));
+            errors.Add(LeagueErrors.NotFound);
 
         var homeTeam = await db.Teams.FindAsync([command.HomeTeamId], cancellationToken);
         if (homeTeam is null)
-            errors.Add(Error.NotFound("HomeTeam.NotFound", "Home team not found"));
+            errors.Add(MatchErrors.HomeTeamNotFound);
 
         var awayTeam = await db.Teams.FindAsync([command.AwayTeamId], cancellationToken);
         if (awayTeam is null)
-            errors.Add(Error.NotFound("AwayTeam.NotFound", "Away team not found"));
+            errors.Add(MatchErrors.AwayTeamNotFound);
 
         if (errors.Count > 0)
             return errors;
 
         if (homeTeam!.LeagueId != awayTeam!.LeagueId)
-            errors.Add(Error.Validation("Match.DifferentLeagues", "Both teams must belong to the same league"));
+            errors.Add(MatchErrors.DifferentLeagues);
 
         if (homeTeam.LeagueId != command.LeagueId)
-            errors.Add(Error.Validation("Match.LeagueMismatch", "Teams do not belong to the specified league"));
+            errors.Add(MatchErrors.LeagueMismatch);
 
         if (errors.Count > 0)
             return errors;

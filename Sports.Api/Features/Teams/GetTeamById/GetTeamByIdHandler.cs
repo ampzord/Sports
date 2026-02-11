@@ -16,7 +16,7 @@ public class GetTeamByIdHandler(SportsDbContext db, TeamMapper mapper)
         var team = await db.Teams.FindAsync([query.Id], cancellationToken);
 
         if (team is null)
-            return Error.NotFound("Team.NotFound", "Team not found");
+            return TeamErrors.NotFound;
 
         return mapper.ToResponse(team);
     }

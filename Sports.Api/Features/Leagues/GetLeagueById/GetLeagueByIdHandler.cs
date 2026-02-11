@@ -16,7 +16,7 @@ public class GetLeagueByIdHandler(SportsDbContext db, LeagueMapper mapper)
         var league = await db.Leagues.FindAsync([query.Id], cancellationToken);
 
         if (league is null)
-            return Error.NotFound("League.NotFound", "League not found");
+            return LeagueErrors.NotFound;
 
         return mapper.ToResponse(league);
     }

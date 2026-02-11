@@ -1,12 +1,11 @@
-using ErrorOr;
 using Sports.Api.Database;
+using Sports.Api.Features.Leagues._Shared;
 using Sports.Api.Features.Matches._Shared;
 using Sports.Api.Features.Matches.AddMatch;
 using Sports.Api.Features.Matches.DeleteMatch;
 using Sports.Api.Features.Matches.GetMatchById;
 using Sports.Api.Features.Matches.UpdateMatch;
 using Sports.Api.UnitTests.Infrastructure;
-using Sports.Shared.Entities;
 
 namespace Sports.Api.UnitTests.Handlers;
 
@@ -21,10 +20,11 @@ public class MatchHandlerTests : IDisposable
     public async Task GivenNonExistentLeague_WhenAddMatch_ThenReturnsNotFound()
     {
         // Arrange
-        _db.Leagues.Add(new League { Id = 1, Name = "Premier League" });
-        _db.Teams.Add(new Team { Id = 1, Name = "Arsenal", LeagueId = 1 });
-        _db.Teams.Add(new Team { Id = 2, Name = "Chelsea", LeagueId = 1 });
-        await _db.SaveChangesAsync();
+        await new TestDataBuilder(_db)
+            .WithLeague()
+            .WithTeam(1, "Arsenal")
+            .WithTeam(2, "Chelsea")
+            .SaveAsync();
 
         var handler = new AddMatchHandler(_db, _mapper);
 
@@ -34,17 +34,17 @@ public class MatchHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("League.NotFound");
-        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Should().Be(LeagueErrors.NotFound);
     }
 
     [Fact]
     public async Task GivenNonExistentHomeTeam_WhenAddMatch_ThenReturnsNotFound()
     {
         // Arrange
-        _db.Leagues.Add(new League { Id = 1, Name = "Premier League" });
-        _db.Teams.Add(new Team { Id = 2, Name = "Chelsea", LeagueId = 1 });
-        await _db.SaveChangesAsync();
+        await new TestDataBuilder(_db)
+            .WithLeague()
+            .WithTeam(2, "Chelsea")
+            .SaveAsync();
 
         var handler = new AddMatchHandler(_db, _mapper);
 
@@ -54,17 +54,17 @@ public class MatchHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("HomeTeam.NotFound");
-        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Should().Be(MatchErrors.HomeTeamNotFound);
     }
 
     [Fact]
     public async Task GivenNonExistentAwayTeam_WhenAddMatch_ThenReturnsNotFound()
     {
         // Arrange
-        _db.Leagues.Add(new League { Id = 1, Name = "Premier League" });
-        _db.Teams.Add(new Team { Id = 1, Name = "Arsenal", LeagueId = 1 });
-        await _db.SaveChangesAsync();
+        await new TestDataBuilder(_db)
+            .WithLeague()
+            .WithTeam()
+            .SaveAsync();
 
         var handler = new AddMatchHandler(_db, _mapper);
 
@@ -74,19 +74,19 @@ public class MatchHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("AwayTeam.NotFound");
-        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Should().Be(MatchErrors.AwayTeamNotFound);
     }
 
     [Fact]
     public async Task GivenTeamsFromDifferentLeagues_WhenAddMatch_ThenReturnsValidationError()
     {
         // Arrange
-        _db.Leagues.Add(new League { Id = 1, Name = "Premier League" });
-        _db.Leagues.Add(new League { Id = 2, Name = "La Liga" });
-        _db.Teams.Add(new Team { Id = 1, Name = "Arsenal", LeagueId = 1 });
-        _db.Teams.Add(new Team { Id = 2, Name = "Barcelona", LeagueId = 2 });
-        await _db.SaveChangesAsync();
+        await new TestDataBuilder(_db)
+            .WithLeague(1, "Premier League")
+            .WithLeague(2, "La Liga")
+            .WithTeam(1, "Arsenal", leagueId: 1)
+            .WithTeam(2, "Barcelona", leagueId: 2)
+            .SaveAsync();
 
         var handler = new AddMatchHandler(_db, _mapper);
 
@@ -96,19 +96,19 @@ public class MatchHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("Match.DifferentLeagues");
-        result.FirstError.Type.Should().Be(ErrorType.Validation);
+        result.FirstError.Should().Be(MatchErrors.DifferentLeagues);
     }
 
     [Fact]
     public async Task GivenTeamsNotInSpecifiedLeague_WhenAddMatch_ThenReturnsValidationError()
     {
         // Arrange
-        _db.Leagues.Add(new League { Id = 1, Name = "Premier League" });
-        _db.Leagues.Add(new League { Id = 2, Name = "La Liga" });
-        _db.Teams.Add(new Team { Id = 1, Name = "Arsenal", LeagueId = 1 });
-        _db.Teams.Add(new Team { Id = 2, Name = "Chelsea", LeagueId = 1 });
-        await _db.SaveChangesAsync();
+        await new TestDataBuilder(_db)
+            .WithLeague(1, "Premier League")
+            .WithLeague(2, "La Liga")
+            .WithTeam(1, "Arsenal", leagueId: 1)
+            .WithTeam(2, "Chelsea", leagueId: 1)
+            .SaveAsync();
 
         var handler = new AddMatchHandler(_db, _mapper);
 
@@ -118,8 +118,7 @@ public class MatchHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("Match.LeagueMismatch");
-        result.FirstError.Type.Should().Be(ErrorType.Validation);
+        result.FirstError.Should().Be(MatchErrors.LeagueMismatch);
     }
 
     [Fact]
@@ -134,8 +133,7 @@ public class MatchHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("Match.NotFound");
-        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Should().Be(MatchErrors.NotFound);
     }
 
     [Fact]
@@ -150,19 +148,19 @@ public class MatchHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("Match.NotFound");
-        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Should().Be(MatchErrors.NotFound);
     }
 
     [Fact]
     public async Task GivenNonExistentHomeTeam_WhenUpdateMatch_ThenReturnsNotFound()
     {
         // Arrange
-        _db.Leagues.Add(new League { Id = 1, Name = "Premier League" });
-        _db.Teams.Add(new Team { Id = 1, Name = "Arsenal", LeagueId = 1 });
-        _db.Teams.Add(new Team { Id = 2, Name = "Chelsea", LeagueId = 1 });
-        _db.Matches.Add(new Match { Id = 1, HomeTeamId = 1, AwayTeamId = 2 });
-        await _db.SaveChangesAsync();
+        await new TestDataBuilder(_db)
+            .WithLeague()
+            .WithTeam(1, "Arsenal")
+            .WithTeam(2, "Chelsea")
+            .WithMatch(1, homeTeamId: 1, awayTeamId: 2)
+            .SaveAsync();
 
         var handler = new UpdateMatchHandler(_db, _mapper);
 
@@ -172,19 +170,19 @@ public class MatchHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("HomeTeam.NotFound");
-        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Should().Be(MatchErrors.HomeTeamNotFound);
     }
 
     [Fact]
     public async Task GivenNonExistentAwayTeam_WhenUpdateMatch_ThenReturnsNotFound()
     {
         // Arrange
-        _db.Leagues.Add(new League { Id = 1, Name = "Premier League" });
-        _db.Teams.Add(new Team { Id = 1, Name = "Arsenal", LeagueId = 1 });
-        _db.Teams.Add(new Team { Id = 2, Name = "Chelsea", LeagueId = 1 });
-        _db.Matches.Add(new Match { Id = 1, HomeTeamId = 1, AwayTeamId = 2 });
-        await _db.SaveChangesAsync();
+        await new TestDataBuilder(_db)
+            .WithLeague()
+            .WithTeam(1, "Arsenal")
+            .WithTeam(2, "Chelsea")
+            .WithMatch(1, homeTeamId: 1, awayTeamId: 2)
+            .SaveAsync();
 
         var handler = new UpdateMatchHandler(_db, _mapper);
 
@@ -194,21 +192,21 @@ public class MatchHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("AwayTeam.NotFound");
-        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Should().Be(MatchErrors.AwayTeamNotFound);
     }
 
     [Fact]
     public async Task GivenTeamsFromDifferentLeagues_WhenUpdateMatch_ThenReturnsValidationError()
     {
         // Arrange
-        _db.Leagues.Add(new League { Id = 1, Name = "Premier League" });
-        _db.Leagues.Add(new League { Id = 2, Name = "La Liga" });
-        _db.Teams.Add(new Team { Id = 1, Name = "Arsenal", LeagueId = 1 });
-        _db.Teams.Add(new Team { Id = 2, Name = "Chelsea", LeagueId = 1 });
-        _db.Teams.Add(new Team { Id = 3, Name = "Barcelona", LeagueId = 2 });
-        _db.Matches.Add(new Match { Id = 1, HomeTeamId = 1, AwayTeamId = 2 });
-        await _db.SaveChangesAsync();
+        await new TestDataBuilder(_db)
+            .WithLeague(1, "Premier League")
+            .WithLeague(2, "La Liga")
+            .WithTeam(1, "Arsenal", leagueId: 1)
+            .WithTeam(2, "Chelsea", leagueId: 1)
+            .WithTeam(3, "Barcelona", leagueId: 2)
+            .WithMatch(1, homeTeamId: 1, awayTeamId: 2)
+            .SaveAsync();
 
         var handler = new UpdateMatchHandler(_db, _mapper);
 
@@ -218,8 +216,7 @@ public class MatchHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("Match.DifferentLeagues");
-        result.FirstError.Type.Should().Be(ErrorType.Validation);
+        result.FirstError.Should().Be(MatchErrors.DifferentLeagues);
     }
 
     [Fact]
@@ -234,7 +231,6 @@ public class MatchHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("Match.NotFound");
-        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Should().Be(MatchErrors.NotFound);
     }
 }

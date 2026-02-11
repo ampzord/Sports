@@ -18,14 +18,14 @@ public class UpdatePlayerHandler(SportsDbContext db, PlayerMapper mapper)
         var player = await db.Players.FindAsync([command.Id], cancellationToken);
 
         if (player is null)
-            return Error.NotFound("Player.NotFound", "Player not found");
+            return PlayerErrors.NotFound;
 
         var nameExists = await db.Players.AnyAsync(
             p => p.Name == command.Name && p.Id != command.Id,
             cancellationToken);
 
         if (nameExists)
-            return Error.Conflict("Player.NameConflict", $"A player with the name '{command.Name}' already exists");
+            return PlayerErrors.NameConflict;
 
         mapper.Apply(command, player);
 

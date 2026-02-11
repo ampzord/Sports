@@ -18,13 +18,13 @@ public class UpdateLeagueHandler(SportsDbContext db, LeagueMapper mapper)
         var league = await db.Leagues.FindAsync([command.Id], cancellationToken);
 
         if (league is null)
-            return Error.NotFound("League.NotFound", "League not found");
+            return LeagueErrors.NotFound;
 
         var nameExists = await db.Leagues.AnyAsync(
             l => l.Name == command.Name && l.Id != command.Id, cancellationToken);
 
         if (nameExists)
-            return Error.Conflict("League.NameConflict", $"A league with the name '{command.Name}' already exists");
+            return LeagueErrors.NameConflict;
 
         mapper.Apply(command, league);
         await db.SaveChangesAsync(cancellationToken);

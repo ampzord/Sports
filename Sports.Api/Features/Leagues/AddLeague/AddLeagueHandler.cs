@@ -18,7 +18,7 @@ public class AddLeagueHandler(SportsDbContext db, LeagueMapper mapper)
             l => l.Name == command.Name, cancellationToken);
 
         if (nameExists)
-            return Error.Conflict("League.NameConflict", $"A league with the name '{command.Name}' already exists");
+            return LeagueErrors.NameConflict;
 
         var league = mapper.ToEntity(command);
 

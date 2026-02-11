@@ -1,6 +1,7 @@
 namespace Sports.Api.Features.Matches.GetMatches;
 
 using System.Collections.Immutable;
+using Sports.Api.Features.Leagues._Shared;
 using Sports.Api.Features.Matches._Shared;
 using ErrorOr;
 using MediatR;
@@ -20,7 +21,7 @@ public class GetMatchesHandler(SportsDbContext db, MatchMapper mapper)
                 l => l.Id == query.LeagueId, cancellationToken);
 
             if (!leagueExists)
-                return Error.NotFound("League.NotFound", "League not found");
+                return LeagueErrors.NotFound;
         }
 
         var matchesQuery = db.Matches

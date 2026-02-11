@@ -1,5 +1,6 @@
 namespace Sports.Api.Features.Teams.UpdateTeam;
 
+using Sports.Api.Features.Leagues._Shared;
 using Sports.Api.Features.Teams._Shared;
 
 using ErrorOr;
@@ -17,7 +18,7 @@ public class UpdateTeamHandler(SportsDbContext db, TeamMapper mapper)
         var team = await db.Teams.FindAsync([command.Id], cancellationToken);
 
         if (team is null)
-            return Error.NotFound("Team.NotFound", "Team not found");
+            return TeamErrors.NotFound;
 
         var errors = new List<Error>();
 
@@ -26,7 +27,7 @@ public class UpdateTeamHandler(SportsDbContext db, TeamMapper mapper)
             cancellationToken);
 
         if (nameExists)
-            errors.Add(Error.Conflict("Team.NameConflict", $"A team with the name '{command.Name}' already exists"));
+            errors.Add(TeamErrors.NameConflict);
 
         if (command.LeagueId.HasValue && command.LeagueId != team.LeagueId)
         {
@@ -34,14 +35,14 @@ public class UpdateTeamHandler(SportsDbContext db, TeamMapper mapper)
                 l => l.Id == command.LeagueId, cancellationToken);
 
             if (!leagueExists)
-                errors.Add(Error.NotFound("League.NotFound", "League not found"));
+                errors.Add(LeagueErrors.NotFound);
 
             var hasMatches = await db.Matches.AnyAsync(
                 m => m.HomeTeamId == command.Id || m.AwayTeamId == command.Id,
                 cancellationToken);
 
             if (hasMatches)
-                errors.Add(Error.Validation("Team.HasMatches", "Cannot change league for a team that has existing matches"));
+                errors.Add(TeamErrors.HasMatches);
         }
 
         if (errors.Count > 0)

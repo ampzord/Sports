@@ -6,7 +6,6 @@ using Sports.Api.Features.Leagues.DeleteLeague;
 using Sports.Api.Features.Leagues.GetLeagueById;
 using Sports.Api.Features.Leagues.UpdateLeague;
 using Sports.Api.UnitTests.Infrastructure;
-using Sports.Shared.Entities;
 
 namespace Sports.Api.UnitTests.Handlers;
 
@@ -21,8 +20,9 @@ public class LeagueHandlerTests : IDisposable
     public async Task GivenDuplicateName_WhenAddLeague_ThenReturnsConflict()
     {
         // Arrange
-        _db.Leagues.Add(new League { Name = "Premier League" });
-        await _db.SaveChangesAsync();
+        await new TestDataBuilder(_db)
+            .WithLeague()
+            .SaveAsync();
 
         var handler = new AddLeagueHandler(_db, _mapper);
 
@@ -32,8 +32,7 @@ public class LeagueHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("League.NameConflict");
-        result.FirstError.Type.Should().Be(ErrorType.Conflict);
+        result.FirstError.Should().Be(LeagueErrors.NameConflict);
     }
 
     [Fact]
@@ -48,8 +47,7 @@ public class LeagueHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("League.NotFound");
-        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Should().Be(LeagueErrors.NotFound);
     }
 
     [Fact]
@@ -64,17 +62,17 @@ public class LeagueHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("League.NotFound");
-        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Should().Be(LeagueErrors.NotFound);
     }
 
     [Fact]
     public async Task GivenDuplicateName_WhenUpdateLeague_ThenReturnsConflict()
     {
         // Arrange
-        _db.Leagues.Add(new League { Id = 1, Name = "Premier League" });
-        _db.Leagues.Add(new League { Id = 2, Name = "La Liga" });
-        await _db.SaveChangesAsync();
+        await new TestDataBuilder(_db)
+            .WithLeague(1, "Premier League")
+            .WithLeague(2, "La Liga")
+            .SaveAsync();
 
         var handler = new UpdateLeagueHandler(_db, _mapper);
 
@@ -84,8 +82,7 @@ public class LeagueHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("League.NameConflict");
-        result.FirstError.Type.Should().Be(ErrorType.Conflict);
+        result.FirstError.Should().Be(LeagueErrors.NameConflict);
     }
 
     [Fact]
@@ -100,17 +97,17 @@ public class LeagueHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("League.NotFound");
-        result.FirstError.Type.Should().Be(ErrorType.NotFound);
+        result.FirstError.Should().Be(LeagueErrors.NotFound);
     }
 
     [Fact]
     public async Task GivenLeagueWithTeams_WhenDeleteLeague_ThenReturnsConflict()
     {
         // Arrange
-        _db.Leagues.Add(new League { Id = 1, Name = "Premier League" });
-        _db.Teams.Add(new Team { Id = 1, Name = "Arsenal", LeagueId = 1 });
-        await _db.SaveChangesAsync();
+        await new TestDataBuilder(_db)
+            .WithLeague()
+            .WithTeam()
+            .SaveAsync();
 
         var handler = new DeleteLeagueHandler(_db);
 
@@ -120,7 +117,6 @@ public class LeagueHandlerTests : IDisposable
 
         // Assert
         result.IsError.Should().BeTrue();
-        result.FirstError.Code.Should().Be("League.HasTeams");
-        result.FirstError.Type.Should().Be(ErrorType.Conflict);
+        result.FirstError.Should().Be(LeagueErrors.HasTeams);
     }
 }

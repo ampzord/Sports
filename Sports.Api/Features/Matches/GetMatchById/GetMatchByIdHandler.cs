@@ -15,7 +15,7 @@ public class GetMatchByIdHandler(SportsDbContext db, MatchMapper mapper)
         var match = await db.Matches.FindAsync([query.Id], cancellationToken);
 
         if (match is null)
-            return Error.NotFound("Match.NotFound", "Match not found");
+            return MatchErrors.NotFound;
 
         return mapper.ToResponse(match);
     }
