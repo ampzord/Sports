@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Sports.Api.Features.Teams._Shared;
 
 namespace Sports.Api.Features.Teams.GetTeams;
@@ -8,7 +9,7 @@ using MediatR;
 using Sports.Api.Extensions;
 
 public class GetTeamsEndpoint(IMediator mediator) :
-    Endpoint<GetTeamsRequest, List<TeamResponse>>
+    Endpoint<GetTeamsRequest, ImmutableList<TeamResponse>>
 {
 
     public override void Configure()
@@ -16,7 +17,7 @@ public class GetTeamsEndpoint(IMediator mediator) :
         Get("/api/teams");
         AllowAnonymous();
         Description(b => b
-            .Produces<List<TeamResponse>>(200)
+            .Produces<ImmutableList<TeamResponse>>(200)
             .WithTags("Teams"));
         Summary(s =>
         {
