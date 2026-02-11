@@ -1,5 +1,6 @@
 namespace Sports.Api.Features.Leagues._Shared;
 
+using System.Collections.Immutable;
 using Riok.Mapperly.Abstractions;
 using Sports.Api.Features.Leagues.AddLeague;
 using Sports.Api.Features.Leagues.DeleteLeague;
@@ -12,7 +13,7 @@ public partial class LeagueMapper
     [MapperIgnoreSource(nameof(League.Teams))]
     public partial LeagueResponse ToResponse(League league);
 
-    public partial List<LeagueResponse> ToResponseList(List<League> leagues);
+    public partial ImmutableList<LeagueResponse> ToResponseList(List<League> leagues);
 
     public partial AddLeagueCommand ToCommand(AddLeagueRequest request);
 

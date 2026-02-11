@@ -1,5 +1,6 @@
 namespace Sports.Api.Features.Matches._Shared;
 
+using System.Collections.Immutable;
 using Riok.Mapperly.Abstractions;
 using Sports.Api.Features.Matches.AddMatch;
 using Sports.Api.Features.Matches.DeleteMatch;
@@ -13,7 +14,7 @@ public partial class MatchMapper
     [MapperIgnoreSource(nameof(Match.AwayTeam))]
     public partial MatchResponse ToResponse(Match match);
 
-    public partial List<MatchResponse> ToResponseList(List<Match> matches);
+    public partial ImmutableList<MatchResponse> ToResponseList(List<Match> matches);
 
     public partial AddMatchCommand ToCommand(AddMatchRequest request);
 

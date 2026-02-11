@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Sports.Api.Features.Players._Shared;
 
 namespace Sports.Api.Features.Players.GetPlayers;
@@ -6,4 +7,4 @@ namespace Sports.Api.Features.Players.GetPlayers;
 using ErrorOr;
 using MediatR;
 
-public record GetPlayersQuery(int? TeamId) : IRequest<ErrorOr<List<PlayerResponse>>>;
+public record GetPlayersQuery(int? TeamId) : IRequest<ErrorOr<ImmutableList<PlayerResponse>>>;

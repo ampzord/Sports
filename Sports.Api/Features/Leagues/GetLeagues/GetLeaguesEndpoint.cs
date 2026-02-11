@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Sports.Api.Features.Leagues._Shared;
 
 namespace Sports.Api.Features.Leagues.GetLeagues;
@@ -6,7 +7,7 @@ namespace Sports.Api.Features.Leagues.GetLeagues;
 using FastEndpoints;
 using MediatR;
 
-public class GetLeaguesEndpoint(IMediator mediator) : EndpointWithoutRequest<List<LeagueResponse>>
+public class GetLeaguesEndpoint(IMediator mediator) : EndpointWithoutRequest<ImmutableList<LeagueResponse>>
 {
 
     public override void Configure()
@@ -14,7 +15,7 @@ public class GetLeaguesEndpoint(IMediator mediator) : EndpointWithoutRequest<Lis
         Get("/api/leagues");
         AllowAnonymous();
         Description(b => b
-            .Produces<List<LeagueResponse>>(200)
+            .Produces<ImmutableList<LeagueResponse>>(200)
             .WithTags("Leagues"));
         Summary(s =>
         {

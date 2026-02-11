@@ -1,5 +1,6 @@
 namespace Sports.Api.Features.Players.GetPlayers;
 
+using System.Collections.Immutable;
 using Sports.Api.Features.Players._Shared;
 
 using ErrorOr;
@@ -8,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
 
 public class GetPlayersHandler(SportsDbContext db, PlayerMapper mapper, ILogger<GetPlayersHandler> logger)
-    : IRequestHandler<GetPlayersQuery, ErrorOr<List<PlayerResponse>>>
+    : IRequestHandler<GetPlayersQuery, ErrorOr<ImmutableList<PlayerResponse>>>
 {
-    public async Task<ErrorOr<List<PlayerResponse>>> Handle(
+    public async Task<ErrorOr<ImmutableList<PlayerResponse>>> Handle(
         GetPlayersQuery query,
         CancellationToken cancellationToken)
     {
