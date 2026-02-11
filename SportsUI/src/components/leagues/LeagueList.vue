@@ -20,7 +20,7 @@
       <table class="w-full">
         <thead class="bg-blue-50">
           <tr>
-            <th class="px-6 py-3 text-left text-blue-600 font-bold">League Name</th>
+            <th class="px-6 py-3 text-left text-blue-600 font-bold">Name</th>
             <th class="px-6 py-3 text-left text-blue-600 font-bold">Actions</th>
           </tr>
         </thead>
@@ -37,7 +37,7 @@
     <div v-if="!loading && !error" class="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
       <!-- Sticky header -->
       <div class="bg-blue-50 grid grid-cols-[1fr_1fr]">
-        <div class="px-6 py-3 text-left text-blue-600 font-bold">League Name</div>
+        <div class="px-6 py-3 text-left text-blue-600 font-bold">Name</div>
         <div class="px-6 py-3 text-left text-blue-600 font-bold">Actions</div>
       </div>
 
