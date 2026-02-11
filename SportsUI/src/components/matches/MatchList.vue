@@ -87,7 +87,16 @@
                   {{ getTeamName(matchRows[row.index].homeTeamId) }} vs {{ getTeamName(matchRows[row.index].awayTeamId) }}
                 </router-link>
               </div>
-              <div class="px-6 py-2.5 text-gray-600">{{ getMatchLeagueName(matchRows[row.index]) }}</div>
+              <div class="px-6 py-2.5">
+                <router-link
+                  v-if="getMatchLeagueId(matchRows[row.index])"
+                  :to="`/leagues/${getMatchLeagueId(matchRows[row.index])}`"
+                  class="text-blue-600 hover:text-blue-800 font-semibold"
+                >
+                  {{ getMatchLeagueName(matchRows[row.index]) }}
+                </router-link>
+                <span v-else class="text-gray-400">Unknown</span>
+              </div>
               <div class="px-6 py-2.5 text-center">
                 <Transition name="pop" mode="out-in">
                   <span
@@ -212,10 +221,15 @@ const getLeagueName = (leagueId) => {
   return league?.name || 'Unknown'
 }
 
-const getMatchLeagueName = (match) => {
+const getMatchLeagueId = (match) => {
   const team = (teams.value || []).find((t) => t.id === match.homeTeamId || String(t.id) === String(match.homeTeamId))
-  if (!team) return 'Unknown'
-  return getLeagueName(team.leagueId)
+  return team?.leagueId ?? null
+}
+
+const getMatchLeagueName = (match) => {
+  const leagueId = getMatchLeagueId(match)
+  if (!leagueId && leagueId !== 0) return 'Unknown'
+  return getLeagueName(leagueId)
 }
 
 const getTeamName = (teamId) => {

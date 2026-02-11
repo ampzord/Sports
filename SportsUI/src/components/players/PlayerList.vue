@@ -77,8 +77,15 @@
                 {{ playerRows[row.index].position || '-' }}
               </span>
             </div>
-            <div class="px-6 py-2.5 text-gray-600">
-              {{ getTeamName(playerRows[row.index].teamId) }}
+            <div class="px-6 py-2.5">
+              <router-link
+                v-if="playerRows[row.index].teamId"
+                :to="`/teams/${playerRows[row.index].teamId}`"
+                class="text-blue-600 hover:text-blue-800 font-semibold"
+              >
+                {{ getTeamName(playerRows[row.index].teamId) }}
+              </router-link>
+              <span v-else class="text-gray-400">Free Agent</span>
             </div>
             <div class="px-6 py-2.5 flex gap-2">
               <router-link

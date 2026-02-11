@@ -69,7 +69,14 @@
                 {{ teamRows[row.index].name }}
               </router-link>
             </div>
-            <div class="px-6 py-2.5 text-gray-600">{{ getLeagueName(teamRows[row.index].leagueId) }}</div>
+            <div class="px-6 py-2.5">
+              <router-link
+                :to="`/leagues/${teamRows[row.index].leagueId}`"
+                class="text-blue-600 hover:text-blue-800 font-semibold"
+              >
+                {{ getLeagueName(teamRows[row.index].leagueId) }}
+              </router-link>
+            </div>
             <div class="px-6 py-2.5 flex gap-2">
               <router-link
                 :to="`/teams/${teamRows[row.index].id}/edit`"
