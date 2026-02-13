@@ -6,6 +6,7 @@
 		<PackageReference Include="FastEndpoints" />
 		<PackageReference Include="FastEndpoints.Swagger" />
 		<PackageReference Include="FluentValidation" />
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
 		<PackageReference Include="MediatR" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
@@ -21,19 +22,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EditorConfigFiles Remove="C:\Users\anton\OneDrive\Documentos\ProgrammingProjects\Sports\Sports.Api\.editorconfig" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Include="C:\Users\anton\OneDrive\Documentos\ProgrammingProjects\Sports\Sports.Api\.editorconfig" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\Sports.Shared\Sports.Shared.csproj" />
-    <ProjectReference Include="..\Sports.ServiceDefaults\Sports.ServiceDefaults.csproj" />
+	  <ProjectReference Include="..\Sports.ServiceDefaults\Sports.ServiceDefaults.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Behaviors\" />
 	  <Folder Include="Features\Leagues\_Shared\Responses\" />
 	</ItemGroup>
 

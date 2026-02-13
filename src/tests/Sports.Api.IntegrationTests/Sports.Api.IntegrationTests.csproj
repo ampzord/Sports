@@ -8,13 +8,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="../Sports.Api/Sports.Api.csproj" />
+		<ProjectReference Include="../../app/Sports.Api/Sports.Api.csproj" />
 		<ProjectReference Include="../Sports.Tests.Shared/Sports.Tests.Shared.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="coverlet.collector" />
 		<PackageReference Include="FluentAssertions" />
+		<PackageReference Include="FluentAssertions.Web.v8" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" />
 		<PackageReference Include="Moq" />
@@ -26,6 +28,7 @@
 	<ItemGroup>
 		<Using Include="Xunit" />
 		<Using Include="FluentAssertions" />
+		<Using Include="FluentAssertions.Web" />
 	</ItemGroup>
 
 </Project>

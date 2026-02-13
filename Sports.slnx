@@ -1,21 +1,21 @@
-<Solution>
+﻿<Solution>
   <Folder Name="/Solution Items/">
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
-  <Folder Name="/src/">
-    <Project Path="Sports.Api/Sports.Api.csproj" />
-    <Project Path="Sports.MatchSimulationWorker/Sports.MatchSimulationWorker.csproj" Id="8177b4a7-4f22-43c2-a416-bb33a3a94a84" />
-    <Project Path="Sports.Shared/Sports.Shared.csproj" />
+  <Folder Name="/src/app/">
+    <Project Path="src/app/Sports.Api/Sports.Api.csproj" />
+    <Project Path="src/app/Sports.MatchSimulationWorker/Sports.MatchSimulationWorker.csproj" Id="8177b4a7-4f22-43c2-a416-bb33a3a94a84" />
+    <Project Path="src/app/Sports.Shared/Sports.Shared.csproj" />
   </Folder>
-  <Folder Name="/aspire/">
-    <Project Path="Sports.AppHost/Sports.AppHost.csproj" />
-    <Project Path="Sports.ServiceDefaults/Sports.ServiceDefaults.csproj" />
+  <Folder Name="/src/aspire/">
+    <Project Path="src/app/Sports.AppHost/Sports.AppHost.csproj" />
+    <Project Path="src/app/Sports.ServiceDefaults/Sports.ServiceDefaults.csproj" />
   </Folder>
-  <Folder Name="/tests/">
-    <Project Path="Sports.Api.IntegrationTests/Sports.Api.IntegrationTests.csproj" Id="7b0e0e3d-006e-4d8d-b744-d28e9e19a98e" />
-    <Project Path="Sports.Api.UnitTests/Sports.Api.UnitTests.csproj" Id="f124e4c5-1de6-497d-877f-594907f5977b" />
-    <Project Path="Sports.Tests.Shared/Sports.Tests.Shared.csproj" />
-    <Project Path="Sports.Worker.IntegrationTests/Sports.Worker.IntegrationTests.csproj" />
+  <Folder Name="/src/tests/">
+    <Project Path="src/tests/Sports.Api.IntegrationTests/Sports.Api.IntegrationTests.csproj" Id="7b0e0e3d-006e-4d8d-b744-d28e9e19a98e" />
+    <Project Path="src/tests/Sports.Api.UnitTests/Sports.Api.UnitTests.csproj" Id="f124e4c5-1de6-497d-877f-594907f5977b" />
+    <Project Path="src/tests/Sports.Tests.Shared/Sports.Tests.Shared.csproj" />
+    <Project Path="src/tests/Sports.Worker.IntegrationTests/Sports.Worker.IntegrationTests.csproj" />
   </Folder>
 </Solution>

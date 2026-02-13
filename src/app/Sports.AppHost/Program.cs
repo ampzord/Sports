@@ -10,7 +10,7 @@ var messaging = builder.AddRabbitMQ("messaging");
 
 var loki = builder.AddContainer("loki", "grafana/loki", "3.5.0")
     .WithHttpEndpoint(port: 3100, targetPort: 3100, name: "http")
-    .WithBindMount("../infrastructure/loki/loki-config.yaml", "/etc/loki/local-config.yaml")
+    .WithBindMount("../../../infrastructure/loki/loki-config.yaml", "/etc/loki/local-config.yaml")
     .WithArgs("-config.file=/etc/loki/local-config.yaml")
     .WithHttpHealthCheck("/ready");
 
@@ -20,7 +20,7 @@ var grafana = builder.AddContainer("grafana", "grafana/grafana", "11.6.0")
     .WithEnvironment("GF_SECURITY_ADMIN_PASSWORD", "admin")
     .WithEnvironment("GF_AUTH_ANONYMOUS_ENABLED", "true")
     .WithEnvironment("GF_AUTH_ANONYMOUS_ORG_ROLE", "Admin")
-    .WithBindMount("../infrastructure/grafana/provisioning", "/etc/grafana/provisioning")
+    .WithBindMount("../../../infrastructure/grafana/provisioning", "/etc/grafana/provisioning")
     .WaitFor(loki);
 
 var lokiEndpoint = loki.GetEndpoint("http");
@@ -41,7 +41,7 @@ builder.AddProject<Projects.Sports_MatchSimulationWorker>("sports-worker")
     .WaitFor(messaging)
     .WaitFor(loki);
 
-builder.AddNpmApp("sports-ui", "../SportsUI", "dev")
+builder.AddNpmApp("sports-ui", "../../../SportsUI", "dev")
 .WithReference(api)
 .WithHttpEndpoint(env: "PORT")
 .WithExternalHttpEndpoints();

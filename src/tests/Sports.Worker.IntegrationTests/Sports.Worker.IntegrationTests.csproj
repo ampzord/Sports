@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="../Sports.MatchSimulationWorker/Sports.MatchSimulationWorker.csproj" />
+		<ProjectReference Include="../../app/Sports.MatchSimulationWorker/Sports.MatchSimulationWorker.csproj" />
 		<ProjectReference Include="../Sports.Tests.Shared/Sports.Tests.Shared.csproj" />
 	</ItemGroup>
 
