@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿namespace Sports.Api.Features.Leagues.GetLeagueById;
 
-namespace Sports.Api.Features.Leagues.GetLeagueById;
+using Microsoft.AspNetCore.Mvc;
 
 public record GetLeagueByIdRequest([FromRoute] int Id)
 {

@@ -1,10 +1,8 @@
-using Sports.Api.Features.Players._Shared;
-
-namespace Sports.Api.Features.Players.UpdatePlayer;
-
+﻿namespace Sports.Api.Features.Players.UpdatePlayer;
 
 using ErrorOr;
 using MediatR;
+using Sports.Api.Features.Players._Shared;
 using Sports.Shared.Entities;
 
 public record UpdatePlayerCommand(

@@ -34,9 +34,9 @@ public static class ApiExtensions
             o.DocumentSettings = s =>
             {
                 s.Title = "Sports API";
-                s.Version = "v1";
+                s.Version = ApiRoutes.Version;
                 s.Description =
-                    "API for managing players, teams, "
+                    $"{ApiRoutes.Version} - API for managing players, teams, "
                     + "leagues and matches";
             };
         });

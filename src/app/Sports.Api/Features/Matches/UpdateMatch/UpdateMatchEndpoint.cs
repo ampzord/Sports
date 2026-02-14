@@ -1,11 +1,8 @@
-
+﻿namespace Sports.Api.Features.Matches.UpdateMatch;
 
 using FastEndpoints;
 using MediatR;
 using Sports.Api.Extensions;
-
-namespace Sports.Api.Features.Matches.UpdateMatch;
-
 using Sports.Api.Features.Matches._Shared;
 
 public class UpdateMatchEndpoint(IMediator mediator, MatchMapper mapper) : Endpoint<UpdateMatchRequest, MatchResponse>
@@ -13,7 +10,7 @@ public class UpdateMatchEndpoint(IMediator mediator, MatchMapper mapper) : Endpo
 
     public override void Configure()
     {
-        Put("/api/matches/{id}");
+        Put("matches/{id}");
         AllowAnonymous();
         Description(b => b
             .Produces<MatchResponse>(200)

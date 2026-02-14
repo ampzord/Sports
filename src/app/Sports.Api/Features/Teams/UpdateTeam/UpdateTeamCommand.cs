@@ -1,10 +1,8 @@
-using Sports.Api.Features.Teams._Shared;
-
-namespace Sports.Api.Features.Teams.UpdateTeam;
-
+﻿namespace Sports.Api.Features.Teams.UpdateTeam;
 
 using ErrorOr;
 using MediatR;
+using Sports.Api.Features.Teams._Shared;
 
 public record UpdateTeamCommand(
     int Id,

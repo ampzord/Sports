@@ -1,13 +1,13 @@
+﻿namespace Sports.Api.IntegrationTests.Infrastructure;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using RabbitMQ.Client;
 using RabbitMQ.Client.Exceptions;
+using RabbitMQ.Client;
 using Sports.Api.Database;
-
-namespace Sports.Api.IntegrationTests.Infrastructure;
 
 public class UnavailableServicesFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {

@@ -1,7 +1,6 @@
-namespace Sports.Api.Features.Players.UpdatePlayer;
+﻿namespace Sports.Api.Features.Players.UpdatePlayer;
 
 using Sports.Api.Features.Players._Shared;
-
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

@@ -1,3 +1,5 @@
+﻿namespace Sports.Api.IntegrationTests.Infrastructure;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
@@ -7,8 +9,6 @@ using RabbitMQ.Client;
 using Sports.Api.Database;
 using Sports.Tests.Shared;
 using Testcontainers.MsSql;
-
-namespace Sports.Api.IntegrationTests.Infrastructure;
 
 public class SportsApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {

@@ -1,10 +1,8 @@
-using Sports.Api.Features.Leagues._Shared;
-
-namespace Sports.Api.Features.Leagues.AddLeague;
-
+﻿namespace Sports.Api.Features.Leagues.AddLeague;
 
 using ErrorOr;
 using MediatR;
+using Sports.Api.Features.Leagues._Shared;
 
 public record AddLeagueCommand(
     string Name

@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿namespace Sports.Api.Features.Leagues.UpdateLeague;
 
-namespace Sports.Api.Features.Leagues.UpdateLeague;
+using Microsoft.AspNetCore.Mvc;
 
 public record UpdateLeagueRequest(
     [FromRoute] int Id,

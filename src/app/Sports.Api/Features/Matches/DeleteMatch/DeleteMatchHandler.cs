@@ -1,4 +1,4 @@
-namespace Sports.Api.Features.Matches.DeleteMatch;
+﻿namespace Sports.Api.Features.Matches.DeleteMatch;
 
 using ErrorOr;
 using MediatR;

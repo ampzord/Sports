@@ -1,7 +1,6 @@
-namespace Sports.Api.Features.Leagues.AddLeague;
+﻿namespace Sports.Api.Features.Leagues.AddLeague;
 
 using Sports.Api.Features.Leagues._Shared;
-
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

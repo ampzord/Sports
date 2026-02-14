@@ -1,7 +1,6 @@
-namespace Sports.Api.Features.Teams.AddTeam;
+﻿namespace Sports.Api.Features.Teams.AddTeam;
 
 using Sports.Api.Features.Teams._Shared;
-
 using FastEndpoints;
 using MediatR;
 using Sports.Api.Extensions;
@@ -12,7 +11,7 @@ public class AddTeamEndpoint(IMediator mediator, TeamMapper mapper) : Endpoint<A
 
     public override void Configure()
     {
-        Post("/api/teams");
+        Post("teams");
         AllowAnonymous();
         Description(b => b
             .Produces<TeamResponse>(201)

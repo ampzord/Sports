@@ -1,11 +1,8 @@
-
+﻿namespace Sports.Api.Features.Players.UpdatePlayer;
 
 using FastEndpoints;
 using MediatR;
 using Sports.Api.Extensions;
-
-namespace Sports.Api.Features.Players.UpdatePlayer;
-
 using Sports.Api.Features.Players._Shared;
 
 public class UpdatePlayerEndpoint(IMediator mediator, PlayerMapper mapper) : Endpoint<UpdatePlayerRequest, PlayerResponse>
@@ -13,7 +10,7 @@ public class UpdatePlayerEndpoint(IMediator mediator, PlayerMapper mapper) : End
 
     public override void Configure()
     {
-        Put("/api/players/{id}");
+        Put("players/{id}");
         AllowAnonymous();
         Description(b => b
             .Produces<PlayerResponse>(200)

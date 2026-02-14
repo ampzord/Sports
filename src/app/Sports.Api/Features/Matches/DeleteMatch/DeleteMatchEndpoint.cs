@@ -9,7 +9,7 @@ public class DeleteMatchEndpoint(IMediator mediator, MatchMapper mapper) : Endpo
 {
     public override void Configure()
     {
-        Delete("/api/matches/{id}");
+        Delete("matches/{id}");
         AllowAnonymous();
         Description(b => b
             .Produces(204)

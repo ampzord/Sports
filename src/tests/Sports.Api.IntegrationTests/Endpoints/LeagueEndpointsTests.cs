@@ -1,10 +1,10 @@
-using System.Net.Http.Json;
+﻿namespace Sports.Api.IntegrationTests.Endpoints;
+
 using Sports.Api.Features.Leagues._Shared;
 using Sports.Api.Features.Leagues.AddLeague;
 using Sports.Api.IntegrationTests.Infrastructure;
 using Sports.Tests.Shared;
-
-namespace Sports.Api.IntegrationTests.Endpoints;
+using System.Net.Http.Json;
 
 public class LeagueEndpointsTests(SportsApiFactory factory) : IntegrationTestBase(factory)
 {
@@ -13,7 +13,7 @@ public class LeagueEndpointsTests(SportsApiFactory factory) : IntegrationTestBas
     public async Task GivenNoLeagues_WhenGetAll_ThenReturnsEmptyList()
     {
         // Act
-        var leagues = await Client.GetFromJsonAsync<List<LeagueResponse>>("/api/leagues");
+        var leagues = await Client.GetFromJsonAsync<List<LeagueResponse>>($"/{ApiRoutes.Prefix}/leagues");
 
         // Assert
         leagues.Should().BeEmpty();
@@ -24,7 +24,7 @@ public class LeagueEndpointsTests(SportsApiFactory factory) : IntegrationTestBas
     {
         // Act
         var response = await Client.PostAsJsonAsync(
-            "/api/leagues", new AddLeagueRequest("Premier League"));
+            $"/{ApiRoutes.Prefix}/leagues", new AddLeagueRequest("Premier League"));
 
         // Assert
         response.Should().Be201Created();
@@ -42,7 +42,7 @@ public class LeagueEndpointsTests(SportsApiFactory factory) : IntegrationTestBas
         var created = await Client.CreateLeagueAsync("La Liga");
 
         // Act
-        var response = await Client.GetAsync($"/api/leagues/{created.Id}");
+        var response = await Client.GetAsync($"/{ApiRoutes.Prefix}/leagues/{created.Id}");
 
         // Assert
         response.Should().Be200Ok();
@@ -54,7 +54,7 @@ public class LeagueEndpointsTests(SportsApiFactory factory) : IntegrationTestBas
     public async Task GivenNonExistentId_WhenGetById_ThenReturnsNotFound()
     {
         // Act
-        var response = await Client.GetAsync("/api/leagues/99999");
+        var response = await Client.GetAsync($"/{ApiRoutes.Prefix}/leagues/99999");
 
         // Assert
         response.Should().Be404NotFound();
@@ -68,7 +68,7 @@ public class LeagueEndpointsTests(SportsApiFactory factory) : IntegrationTestBas
 
         // Act
         var response = await Client.PutAsJsonAsync(
-            $"/api/leagues/{created.Id}", new { Name = "Ligue 1" });
+            $"/{ApiRoutes.Prefix}/leagues/{created.Id}", new { Name = "Ligue 1" });
 
         // Assert
         response.Should().Be200Ok();
@@ -83,21 +83,21 @@ public class LeagueEndpointsTests(SportsApiFactory factory) : IntegrationTestBas
         var created = await Client.CreateLeagueAsync("Eredivisie");
 
         // Act
-        var response = await Client.DeleteAsync($"/api/leagues/{created.Id}");
+        var response = await Client.DeleteAsync($"/{ApiRoutes.Prefix}/leagues/{created.Id}");
 
         // Assert
         response.Should().Be204NoContent();
     }
 
     [Fact]
-    public async Task GivenLeagueWithTeams_WhenDelete_ThenReturnsBadRequest()
+    public async Task GivenLeagueWithTeams_WhenDelete_ThenReturnsConflict()
     {
         // Arrange
         var league = await Client.CreateLeagueAsync("Serie A");
         await Client.CreateTeamAsync(league.Id, "AC Milan");
 
         // Act
-        var response = await Client.DeleteAsync($"/api/leagues/{league.Id}");
+        var response = await Client.DeleteAsync($"/{ApiRoutes.Prefix}/leagues/{league.Id}");
 
         // Assert
         response.Should().Be409Conflict();

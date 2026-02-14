@@ -1,7 +1,6 @@
-namespace Sports.Api.Features.Players.GetPlayerById;
+﻿namespace Sports.Api.Features.Players.GetPlayerById;
 
 using Sports.Api.Features.Players._Shared;
-
 using ErrorOr;
 using MediatR;
 using Sports.Api.Database;

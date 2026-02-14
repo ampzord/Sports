@@ -1,6 +1,6 @@
-﻿using FastEndpoints;
+﻿namespace Sports.Api.Extensions;
 
-namespace Sports.Api.Extensions;
+using FastEndpoints;
 
 public static class EndpointExtensions
 {

@@ -1,18 +1,16 @@
-using Sports.Api.Features.Players._Shared;
-
-namespace Sports.Api.Features.Players.GetPlayerById;
-
+﻿namespace Sports.Api.Features.Players.GetPlayerById;
 
 using FastEndpoints;
 using MediatR;
 using Sports.Api.Extensions;
+using Sports.Api.Features.Players._Shared;
 
 public class GetPlayerByIdEndpoint(IMediator mediator) : Endpoint<GetPlayerByIdRequest, PlayerResponse>
 {
 
     public override void Configure()
     {
-        Get("/api/players/{id}");
+        Get("players/{id}");
         AllowAnonymous();
         Description(b => b
             .Produces<PlayerResponse>(200)

@@ -1,12 +1,10 @@
-using System.Collections.Immutable;
-using Sports.Api.Features.Matches._Shared;
-
-namespace Sports.Api.Features.Matches.GetMatches;
-
+﻿namespace Sports.Api.Features.Matches.GetMatches;
 
 using FastEndpoints;
 using MediatR;
 using Sports.Api.Extensions;
+using Sports.Api.Features.Matches._Shared;
+using System.Collections.Immutable;
 
 public class GetMatchesEndpoint(IMediator mediator) :
     Endpoint<GetMatchesRequest, ImmutableList<MatchResponse>>
@@ -14,7 +12,7 @@ public class GetMatchesEndpoint(IMediator mediator) :
 
     public override void Configure()
     {
-        Get("/api/matches");
+        Get("matches");
         AllowAnonymous();
         Description(b => b
             .Produces<ImmutableList<MatchResponse>>(200)

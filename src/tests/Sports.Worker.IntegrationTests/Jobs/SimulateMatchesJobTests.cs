@@ -1,10 +1,10 @@
+﻿namespace Sports.Worker.IntegrationTests.Jobs;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Sports.MatchSimulationWorker.Jobs;
 using Sports.Worker.IntegrationTests.Infrastructure;
-
-namespace Sports.Worker.IntegrationTests.Jobs;
 
 [Collection("Worker")]
 public class SimulateMatchesJobTests(WorkerDatabaseFixture fixture)

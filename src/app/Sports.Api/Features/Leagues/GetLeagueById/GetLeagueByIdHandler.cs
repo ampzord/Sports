@@ -1,7 +1,6 @@
-namespace Sports.Api.Features.Leagues.GetLeagueById;
+﻿namespace Sports.Api.Features.Leagues.GetLeagueById;
 
 using Sports.Api.Features.Leagues._Shared;
-
 using ErrorOr;
 using MediatR;
 using Sports.Api.Database;

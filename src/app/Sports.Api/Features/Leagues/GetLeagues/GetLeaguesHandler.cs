@@ -1,8 +1,7 @@
-namespace Sports.Api.Features.Leagues.GetLeagues;
+﻿namespace Sports.Api.Features.Leagues.GetLeagues;
 
 using System.Collections.Immutable;
 using Sports.Api.Features.Leagues._Shared;
-
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;

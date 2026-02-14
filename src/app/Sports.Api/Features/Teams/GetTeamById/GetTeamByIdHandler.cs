@@ -1,10 +1,9 @@
 namespace Sports.Api.Features.Teams.GetTeamById;
 
-using Sports.Api.Features.Teams._Shared;
-
 using ErrorOr;
 using MediatR;
 using Sports.Api.Database;
+using Sports.Api.Features.Teams._Shared;
 
 public class GetTeamByIdHandler(SportsDbContext db, TeamMapper mapper)
     : IRequestHandler<GetTeamByIdQuery, ErrorOr<TeamResponse>>

@@ -10,7 +10,7 @@ public class DeleteTeamEndpoint(IMediator mediator, TeamMapper mapper) : Endpoin
 
     public override void Configure()
     {
-        Delete("/api/teams/{id}");
+        Delete("teams/{id}");
         AllowAnonymous();
         Description(b => b
             .Produces(204)

@@ -1,8 +1,7 @@
-namespace Sports.Api.Features.Teams.AddTeam;
+﻿namespace Sports.Api.Features.Teams.AddTeam;
 
 using Sports.Api.Features.Leagues._Shared;
 using Sports.Api.Features.Teams._Shared;
-
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

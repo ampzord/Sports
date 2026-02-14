@@ -1,7 +1,6 @@
-namespace Sports.Api.Features.Players.AddPlayer;
+﻿namespace Sports.Api.Features.Players.AddPlayer;
 
 using Sports.Api.Features.Players._Shared;
-
 using FastEndpoints;
 using MediatR;
 using Sports.Api.Extensions;
@@ -12,7 +11,7 @@ public class AddPlayerEndpoint(IMediator mediator, PlayerMapper mapper) : Endpoi
 
     public override void Configure()
     {
-        Post("/api/players");
+        Post("players");
         AllowAnonymous();
         Description(b => b
             .Produces<PlayerResponse>(201)

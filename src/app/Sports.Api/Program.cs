@@ -2,6 +2,7 @@ using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Sports.Api;
 using Sports.Api.Database;
 using Sports.Api.DependencyInjection;
 using Sports.Api.Extensions;
@@ -57,22 +58,27 @@ app.UseHttpsRedirection();
 app.UseStatusCodePages();
 
 app
-.UseFastEndpoints(c => c.Errors.UseProblemDetails(x =>
+.UseFastEndpoints(c =>
 {
-    x.AllowDuplicateErrors = true;
-    x.IndicateErrorCode = true;
-    x.IndicateErrorSeverity = true;
-    x.TypeValue =
-        "https://tools.ietf.org/html/rfc9110#section-15.5.1";
-    x.TitleValue =
-        "One or more validation errors occurred.";
-    x.TitleTransformer = pd => pd.Status switch
+    c.Endpoints.RoutePrefix = ApiRoutes.Prefix;
+
+    c.Errors.UseProblemDetails(x =>
     {
-        400 => "Validation Error",
-        404 => "Not Found",
-        _ => "One or more errors occurred!"
-    };
-}));
+        x.AllowDuplicateErrors = true;
+        x.IndicateErrorCode = true;
+        x.IndicateErrorSeverity = true;
+        x.TypeValue =
+            "https://tools.ietf.org/html/rfc9110#section-15.5.1";
+        x.TitleValue =
+            "One or more validation errors occurred.";
+        x.TitleTransformer = pd => pd.Status switch
+        {
+            400 => "Validation Error",
+            404 => "Not Found",
+            _ => "One or more errors occurred!"
+        };
+    });
+});
 
 app.MapDefaultEndpoints();
 

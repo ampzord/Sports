@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿namespace Sports.Api.Features.Teams.UpdateTeam;
 
-namespace Sports.Api.Features.Teams.UpdateTeam;
+using Microsoft.AspNetCore.Mvc;
 
 public record UpdateTeamRequest(
     [FromRoute] int Id,

@@ -1,7 +1,6 @@
-namespace Sports.Api.Features.Matches.UpdateMatch;
+﻿namespace Sports.Api.Features.Matches.UpdateMatch;
 
 using Sports.Api.Features.Matches._Shared;
-
 using ErrorOr;
 using MediatR;
 using Sports.Api.Database;

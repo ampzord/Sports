@@ -1,7 +1,6 @@
-namespace Sports.Api.Features.Leagues.UpdateLeague;
+﻿namespace Sports.Api.Features.Leagues.UpdateLeague;
 
 using Sports.Api.Features.Leagues._Shared;
-
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

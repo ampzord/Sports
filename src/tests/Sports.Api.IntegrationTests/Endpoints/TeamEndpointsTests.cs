@@ -1,10 +1,10 @@
-using System.Net.Http.Json;
+﻿namespace Sports.Api.IntegrationTests.Endpoints;
+
 using Sports.Api.Features.Teams._Shared;
 using Sports.Api.Features.Teams.AddTeam;
 using Sports.Api.IntegrationTests.Infrastructure;
 using Sports.Tests.Shared;
-
-namespace Sports.Api.IntegrationTests.Endpoints;
+using System.Net.Http.Json;
 
 public class TeamEndpointsTests(SportsApiFactory factory) : IntegrationTestBase(factory)
 {
@@ -16,7 +16,7 @@ public class TeamEndpointsTests(SportsApiFactory factory) : IntegrationTestBase(
 
         // Act
         var response = await Client.PostAsJsonAsync(
-            "/api/teams", new AddTeamRequest(league.Id, "Arsenal"));
+            $"/{ApiRoutes.Prefix}/teams", new AddTeamRequest(league.Id, "Arsenal"));
 
         // Assert
         response.Should().Be201Created();
@@ -35,7 +35,7 @@ public class TeamEndpointsTests(SportsApiFactory factory) : IntegrationTestBase(
         var created = await Client.CreateTeamAsync(league.Id, "Barcelona");
 
         // Act
-        var response = await Client.GetAsync($"/api/teams/{created.Id}");
+        var response = await Client.GetAsync($"/{ApiRoutes.Prefix}/teams/{created.Id}");
 
         // Assert
         response.Should().Be200Ok();
@@ -52,7 +52,7 @@ public class TeamEndpointsTests(SportsApiFactory factory) : IntegrationTestBase(
         await Client.CreateTeamAsync(league.Id, "Inter Milan");
 
         // Act
-        var response = await Client.GetAsync($"/api/teams?leagueId={league.Id}");
+        var response = await Client.GetAsync($"/{ApiRoutes.Prefix}/teams?leagueId={league.Id}");
 
         // Assert
         response.Should().Be200Ok();
@@ -70,7 +70,7 @@ public class TeamEndpointsTests(SportsApiFactory factory) : IntegrationTestBase(
 
         // Act
         var response = await Client.PutAsJsonAsync(
-            $"/api/teams/{created.Id}",
+            $"/{ApiRoutes.Prefix}/teams/{created.Id}",
             new { Name = "Updated Team", LeagueId = league.Id });
 
         // Assert
@@ -87,7 +87,7 @@ public class TeamEndpointsTests(SportsApiFactory factory) : IntegrationTestBase(
         var created = await Client.CreateTeamAsync(league.Id, "PSG");
 
         // Act
-        var response = await Client.DeleteAsync($"/api/teams/{created.Id}");
+        var response = await Client.DeleteAsync($"/{ApiRoutes.Prefix}/teams/{created.Id}");
 
         // Assert
         response.Should().Be204NoContent();
@@ -97,7 +97,7 @@ public class TeamEndpointsTests(SportsApiFactory factory) : IntegrationTestBase(
     public async Task GivenNonExistentId_WhenGetById_ThenReturnsNotFound()
     {
         // Act
-        var response = await Client.GetAsync("/api/teams/99999");
+        var response = await Client.GetAsync($"/{ApiRoutes.Prefix}/teams/99999");
 
         // Assert
         response.Should().Be404NotFound();

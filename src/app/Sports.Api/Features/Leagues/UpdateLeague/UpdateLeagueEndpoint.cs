@@ -1,11 +1,8 @@
-
+﻿namespace Sports.Api.Features.Leagues.UpdateLeague;
 
 using FastEndpoints;
 using MediatR;
 using Sports.Api.Extensions;
-
-namespace Sports.Api.Features.Leagues.UpdateLeague;
-
 using Sports.Api.Features.Leagues._Shared;
 
 public class UpdateLeagueEndpoint(IMediator mediator, LeagueMapper mapper) : Endpoint<UpdateLeagueRequest, LeagueResponse>
@@ -13,7 +10,7 @@ public class UpdateLeagueEndpoint(IMediator mediator, LeagueMapper mapper) : End
 
     public override void Configure()
     {
-        Put("/api/leagues/{id}");
+        Put("leagues/{id}");
         AllowAnonymous();
         Description(b => b
             .Produces<LeagueResponse>(200)

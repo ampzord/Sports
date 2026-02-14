@@ -1,5 +1,5 @@
-using FastEndpoints;
+﻿namespace Sports.Api.Features.Players.GetPlayers;
 
-namespace Sports.Api.Features.Players.GetPlayers;
+using FastEndpoints;
 
 public record GetPlayersRequest([property: QueryParam] int? TeamId);

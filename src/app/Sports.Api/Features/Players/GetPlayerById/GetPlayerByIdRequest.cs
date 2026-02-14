@@ -1,5 +1,5 @@
-using Microsoft.AspNetCore.Mvc;
+﻿namespace Sports.Api.Features.Players.GetPlayerById;
 
-namespace Sports.Api.Features.Players.GetPlayerById;
+using Microsoft.AspNetCore.Mvc;
 
 public record GetPlayerByIdRequest([FromRoute] int Id);

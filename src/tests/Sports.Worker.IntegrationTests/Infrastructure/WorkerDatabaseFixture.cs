@@ -1,10 +1,10 @@
+﻿namespace Sports.Worker.IntegrationTests.Infrastructure;
+
 using Microsoft.EntityFrameworkCore;
 using Sports.MatchSimulationWorker.Database;
 using Sports.Shared.Entities;
 using Sports.Tests.Shared;
 using Testcontainers.MsSql;
-
-namespace Sports.Worker.IntegrationTests.Infrastructure;
 
 public class WorkerDatabaseFixture : IAsyncLifetime
 {

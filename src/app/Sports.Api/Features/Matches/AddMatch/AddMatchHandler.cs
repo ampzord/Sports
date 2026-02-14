@@ -1,11 +1,10 @@
 namespace Sports.Api.Features.Matches.AddMatch;
 
-using Sports.Api.Features.Leagues._Shared;
-using Sports.Api.Features.Matches._Shared;
-
 using ErrorOr;
 using MediatR;
 using Sports.Api.Database;
+using Sports.Api.Features.Leagues._Shared;
+using Sports.Api.Features.Matches._Shared;
 
 public class AddMatchHandler(SportsDbContext db, MatchMapper mapper)
     : IRequestHandler<AddMatchCommand, ErrorOr<MatchResponse>>

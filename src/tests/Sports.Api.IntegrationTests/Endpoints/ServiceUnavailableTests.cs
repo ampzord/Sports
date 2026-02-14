@@ -1,9 +1,9 @@
-using System.Net;
-using System.Net.Http.Json;
+﻿namespace Sports.Api.IntegrationTests.Endpoints;
+
 using Microsoft.AspNetCore.Mvc;
 using Sports.Api.IntegrationTests.Infrastructure;
-
-namespace Sports.Api.IntegrationTests.Endpoints;
+using System.Net.Http.Json;
+using System.Net;
 
 [Collection("Unavailable")]
 public class ServiceUnavailableTests(UnavailableServicesFactory factory)
@@ -15,7 +15,7 @@ public class ServiceUnavailableTests(UnavailableServicesFactory factory)
         var client = factory.CreateClient();
 
         // Act
-        var response = await client.GetAsync("/api/leagues");
+        var response = await client.GetAsync($"/{ApiRoutes.Prefix}/leagues");
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
@@ -37,7 +37,7 @@ public class ServiceUnavailableTests(UnavailableServicesFactory factory)
         var client = factory.CreateClient();
 
         // Act
-        var response = await client.PostAsync("/api/matches/simulate", null);
+        var response = await client.PostAsync($"/{ApiRoutes.Prefix}/matches/simulate", null);
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);

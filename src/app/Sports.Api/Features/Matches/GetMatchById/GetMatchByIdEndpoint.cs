@@ -1,18 +1,16 @@
-using Sports.Api.Features.Matches._Shared;
-
-namespace Sports.Api.Features.Matches.GetMatchById;
-
+﻿namespace Sports.Api.Features.Matches.GetMatchById;
 
 using FastEndpoints;
 using MediatR;
 using Sports.Api.Extensions;
+using Sports.Api.Features.Matches._Shared;
 
 public class GetMatchByIdEndpoint(IMediator mediator) : Endpoint<GetMatchByIdRequest, MatchResponse>
 {
 
     public override void Configure()
     {
-        Get("/api/matches/{id}");
+        Get("matches/{id}");
         AllowAnonymous();
         Description(b => b
             .Produces<MatchResponse>(200)

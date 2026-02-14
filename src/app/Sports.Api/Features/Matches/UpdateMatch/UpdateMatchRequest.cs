@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿namespace Sports.Api.Features.Matches.UpdateMatch;
 
-namespace Sports.Api.Features.Matches.UpdateMatch;
+using Microsoft.AspNetCore.Mvc;
 
 public record UpdateMatchRequest(
     [FromRoute] int Id,

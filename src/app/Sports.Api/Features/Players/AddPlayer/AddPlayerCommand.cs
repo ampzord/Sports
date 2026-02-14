@@ -1,10 +1,8 @@
-using Sports.Api.Features.Players._Shared;
-
-namespace Sports.Api.Features.Players.AddPlayer;
-
+﻿namespace Sports.Api.Features.Players.AddPlayer;
 
 using ErrorOr;
 using MediatR;
+using Sports.Api.Features.Players._Shared;
 using Sports.Shared.Entities;
 
 public record AddPlayerCommand(

@@ -39,20 +39,16 @@ public static class Extensions
 
         builder.Services.AddOpenTelemetry()
             .WithMetrics(metrics =>
-            {
                 metrics
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddRuntimeInstrumentation();
-            })
+                    .AddRuntimeInstrumentation())
             .WithTracing(tracing =>
-            {
                 tracing
                     .AddSource(builder.Environment.ApplicationName)
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddSqlClientInstrumentation();
-            });
+                    .AddSqlClientInstrumentation());
 
         builder.AddOpenTelemetryExporters();
 
@@ -82,9 +78,7 @@ public static class Extensions
             builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
 
         if (useOtlpExporter)
-        {
             builder.Services.AddOpenTelemetry().UseOtlpExporter();
-        }
 
         return builder;
     }

@@ -29,10 +29,8 @@ public class GetMatchesHandler(SportsDbContext db, MatchMapper mapper)
             .AsQueryable();
 
         if (query.LeagueId is not null)
-        {
             matchesQuery = matchesQuery
                 .Where(m => m.HomeTeam.LeagueId == query.LeagueId);
-        }
 
         var matches = await matchesQuery.ToListAsync(cancellationToken);
 

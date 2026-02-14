@@ -1,10 +1,8 @@
-using Sports.Api.Features.Matches._Shared;
-
-namespace Sports.Api.Features.Matches.AddMatch;
-
+﻿namespace Sports.Api.Features.Matches.AddMatch;
 
 using ErrorOr;
 using MediatR;
+using Sports.Api.Features.Matches._Shared;
 
 public record AddMatchCommand(
     int LeagueId,

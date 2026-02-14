@@ -1,7 +1,6 @@
-namespace Sports.Api.Features.Matches.AddMatch;
+﻿namespace Sports.Api.Features.Matches.AddMatch;
 
 using Sports.Api.Features.Matches._Shared;
-
 using FastEndpoints;
 using MediatR;
 using Sports.Api.Extensions;
@@ -12,7 +11,7 @@ public class AddMatchEndpoint(IMediator mediator, MatchMapper mapper) : Endpoint
 
     public override void Configure()
     {
-        Post("/api/matches");
+        Post("matches");
         AllowAnonymous();
         Description(b => b
             .Produces<MatchResponse>(201)

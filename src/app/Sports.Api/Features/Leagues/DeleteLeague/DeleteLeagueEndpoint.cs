@@ -10,7 +10,7 @@ public class DeleteLeagueEndpoint(IMediator mediator, LeagueMapper mapper) : End
 
     public override void Configure()
     {
-        Delete("/api/leagues/{id}");
+        Delete("leagues/{id}");
         AllowAnonymous();
         Description(b => b
             .Produces(204)

@@ -1,9 +1,8 @@
-namespace Sports.Api.Features.Players.GetPlayers;
+﻿namespace Sports.Api.Features.Players.GetPlayers;
 
 using System.Collections.Immutable;
 using Sports.Api.Features.Players._Shared;
 using Sports.Api.Features.Teams._Shared;
-
 using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

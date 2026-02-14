@@ -1,9 +1,9 @@
+﻿namespace Sports.Api.UnitTests.Infrastructure;
+
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
 using Sports.Tests.Shared;
 using Testcontainers.MsSql;
-
-namespace Sports.Api.UnitTests.Infrastructure;
 
 public class DatabaseFixture : IAsyncLifetime
 {

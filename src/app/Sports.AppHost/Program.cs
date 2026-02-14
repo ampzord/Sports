@@ -1,3 +1,31 @@
+using System.Diagnostics;
+
+try
+{
+    using var process = Process.Start(new ProcessStartInfo("docker", "info")
+    {
+        RedirectStandardOutput = true,
+        RedirectStandardError = true,
+        UseShellExecute = false,
+        CreateNoWindow = true
+    });
+
+    await process!.WaitForExitAsync();
+
+    if (process.ExitCode != 0)
+        throw new InvalidOperationException(
+            "A container runtime is not running. Please start Docker Desktop, Rancher Desktop or Podman and try again.");
+}
+catch (InvalidOperationException)
+{
+    throw;
+}
+catch (Exception)
+{
+    throw new InvalidOperationException(
+        "Docker CLI is not installed or not found in PATH. Please install a container runtime (Docker Desktop, Rancher Desktop or Podman) and try again.");
+}
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 var sqlPassword = builder.AddParameter("sql-password", secret: true);

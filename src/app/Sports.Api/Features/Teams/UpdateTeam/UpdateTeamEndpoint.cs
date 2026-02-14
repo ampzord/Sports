@@ -1,11 +1,8 @@
-
+﻿namespace Sports.Api.Features.Teams.UpdateTeam;
 
 using FastEndpoints;
 using MediatR;
 using Sports.Api.Extensions;
-
-namespace Sports.Api.Features.Teams.UpdateTeam;
-
 using Sports.Api.Features.Teams._Shared;
 
 public class UpdateTeamEndpoint(IMediator mediator, TeamMapper mapper) : Endpoint<UpdateTeamRequest, TeamResponse>
@@ -13,7 +10,7 @@ public class UpdateTeamEndpoint(IMediator mediator, TeamMapper mapper) : Endpoin
 
     public override void Configure()
     {
-        Put("/api/teams/{id}");
+        Put("teams/{id}");
         AllowAnonymous();
         Description(b => b
             .Produces<TeamResponse>(200)

@@ -1,3 +1,5 @@
+﻿namespace Sports.Api.UnitTests.Handlers;
+
 using ErrorOr;
 using Sports.Api.Database;
 using Sports.Api.Features.Leagues._Shared;
@@ -6,8 +8,6 @@ using Sports.Api.Features.Leagues.DeleteLeague;
 using Sports.Api.Features.Leagues.GetLeagueById;
 using Sports.Api.Features.Leagues.UpdateLeague;
 using Sports.Api.UnitTests.Infrastructure;
-
-namespace Sports.Api.UnitTests.Handlers;
 
 public class LeagueHandlerTests : IDisposable
 {

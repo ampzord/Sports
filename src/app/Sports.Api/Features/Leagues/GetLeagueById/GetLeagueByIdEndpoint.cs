@@ -1,18 +1,16 @@
-using Sports.Api.Features.Leagues._Shared;
-
-namespace Sports.Api.Features.Leagues.GetLeagueById;
-
+﻿namespace Sports.Api.Features.Leagues.GetLeagueById;
 
 using FastEndpoints;
 using MediatR;
 using Sports.Api.Extensions;
+using Sports.Api.Features.Leagues._Shared;
 
 public class GetLeagueByIdEndpoint(IMediator mediator) : Endpoint<GetLeagueByIdRequest, LeagueResponse>
 {
 
     public override void Configure()
     {
-        Get("/api/leagues/{id}");
+        Get("leagues/{id}");
         AllowAnonymous();
         Description(b => b
             .Produces<LeagueResponse>(200)

@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿namespace Sports.Api.Features.Matches.DeleteMatch;
 
-namespace Sports.Api.Features.Matches.DeleteMatch;
+using Microsoft.AspNetCore.Mvc;
 
 public record DeleteMatchRequest([FromRoute] int Id)
 {

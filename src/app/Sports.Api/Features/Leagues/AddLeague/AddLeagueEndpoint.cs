@@ -1,7 +1,6 @@
-namespace Sports.Api.Features.Leagues.AddLeague;
+﻿namespace Sports.Api.Features.Leagues.AddLeague;
 
 using Sports.Api.Features.Leagues._Shared;
-
 using FastEndpoints;
 using MediatR;
 using Sports.Api.Extensions;
@@ -12,7 +11,7 @@ public class AddLeagueEndpoint(IMediator mediator, LeagueMapper mapper) : Endpoi
 
     public override void Configure()
     {
-        Post("/api/leagues");
+        Post("leagues");
         AllowAnonymous();
         Description(b => b
             .Produces<LeagueResponse>(201)

@@ -9,7 +9,7 @@ public class DeletePlayerEndpoint(IMediator mediator) : Endpoint<DeletePlayerReq
 
     public override void Configure()
     {
-        Delete("/api/players/{id}");
+        Delete("players/{id}");
         AllowAnonymous();
         Description(b => b
             .Produces(204)

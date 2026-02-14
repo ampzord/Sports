@@ -9,7 +9,7 @@ public class SimulateMatchesEndpoint(IMediator mediator)
 {
     public override void Configure()
     {
-        Post("/api/matches/simulate");
+        Post("matches/simulate");
         AllowAnonymous();
         Description(x => x
             .Produces<SimulateMatchesResponse>(200)
