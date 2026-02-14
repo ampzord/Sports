@@ -1,8 +1,8 @@
 namespace Sports.Api.Database;
 
 using Microsoft.EntityFrameworkCore;
+using Sports.Domain.Entities;
 using Sports.Shared.Configurations;
-using Sports.Shared.Entities;
 
 public class SportsDbContext : DbContext
 {

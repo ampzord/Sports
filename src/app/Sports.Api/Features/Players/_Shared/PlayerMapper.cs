@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 using Riok.Mapperly.Abstractions;
 using Sports.Api.Features.Players.AddPlayer;
 using Sports.Api.Features.Players.UpdatePlayer;
-using Sports.Shared.Entities;
+using Sports.Domain.Entities;
 
 [Mapper]
 public partial class PlayerMapper

@@ -3,7 +3,7 @@
 using ErrorOr;
 using MediatR;
 using Sports.Api.Features.Players._Shared;
-using Sports.Shared.Entities;
+using Sports.Domain.Entities;
 
 public record AddPlayerCommand(
     string Name,

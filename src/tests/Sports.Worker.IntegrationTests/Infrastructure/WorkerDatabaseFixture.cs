@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Sports.MatchSimulationWorker.Database;
-using Sports.Shared.Entities;
+using Sports.Domain.Entities;
 using Sports.Tests.Shared;
 using Testcontainers.MsSql;
 

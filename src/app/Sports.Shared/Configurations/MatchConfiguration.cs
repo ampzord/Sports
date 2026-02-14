@@ -2,7 +2,7 @@ namespace Sports.Shared.Configurations;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Sports.Shared.Entities;
+using Sports.Domain.Entities;
 
 public class MatchConfiguration : IEntityTypeConfiguration<Match>
 {

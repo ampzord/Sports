@@ -1,10 +1,12 @@
-﻿<Solution>
+<Solution>
   <Folder Name="/Solution Items/">
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
+  <Folder Name="/src/" />
   <Folder Name="/src/app/">
     <Project Path="src/app/Sports.Api/Sports.Api.csproj" />
+    <Project Path="src/app/Sports.Domain/Sports.Domain.csproj" />
     <Project Path="src/app/Sports.MatchSimulationWorker/Sports.MatchSimulationWorker.csproj" Id="8177b4a7-4f22-43c2-a416-bb33a3a94a84" />
     <Project Path="src/app/Sports.Shared/Sports.Shared.csproj" />
   </Folder>

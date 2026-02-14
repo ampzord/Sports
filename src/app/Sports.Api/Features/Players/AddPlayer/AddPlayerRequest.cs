@@ -1,6 +1,6 @@
 ﻿namespace Sports.Api.Features.Players.AddPlayer;
 
-using Sports.Shared.Entities;
+using Sports.Domain.Entities;
 
 public record AddPlayerRequest(
     int TeamId,

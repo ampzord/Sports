@@ -24,6 +24,7 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\Sports.Shared\Sports.Shared.csproj" />
 	  <ProjectReference Include="..\Sports.ServiceDefaults\Sports.ServiceDefaults.csproj" />
+	  <ProjectReference Include="..\Sports.Domain\Sports.Domain.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,4 +1,4 @@
-namespace Sports.Shared.Entities;
+namespace Sports.Domain.Entities;
 
 public class Player
 {

@@ -11,7 +11,7 @@ using Sports.Api.Features.Matches.AddMatch;
 using Sports.Api.Features.Players._Shared;
 using Sports.Api.Features.Teams._Shared;
 using Sports.Api.Features.Teams.AddTeam;
-using Sports.Shared.Entities;
+using Sports.Domain.Entities;
 
 public static class ApiHelper
 {

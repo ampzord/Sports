@@ -5,7 +5,7 @@ using Riok.Mapperly.Abstractions;
 using Sports.Api.Features.Teams.AddTeam;
 using Sports.Api.Features.Teams.DeleteTeam;
 using Sports.Api.Features.Teams.UpdateTeam;
-using Sports.Shared.Entities;
+using Sports.Domain.Entities;
 
 [Mapper]
 public partial class TeamMapper

@@ -1,7 +1,7 @@
 ﻿namespace Sports.Api.UnitTests.Infrastructure;
 
 using Sports.Api.Database;
-using Sports.Shared.Entities;
+using Sports.Domain.Entities;
 
 public class TestDataBuilder(SportsDbContext db)
 {

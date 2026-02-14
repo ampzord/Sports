@@ -2,7 +2,7 @@ namespace Sports.Shared.Configurations;
 
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using Sports.Shared.Entities;
+using Sports.Domain.Entities;
 
 public class LeagueConfiguration : IEntityTypeConfiguration<League>
 {

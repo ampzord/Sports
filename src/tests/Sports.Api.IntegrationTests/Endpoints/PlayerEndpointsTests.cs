@@ -2,7 +2,7 @@
 
 using Sports.Api.Features.Players._Shared;
 using Sports.Api.IntegrationTests.Infrastructure;
-using Sports.Shared.Entities;
+using Sports.Domain.Entities;
 using Sports.Tests.Shared;
 using System.Net.Http.Json;
 

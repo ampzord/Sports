@@ -8,7 +8,7 @@ using Sports.Api.Features.Players.GetPlayerById;
 using Sports.Api.Features.Players.UpdatePlayer;
 using Sports.Api.Features.Teams._Shared;
 using Sports.Api.UnitTests.Infrastructure;
-using Sports.Shared.Entities;
+using Sports.Domain.Entities;
 
 public class PlayerHandlerTests : IDisposable
 {
