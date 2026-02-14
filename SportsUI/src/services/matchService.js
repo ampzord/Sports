@@ -1,4 +1,4 @@
-const BASE = '/api'
+const BASE = '/api/v1'
 
 async function request(url, options = {}) {
   const headers = {}
