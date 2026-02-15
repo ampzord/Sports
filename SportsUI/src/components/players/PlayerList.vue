@@ -128,21 +128,23 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useVirtualizer } from '@tanstack/vue-virtual'
 import { playerAPI, teamAPI } from '../../services/api'
 import { useToast } from '../../composables/useToast'
+import { getApiErrorMessage } from '../../utils/errors'
+import type { Player, Team } from '../../types'
 
 const ROW_HEIGHT = 52
 
 const toast = useToast()
-const players = ref([])
-const teams = ref([])
+const players = ref<Player[]>([])
+const teams = ref<Team[]>([])
 const loading = ref(true)
-const error = ref(null)
-const deletingId = ref(null)
-const scrollEl = ref(null)
+const error = ref<string | null>(null)
+const deletingId = ref<number | null>(null)
+const scrollEl = ref<HTMLElement | null>(null)
 
 const playerRows = computed(() => players.value)
 
@@ -172,23 +174,22 @@ const fetchPlayers = async () => {
   }
 }
 
-const getTeamName = (teamId) => {
+const getTeamName = (teamId: number | null) => {
   if (!teamId) return 'Free Agent'
   const team = teams.value.find((t) => t.id === teamId)
   return team?.name || 'Unknown'
 }
 
-const deletePlayer = async (id) => {
+const deletePlayer = async (id: number) => {
   if (confirm('Are you sure you want to delete this player?')) {
     deletingId.value = id
     try {
       await playerAPI.deletePlayer(id)
       toast.success('Player deleted')
       await fetchPlayers()
-    } catch (error) {
-      console.error('Failed to delete player:', error)
-      const msg = error.response?.data?.detail || error.response?.data?.title || 'Failed to delete player'
-      toast.error(msg)
+    } catch (err: unknown) {
+      console.error('Failed to delete player:', err)
+      toast.error(getApiErrorMessage(err, 'Failed to delete player'))
     } finally {
       deletingId.value = null
     }

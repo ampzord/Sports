@@ -1,38 +1,43 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
-import { computed, ref, onUnmounted } from 'vue'
+import { computed, ref, onUnmounted, type Ref, type ComputedRef } from 'vue'
 import { matchService } from '../services/matchService'
 import { teamAPI, leagueAPI } from '../services/api'
+import type { Match, Team, League } from '../types'
 
 // ── Query keys ──────────────────────────────────────────────
 const matchKeys = {
-  all: ['matches'],
-  detail: (id) => ['matches', id],
-  teams: ['teams'],
-  leagues: ['leagues'],
+  all: ['matches'] as const,
+  detail: (id: number | string) => ['matches', id] as const,
+  teams: ['teams'] as const,
+  leagues: ['leagues'] as const,
 }
 
 // ── Queries ─────────────────────────────────────────────────
 
 export function useMatches() {
-  return useQuery({
+  return useQuery<Match[]>({
     queryKey: matchKeys.all,
     queryFn: () => matchService.getMatches(),
     retry: 1,
   })
 }
 
-export function useMatch(id) {
-  const resolvedId = computed(() => (typeof id === 'function' ? id() : (id?.value ?? id)))
-  return useQuery({
-    queryKey: computed(() => matchKeys.detail(resolvedId.value)),
-    queryFn: () => matchService.getMatchById(resolvedId.value),
+export function useMatch(
+  id: Ref<string | number | null> | ComputedRef<string | number | null> | (() => string | number | null) | string | number,
+) {
+  const resolvedId = computed(() =>
+    typeof id === 'function' ? id() : id && typeof id === 'object' && 'value' in id ? id.value : id,
+  )
+  return useQuery<Match>({
+    queryKey: computed(() => matchKeys.detail(resolvedId.value!)),
+    queryFn: () => matchService.getMatchById(resolvedId.value!),
     enabled: computed(() => !!resolvedId.value),
     staleTime: 30_000,
   })
 }
 
 export function useTeams() {
-  return useQuery({
+  return useQuery<Team[]>({
     queryKey: matchKeys.teams,
     queryFn: async () => {
       const res = await teamAPI.getTeams()
@@ -43,7 +48,7 @@ export function useTeams() {
 }
 
 export function useLeagues() {
-  return useQuery({
+  return useQuery<League[]>({
     queryKey: matchKeys.leagues,
     queryFn: async () => {
       const res = await leagueAPI.getLeagues()
@@ -58,8 +63,8 @@ export function useLeagues() {
 export function useCreateMatch() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (data) => matchService.addMatch(data),
-    onSuccess: (newMatch) => {
+    mutationFn: (data: Partial<Match>) => matchService.addMatch(data),
+    onSuccess: (newMatch: Match) => {
       // Seed the detail cache so MatchDetail renders instantly
       qc.setQueryData(matchKeys.detail(newMatch.id), newMatch)
       qc.invalidateQueries({ queryKey: matchKeys.all })
@@ -69,7 +74,7 @@ export function useCreateMatch() {
 
 export function useUpdateMatch() {
   const qc = useQueryClient()
-  return useMutation({
+  return useMutation<Match, Error, { id: number | string; data: Partial<Match> }>({
     mutationFn: ({ id, data }) => matchService.updateMatch(id, data),
     onSuccess: (_res, { id }) => {
       qc.invalidateQueries({ queryKey: matchKeys.all })
@@ -81,7 +86,7 @@ export function useUpdateMatch() {
 export function useDeleteMatch() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (id) => matchService.deleteMatch(id),
+    mutationFn: (id: number | string) => matchService.deleteMatch(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: matchKeys.all }),
   })
 }
@@ -100,11 +105,13 @@ export function useDeleteMatch() {
 export function useSimulateWithPolling(interval = 2000, maxPolls = 30) {
   const qc = useQueryClient()
   const polling = ref(false)
-  let timer = null
+  let timer: ReturnType<typeof setInterval> | null = null
   let pollCount = 0
 
   const stopPolling = () => {
-    clearInterval(timer)
+    if (timer) {
+      clearInterval(timer)
+    }
     timer = null
     polling.value = false
     pollCount = 0
@@ -119,14 +126,16 @@ export function useSimulateWithPolling(interval = 2000, maxPolls = 30) {
 
     try {
       const fresh = await matchService.getMatches()
-      const cached = qc.getQueryData(matchKeys.all) ?? []
+      const cached: Match[] = qc.getQueryData(matchKeys.all) ?? []
 
       // Build a lookup of current totalPasses by id
       const cacheMap = new Map(cached.map((m) => [m.id, m.totalPasses]))
 
       let changed = 0
       for (const m of fresh) {
-        if (m.totalPasses !== cacheMap.get(m.id)) changed++
+        if (m.totalPasses !== cacheMap.get(m.id)) {
+          changed++
+        }
       }
 
       // Always update the cache with the fresh data
@@ -142,7 +151,9 @@ export function useSimulateWithPolling(interval = 2000, maxPolls = 30) {
   }
 
   const startPolling = () => {
-    if (timer) return
+    if (timer) {
+      return
+    }
     polling.value = true
     pollCount = 0
     timer = setInterval(poll, interval)

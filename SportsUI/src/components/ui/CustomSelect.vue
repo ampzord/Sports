@@ -78,23 +78,27 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import type { SelectOption } from '../../types'
 
-const props = defineProps({
-  modelValue: { type: [String, Number, null], default: '' },
-  options: { type: Array, required: true },
-  placeholder: { type: String, default: 'Select...' },
-  disabled: { type: Boolean, default: false },
-  required: { type: Boolean, default: false },
-  id: { type: String, default: undefined },
-})
+const props = defineProps<{
+  modelValue: string | number | null
+  options: SelectOption[]
+  placeholder?: string
+  disabled?: boolean
+  required?: boolean
+  id?: string
+}>()
 
-const emit = defineEmits(['update:modelValue', 'change'])
+const emit = defineEmits<{
+  'update:modelValue': [value: string | number]
+  change: [value: string | number]
+}>()
 
 const isOpen = ref(false)
-const wrapper = ref(null)
-const listbox = ref(null)
+const wrapper = ref<HTMLElement | null>(null)
+const listbox = ref<HTMLElement | null>(null)
 
 const selectedLabel = computed(() => {
   const opt = props.options.find((o) => o.value === props.modelValue || String(o.value) === String(props.modelValue))
@@ -110,7 +114,7 @@ const close = () => {
   isOpen.value = false
 }
 
-const select = (value) => {
+const select = (value: string | number) => {
   emit('update:modelValue', value)
   emit('change', value)
   close()
@@ -119,7 +123,7 @@ const select = (value) => {
 const openAndFocusFirst = () => {
   if (!isOpen.value) isOpen.value = true
   nextTick(() => {
-    const items = listbox.value?.querySelectorAll('[role="option"]')
+    const items = listbox.value?.querySelectorAll<HTMLElement>('[role="option"]')
     items?.[0]?.focus()
   })
 }
@@ -127,25 +131,25 @@ const openAndFocusFirst = () => {
 const openAndFocusLast = () => {
   if (!isOpen.value) isOpen.value = true
   nextTick(() => {
-    const items = listbox.value?.querySelectorAll('[role="option"]')
+    const items = listbox.value?.querySelectorAll<HTMLElement>('[role="option"]')
     items?.[items.length - 1]?.focus()
   })
 }
 
-const focusNext = (index) => {
-  const items = listbox.value?.querySelectorAll('[role="option"]')
+const focusNext = (index: number) => {
+  const items = listbox.value?.querySelectorAll<HTMLElement>('[role="option"]')
   const next = items?.[index + 1] || items?.[0]
   next?.focus()
 }
 
-const focusPrev = (index) => {
-  const items = listbox.value?.querySelectorAll('[role="option"]')
+const focusPrev = (index: number) => {
+  const items = listbox.value?.querySelectorAll<HTMLElement>('[role="option"]')
   const prev = items?.[index - 1] || items?.[items.length - 1]
   prev?.focus()
 }
 
-const onClickOutside = (e) => {
-  if (wrapper.value && !wrapper.value.contains(e.target)) {
+const onClickOutside = (e: MouseEvent) => {
+  if (wrapper.value && !wrapper.value.contains(e.target as Node)) {
     close()
   }
 }

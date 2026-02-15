@@ -79,24 +79,27 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useMatch, useTeams, useLeagues, useCreateMatch, useUpdateMatch } from '../../composables/useMatchQueries'
 import { useToast } from '../../composables/useToast'
+import { getApiErrorMessage } from '../../utils/errors'
+import { useRouteId } from '../../composables/useRouteId'
 import CustomSelect from '../ui/CustomSelect.vue'
+import type { MatchFormData } from '../../types'
 
 const toast = useToast()
-const route = useRoute()
 const router = useRouter()
+const routeId = useRouteId()
 
-const isEdit = computed(() => !!route.params.id)
-const selectedLeagueId = ref('')
-const form = ref({ homeTeamId: '', awayTeamId: '', totalPasses: null })
+const isEdit = computed(() => !!routeId.value)
+const selectedLeagueId = ref<string | number>('')
+const form = ref<MatchFormData>({ homeTeamId: '', awayTeamId: '', totalPasses: null })
 
 const { data: teams } = useTeams()
 const { data: leagues } = useLeagues()
-const { data: existingMatch } = useMatch(computed(() => (isEdit.value ? route.params.id : null)))
+const { data: existingMatch } = useMatch(computed(() => (isEdit.value ? routeId.value : null)))
 
 const createMutation = useCreateMatch()
 const updateMutation = useUpdateMatch()
@@ -149,22 +152,22 @@ const handleSubmit = async () => {
   try {
     const payload = {
       leagueId: selectedLeagueId.value,
-      homeTeamId: form.value.homeTeamId,
-      awayTeamId: form.value.awayTeamId,
-      totalPasses: form.value.totalPasses != null && form.value.totalPasses !== '' ? form.value.totalPasses : undefined,
+      homeTeamId: Number(form.value.homeTeamId),
+      awayTeamId: Number(form.value.awayTeamId),
+      totalPasses: form.value.totalPasses != null ? form.value.totalPasses : undefined,
     }
     if (isEdit.value) {
-      await updateMutation.mutateAsync({ id: route.params.id, data: payload })
+      await updateMutation.mutateAsync({ id: routeId.value, data: payload })
       toast.success('Match updated')
-      router.push(`/matches/${route.params.id}`)
+      router.push(`/matches/${routeId.value}`)
     } else {
       const created = await createMutation.mutateAsync(payload)
       toast.success('Match created')
       router.push(`/matches/${created.id}`)
     }
-  } catch (error) {
-    console.error('Failed to save match:', error)
-    toast.error(error.message || 'Failed to save match')
+  } catch (err: unknown) {
+    console.error('Failed to save match:', err)
+    toast.error(getApiErrorMessage(err, 'Failed to save match'))
   }
 }
 </script>

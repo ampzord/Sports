@@ -4,7 +4,7 @@ export function useToast() {
   const toast = useToastification()
 
   return {
-    success: (message) => toast.success(message),
-    error: (message) => toast.error(message),
+    success: (message: string) => toast.success(message),
+    error: (message: string) => toast.error(message),
   }
 }

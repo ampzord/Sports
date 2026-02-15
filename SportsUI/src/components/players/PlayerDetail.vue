@@ -59,17 +59,19 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { playerAPI, teamAPI } from '../../services/api'
 import { useToast } from '../../composables/useToast'
+import { getApiErrorMessage } from '../../utils/errors'
+import { useRouteId } from '../../composables/useRouteId'
+import type { Player } from '../../types'
 
 const toast = useToast()
-const route = useRoute()
 const router = useRouter()
-const playerId = route.params.id
-const player = ref(null)
+const playerId = useRouteId()
+const player = ref<Player | null>(null)
 const teamName = ref('')
 const loading = ref(true)
 
@@ -80,7 +82,7 @@ onMounted(async () => {
 
 const loadPlayer = async () => {
   try {
-    const response = await playerAPI.getPlayerById(playerId)
+    const response = await playerAPI.getPlayerById(playerId.value)
     player.value = response.data
     if (player.value.teamId) {
       try {
@@ -98,13 +100,12 @@ const loadPlayer = async () => {
 const handleDelete = async () => {
   if (confirm('Are you sure you want to delete this player?')) {
     try {
-      await playerAPI.deletePlayer(playerId)
+      await playerAPI.deletePlayer(playerId.value)
       toast.success('Player deleted')
       router.push('/players')
-    } catch (error) {
-      console.error('Failed to delete player:', error)
-      const msg = error.response?.data?.detail || error.response?.data?.title || 'Failed to delete player'
-      toast.error(msg)
+    } catch (err: unknown) {
+      console.error('Failed to delete player:', err)
+      toast.error(getApiErrorMessage(err, 'Failed to delete player'))
     }
   }
 }

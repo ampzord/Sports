@@ -141,7 +141,7 @@
       <div v-else-if="isError" key="error" role="alert" class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
         <p class="text-red-600 font-semibold">Failed to load matches. Please try again.</p>
         <button
-          @click="refetch"
+          @click="() => refetch()"
           class="mt-3 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded font-semibold transition cursor-pointer"
         >
           Retry
@@ -162,19 +162,21 @@
 }
 </style>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useVirtualizer } from '@tanstack/vue-virtual'
 import { useToast } from '../../composables/useToast'
+import { getApiErrorMessage } from '../../utils/errors'
 import { useMatches, useTeams, useLeagues, useDeleteMatch, useSimulateWithPolling } from '../../composables/useMatchQueries'
+import type { Match } from '../../types'
 
 const ROW_HEIGHT = 52
 
 const toast = useToast()
 const router = useRouter()
-const deletingId = ref(null)
-const scrollEl = ref(null)
+const deletingId = ref<number | null>(null)
+const scrollEl = ref<HTMLElement | null>(null)
 
 const { data: matches, isFetching, isError, refetch } = useMatches()
 const { data: teams } = useTeams()
@@ -197,42 +199,42 @@ const virtualizer = useVirtualizer({
 const needsScroll = computed(() => matchRows.value.length * ROW_HEIGHT > window.innerHeight * 0.7)
 
 // --- Actions ---
-const handleDelete = async (id) => {
+const handleDelete = async (id: number) => {
   if (!confirm('Are you sure?')) return
   deletingId.value = id
   try {
     await deleteMutation.mutateAsync(id)
     toast.success('Match deleted')
-  } catch (error) {
-    console.error('Failed to delete match:', error)
-    toast.error(error.message || 'Failed to delete match')
+  } catch (err: unknown) {
+    console.error('Failed to delete match:', err)
+    toast.error(getApiErrorMessage(err, 'Failed to delete match'))
   } finally {
     deletingId.value = null
   }
 }
 
-const editMatch = (match) => {
+const editMatch = (match: Match) => {
   router.push(`/matches/${match.id}/edit`)
 }
 
-const getLeagueName = (leagueId) => {
+const getLeagueName = (leagueId: number | null) => {
   if (!leagueId && leagueId !== 0) return 'Unknown'
   const league = (leagues.value || []).find((l) => l.id === leagueId || String(l.id) === String(leagueId))
   return league?.name || 'Unknown'
 }
 
-const getMatchLeagueId = (match) => {
+const getMatchLeagueId = (match: Match) => {
   const team = (teams.value || []).find((t) => t.id === match.homeTeamId || String(t.id) === String(match.homeTeamId))
   return team?.leagueId ?? null
 }
 
-const getMatchLeagueName = (match) => {
+const getMatchLeagueName = (match: Match) => {
   const leagueId = getMatchLeagueId(match)
   if (!leagueId && leagueId !== 0) return 'Unknown'
   return getLeagueName(leagueId)
 }
 
-const getTeamName = (teamId) => {
+const getTeamName = (teamId: number) => {
   if (!teamId && teamId !== 0) return 'TBD'
   const team = (teams.value || []).find((t) => t.id === teamId || String(t.id) === String(teamId))
   return team?.name || 'Unknown'

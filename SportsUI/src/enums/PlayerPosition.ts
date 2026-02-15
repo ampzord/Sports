@@ -1,4 +1,6 @@
-export const PlayerPosition = [
+import type { PositionOption } from '../types'
+
+export const PlayerPosition: readonly PositionOption[] = [
   { value: 'GK', label: 'GK - Goalkeeper' },
   { value: 'CB', label: 'CB - Center Back' },
   { value: 'LB', label: 'LB - Left Back' },
@@ -14,4 +16,4 @@ export const PlayerPosition = [
   { value: 'RW', label: 'RW - Right Wing' },
   { value: 'ST', label: 'ST - Striker' },
   { value: 'CF', label: 'CF - Center Forward' },
-]
+] as const

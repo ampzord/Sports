@@ -118,21 +118,23 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useVirtualizer } from '@tanstack/vue-virtual'
 import { teamAPI, leagueAPI } from '../../services/api'
 import { useToast } from '../../composables/useToast'
+import { getApiErrorMessage } from '../../utils/errors'
+import type { Team, League } from '../../types'
 
 const ROW_HEIGHT = 52
 
 const toast = useToast()
-const teams = ref([])
-const leagues = ref([])
+const teams = ref<Team[]>([])
+const leagues = ref<League[]>([])
 const loading = ref(true)
-const error = ref(null)
-const deletingId = ref(null)
-const scrollEl = ref(null)
+const error = ref<string | null>(null)
+const deletingId = ref<number | null>(null)
+const scrollEl = ref<HTMLElement | null>(null)
 
 const teamRows = computed(() => teams.value)
 
@@ -164,12 +166,12 @@ const fetchTeams = async () => {
   }
 }
 
-const getLeagueName = (leagueId) => {
+const getLeagueName = (leagueId: number) => {
   const league = leagues.value.find((l) => l.id === leagueId)
   return league?.name || 'Unknown'
 }
 
-const deleteTeam = async (id) => {
+const deleteTeam = async (id: number) => {
   if (confirm('Are you sure you want to delete this team?')) {
     deletingId.value = id
     try {
@@ -177,10 +179,9 @@ const deleteTeam = async (id) => {
       toast.success('Team deleted')
       const response = await teamAPI.getTeams()
       teams.value = response.data
-    } catch (error) {
-      console.error('Failed to delete team:', error)
-      const msg = error.response?.data?.detail || error.response?.data?.title || 'Failed to delete team'
-      toast.error(msg)
+    } catch (err: unknown) {
+      console.error('Failed to delete team:', err)
+      toast.error(getApiErrorMessage(err, 'Failed to delete team'))
     } finally {
       deletingId.value = null
     }

@@ -54,21 +54,25 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { teamAPI, leagueAPI } from '../../services/api'
 import { useToast } from '../../composables/useToast'
+import { getApiErrorMessage } from '../../utils/errors'
+import { useRouteId } from '../../composables/useRouteId'
 import CustomSelect from '../ui/CustomSelect.vue'
+import type { League, TeamFormData } from '../../types'
 
 const toast = useToast()
 const route = useRoute()
 const router = useRouter()
+const routeId = useRouteId()
 
-const isEdit = computed(() => !!route.params.id)
+const isEdit = computed(() => !!routeId.value)
 const loading = ref(false)
-const leagues = ref([])
-const form = ref({ name: '', leagueId: '' })
+const leagues = ref<League[]>([])
+const form = ref<TeamFormData>({ name: '', leagueId: '' })
 
 const leagueOptions = computed(() => leagues.value.map((l) => ({ value: l.id, label: l.name })))
 
@@ -82,7 +86,7 @@ onMounted(async () => {
 
   if (isEdit.value) {
     try {
-      const response = await teamAPI.getTeamById(route.params.id)
+      const response = await teamAPI.getTeamById(routeId.value)
       form.value = { name: response.data.name, leagueId: response.data.leagueId }
     } catch (error) {
       console.error('Failed to load team:', error)
@@ -96,18 +100,17 @@ const handleSubmit = async () => {
   loading.value = true
   try {
     if (isEdit.value) {
-      await teamAPI.updateTeam(route.params.id, form.value)
+      await teamAPI.updateTeam(routeId.value, { name: form.value.name, leagueId: Number(form.value.leagueId) })
       toast.success('Team updated')
-      router.push(`/teams/${route.params.id}`)
+      router.push(`/teams/${routeId.value}`)
     } else {
-      const response = await teamAPI.addTeam({ name: form.value.name, leagueId: form.value.leagueId })
+      const response = await teamAPI.addTeam({ name: form.value.name, leagueId: Number(form.value.leagueId) })
       toast.success('Team created')
       router.push(`/teams/${response.data.id}`)
     }
-  } catch (error) {
-    console.error('Failed to save team:', error)
-    const msg = error.response?.data?.detail || error.response?.data?.title || 'Failed to save team'
-    toast.error(msg)
+  } catch (err: unknown) {
+    console.error('Failed to save team:', err)
+    toast.error(getApiErrorMessage(err, 'Failed to save team'))
   } finally {
     loading.value = false
   }

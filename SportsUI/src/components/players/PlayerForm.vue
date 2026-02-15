@@ -65,22 +65,26 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { playerAPI, teamAPI } from '../../services/api'
 import { useToast } from '../../composables/useToast'
+import { getApiErrorMessage } from '../../utils/errors'
+import { useRouteId } from '../../composables/useRouteId'
 import { PlayerPosition } from '../../enums/PlayerPosition'
 import CustomSelect from '../ui/CustomSelect.vue'
+import type { Team, PlayerFormData } from '../../types'
 
 const toast = useToast()
 const route = useRoute()
 const router = useRouter()
+const routeId = useRouteId()
 
-const isEdit = computed(() => !!route.params.id)
+const isEdit = computed(() => !!routeId.value)
 const loading = ref(false)
-const teams = ref([])
-const form = ref({ name: '', position: '', teamId: '' })
+const teams = ref<Team[]>([])
+const form = ref<PlayerFormData>({ name: '', position: '', teamId: null })
 
 const positionOptions = computed(() => PlayerPosition.map((p) => ({ value: p.value, label: p.label })))
 
@@ -96,7 +100,7 @@ onMounted(async () => {
 
   if (isEdit.value) {
     try {
-      const response = await playerAPI.getPlayerById(route.params.id)
+      const response = await playerAPI.getPlayerById(routeId.value)
       form.value = {
         name: response.data.name,
         position: response.data.position || '',
@@ -114,22 +118,25 @@ const handleSubmit = async () => {
   loading.value = true
   try {
     if (isEdit.value) {
-      await playerAPI.updatePlayer(route.params.id, form.value)
+      await playerAPI.updatePlayer(routeId.value, {
+        name: form.value.name,
+        position: form.value.position,
+        teamId: form.value.teamId ? Number(form.value.teamId) : null,
+      })
       toast.success('Player updated')
-      router.push(`/players/${route.params.id}`)
+      router.push(`/players/${routeId.value}`)
     } else {
       const response = await playerAPI.addPlayer({
         name: form.value.name,
         position: form.value.position,
-        teamId: form.value.teamId,
+        teamId: form.value.teamId ? Number(form.value.teamId) : null,
       })
       toast.success('Player created')
       router.push(`/players/${response.data.id}`)
     }
-  } catch (error) {
-    console.error('Failed to save player:', error)
-    const msg = error.response?.data?.detail || error.response?.data?.title || 'Failed to save player'
-    toast.error(msg)
+  } catch (err: unknown) {
+    console.error('Failed to save player:', err)
+    toast.error(getApiErrorMessage(err, 'Failed to save player'))
   } finally {
     loading.value = false
   }

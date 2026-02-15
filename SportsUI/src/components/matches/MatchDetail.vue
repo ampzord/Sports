@@ -59,16 +59,17 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useMatch, useTeams, useLeagues, useDeleteMatch } from '../../composables/useMatchQueries'
 import { useToast } from '../../composables/useToast'
+import { getApiErrorMessage } from '../../utils/errors'
+import { useRouteId } from '../../composables/useRouteId'
 
 const toast = useToast()
-const route = useRoute()
 const router = useRouter()
-const matchId = computed(() => route.params.id)
+const matchId = useRouteId()
 
 const { data: match } = useMatch(matchId)
 const { data: teams } = useTeams()
@@ -105,9 +106,9 @@ const deleteMatchConfirm = async () => {
       await deleteMutation.mutateAsync(matchId.value)
       toast.success('Match deleted')
       router.push({ name: 'Matches' })
-    } catch (error) {
-      console.error('Failed to delete match:', error)
-      toast.error(error.message || 'Failed to delete match')
+    } catch (err: unknown) {
+      console.error('Failed to delete match:', err)
+      toast.error(getApiErrorMessage(err, 'Failed to delete match'))
     }
   }
 }

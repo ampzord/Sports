@@ -107,20 +107,22 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useVirtualizer } from '@tanstack/vue-virtual'
 import { leagueAPI } from '../../services/api'
 import { useToast } from '../../composables/useToast'
+import { getApiErrorMessage } from '../../utils/errors'
+import type { League } from '../../types'
 
 const ROW_HEIGHT = 52
 
 const toast = useToast()
-const leagues = ref([])
+const leagues = ref<League[]>([])
 const loading = ref(true)
-const error = ref(null)
-const deletingId = ref(null)
-const scrollEl = ref(null)
+const error = ref<string | null>(null)
+const deletingId = ref<number | null>(null)
+const scrollEl = ref<HTMLElement | null>(null)
 
 const leagueRows = computed(() => leagues.value)
 
@@ -149,17 +151,16 @@ const fetchLeagues = async () => {
   }
 }
 
-const deleteLeague = async (id) => {
+const deleteLeague = async (id: number) => {
   if (confirm('Are you sure you want to delete this league?')) {
     deletingId.value = id
     try {
       await leagueAPI.deleteLeague(id)
       toast.success('League deleted')
       await fetchLeagues()
-    } catch (error) {
-      console.error('Failed to delete league:', error)
-      const msg = error.response?.data?.detail || error.response?.data?.title || 'Failed to delete league'
-      toast.error(msg)
+    } catch (err: unknown) {
+      console.error('Failed to delete league:', err)
+      toast.error(getApiErrorMessage(err, 'Failed to delete league'))
     } finally {
       deletingId.value = null
     }

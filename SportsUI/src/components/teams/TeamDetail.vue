@@ -96,19 +96,21 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { teamAPI, playerAPI, leagueAPI } from '../../services/api'
 import { useToast } from '../../composables/useToast'
+import { getApiErrorMessage } from '../../utils/errors'
+import { useRouteId } from '../../composables/useRouteId'
+import type { Team, Player } from '../../types'
 
 const toast = useToast()
-const route = useRoute()
 const router = useRouter()
-const teamId = route.params.id
-const team = ref(null)
+const teamId = useRouteId()
+const team = ref<Team | null>(null)
 const leagueName = ref('')
-const players = ref([])
+const players = ref<Player[]>([])
 const loading = ref(true)
 
 onMounted(async () => {
@@ -118,7 +120,7 @@ onMounted(async () => {
 
 const loadTeam = async () => {
   try {
-    const response = await teamAPI.getTeamById(teamId)
+    const response = await teamAPI.getTeamById(teamId.value)
     team.value = response.data
     if (team.value.leagueId) {
       const leagueRes = await leagueAPI.getLeagueById(team.value.leagueId)
@@ -131,7 +133,7 @@ const loadTeam = async () => {
 
 const loadPlayers = async () => {
   try {
-    const response = await playerAPI.getPlayers({ teamId })
+    const response = await playerAPI.getPlayers({ teamId: teamId.value })
     players.value = response.data
   } catch (error) {
     console.error('Failed to fetch players:', error)
@@ -141,27 +143,25 @@ const loadPlayers = async () => {
 const handleDelete = async () => {
   if (confirm('Are you sure you want to delete this team?')) {
     try {
-      await teamAPI.deleteTeam(teamId)
+      await teamAPI.deleteTeam(teamId.value)
       toast.success('Team deleted')
       router.push('/teams')
-    } catch (error) {
-      console.error('Failed to delete team:', error)
-      const msg = error.response?.data?.detail || error.response?.data?.title || 'Failed to delete team'
-      toast.error(msg)
+    } catch (err: unknown) {
+      console.error('Failed to delete team:', err)
+      toast.error(getApiErrorMessage(err, 'Failed to delete team'))
     }
   }
 }
 
-const deletePlayer = async (id) => {
+const deletePlayer = async (id: number) => {
   if (confirm('Are you sure you want to delete this player?')) {
     try {
       await playerAPI.deletePlayer(id)
       toast.success('Player deleted')
       await loadPlayers()
-    } catch (error) {
-      console.error('Failed to delete player:', error)
-      const msg = error.response?.data?.detail || error.response?.data?.title || 'Failed to delete player'
-      toast.error(msg)
+    } catch (err: unknown) {
+      console.error('Failed to delete player:', err)
+      toast.error(getApiErrorMessage(err, 'Failed to delete player'))
     }
   }
 }

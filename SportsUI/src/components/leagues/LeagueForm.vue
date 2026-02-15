@@ -42,24 +42,26 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { leagueAPI } from '../../services/api'
 import { useToast } from '../../composables/useToast'
+import { getApiErrorMessage } from '../../utils/errors'
+import { useRouteId } from '../../composables/useRouteId'
 
 const toast = useToast()
-const route = useRoute()
 const router = useRouter()
+const routeId = useRouteId()
 
-const isEdit = computed(() => !!route.params.id)
+const isEdit = computed(() => !!routeId.value)
 const loading = ref(false)
 const form = ref({ name: '' })
 
 onMounted(async () => {
   if (isEdit.value) {
     try {
-      const response = await leagueAPI.getLeagueById(route.params.id)
+      const response = await leagueAPI.getLeagueById(routeId.value)
       form.value = { name: response.data.name }
     } catch (error) {
       console.error('Failed to load league:', error)
@@ -71,18 +73,17 @@ const handleSubmit = async () => {
   loading.value = true
   try {
     if (isEdit.value) {
-      await leagueAPI.updateLeague(route.params.id, form.value)
+      await leagueAPI.updateLeague(routeId.value, form.value)
       toast.success('League updated')
-      router.push(`/leagues/${route.params.id}`)
+      router.push(`/leagues/${routeId.value}`)
     } else {
       const response = await leagueAPI.addLeague(form.value)
       toast.success('League created')
       router.push(`/leagues/${response.data.id}`)
     }
-  } catch (error) {
-    console.error('Failed to save league:', error)
-    const msg = error.response?.data?.detail || error.response?.data?.title || 'Failed to save league'
-    toast.error(msg)
+  } catch (err: unknown) {
+    console.error('Failed to save league:', err)
+    toast.error(getApiErrorMessage(err, 'Failed to save league'))
   } finally {
     loading.value = false
   }
