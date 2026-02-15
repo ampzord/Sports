@@ -25,7 +25,7 @@ public class ServiceUnavailableTests(UnavailableServicesFactory factory)
         problem!.Status.Should().Be(503);
         problem.Title.Should().Be("Database Unavailable");
         problem.Detail.Should().NotBeNullOrEmpty();
-        problem.Instance.Should().Be("GET /api/v1/leagues");
+        problem.Instance.Should().Be($"GET /{ApiRoutes.Prefix}/leagues");
         problem.Type.Should().Be("https://tools.ietf.org/html/rfc9110#section-15.6.4");
         problem.Extensions.Should().ContainKey("traceId");
     }
@@ -47,7 +47,7 @@ public class ServiceUnavailableTests(UnavailableServicesFactory factory)
         problem!.Status.Should().Be(503);
         problem.Title.Should().Be("Message Broker Unavailable");
         problem.Detail.Should().NotBeNullOrEmpty();
-        problem.Instance.Should().Be("POST /api/v1/matches/simulate");
+        problem.Instance.Should().Be($"POST /{ApiRoutes.Prefix}/matches/simulate");
         problem.Type.Should().Be("https://tools.ietf.org/html/rfc9110#section-15.6.4");
         problem.Extensions.Should().ContainKey("traceId");
     }
