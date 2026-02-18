@@ -1,4 +1,4 @@
-# Sports
+# Sports Management Platform
 
 A full-stack sports management application built with **.NET 10**, **Vue 3**, and **[.NET Aspire](https://learn.microsoft.com/en-us/dotnet/aspire/get-started/aspire-overview)** for orchestration.
 
