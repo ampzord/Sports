@@ -40,30 +40,26 @@ public class WorkerDatabaseFixture : IAsyncLifetime
     {
         await using var context = CreateContext();
 
+        var leagueId = Guid.CreateVersion7();
+        var homeTeamId = Guid.CreateVersion7();
+        var awayTeamId = Guid.CreateVersion7();
+
         await context.Database.ExecuteSqlRawAsync(
             """
             DELETE FROM Matches;
             DELETE FROM Team;
             DELETE FROM League;
-            IF NOT EXISTS (SELECT 1 FROM League WHERE Id = 1)
-                SET IDENTITY_INSERT League ON;
-                INSERT INTO League (Id, Name) VALUES (1, 'Test League');
-                SET IDENTITY_INSERT League OFF;
-            IF NOT EXISTS (SELECT 1 FROM Team WHERE Id = 1)
-                SET IDENTITY_INSERT Team ON;
-                INSERT INTO Team (Id, Name, LeagueId) VALUES (1, 'Home Team', 1), (2, 'Away Team', 1);
-                SET IDENTITY_INSERT Team OFF;
-            DBCC CHECKIDENT ('Matches', RESEED, 0);
             """);
+
+        await context.Database.ExecuteSqlRawAsync(
+            "INSERT INTO League (Id, Name) VALUES ({0}, 'Test League')", leagueId);
+        await context.Database.ExecuteSqlRawAsync(
+            "INSERT INTO Team (Id, Name, LeagueId) VALUES ({0}, 'Home Team', {1}), ({2}, 'Away Team', {1})",
+            homeTeamId, leagueId, awayTeamId);
 
         for (var i = 0; i < count; i++)
         {
-            context.Matches.Add(new Match
-            {
-                HomeTeamId = 1,
-                AwayTeamId = 2,
-                TotalPasses = null
-            });
+            context.Matches.Add(Match.Create(homeTeamId, awayTeamId));
         }
 
         await context.SaveChangesAsync();

@@ -11,6 +11,7 @@ using Sports.Domain.Entities;
 public partial class LeagueMapper
 {
     [MapperIgnoreSource(nameof(League.Teams))]
+    [MapperIgnoreSource(nameof(League.DomainEvents))]
     public partial LeagueResponse ToResponse(League league);
 
     public partial ImmutableList<LeagueResponse> ToResponseList(List<League> leagues);
@@ -23,10 +24,12 @@ public partial class LeagueMapper
 
     [MapperIgnoreTarget(nameof(League.Id))]
     [MapperIgnoreTarget(nameof(League.Teams))]
+    [MapperIgnoreTarget(nameof(League.DomainEvents))]
     public partial League ToEntity(AddLeagueCommand command);
 
     [MapperIgnoreTarget(nameof(League.Id))]
     [MapperIgnoreTarget(nameof(League.Teams))]
+    [MapperIgnoreTarget(nameof(League.DomainEvents))]
     [MapperIgnoreSource(nameof(UpdateLeagueCommand.Id))]
     public partial void Apply(UpdateLeagueCommand command, League league);
 }

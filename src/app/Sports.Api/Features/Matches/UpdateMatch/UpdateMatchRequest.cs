@@ -3,10 +3,10 @@
 using Microsoft.AspNetCore.Mvc;
 
 public record UpdateMatchRequest(
-    [FromRoute] int Id,
-    int HomeTeamId,
-    int AwayTeamId,
+    [FromRoute] Guid Id,
+    Guid HomeTeamId,
+    Guid AwayTeamId,
     int? TotalPasses = null)
 {
-    public static UpdateMatchRequest Example => new(1, 1, 2, 500);
+    public static UpdateMatchRequest Example => new(Guid.Empty, Guid.Empty, Guid.Empty, 500);
 }

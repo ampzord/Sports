@@ -3,4 +3,4 @@
 using ErrorOr;
 using MediatR;
 
-public record DeletePlayerCommand(int Id) : IRequest<ErrorOr<Deleted>>;
+public record DeletePlayerCommand(Guid Id) : IRequest<ErrorOr<Deleted>>;

@@ -2,4 +2,4 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-public record GetTeamByIdRequest([FromRoute] int Id);
+public record GetTeamByIdRequest([FromRoute] Guid Id);

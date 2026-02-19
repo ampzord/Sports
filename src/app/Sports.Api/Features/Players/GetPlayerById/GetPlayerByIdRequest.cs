@@ -2,4 +2,4 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-public record GetPlayerByIdRequest([FromRoute] int Id);
+public record GetPlayerByIdRequest([FromRoute] Guid Id);

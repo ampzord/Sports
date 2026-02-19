@@ -4,4 +4,4 @@ using ErrorOr;
 using MediatR;
 using Sports.Api.Features.Leagues._Shared;
 
-public record GetLeagueByIdQuery(int Id) : IRequest<ErrorOr<LeagueResponse>>;
+public record GetLeagueByIdQuery(Guid Id) : IRequest<ErrorOr<LeagueResponse>>;

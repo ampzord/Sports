@@ -1,4 +1,4 @@
-﻿namespace Sports.Api.UnitTests.Handlers;
+namespace Sports.Api.UnitTests.Handlers;
 
 using Sports.Api.Database;
 using Sports.Api.Features.Leagues._Shared;
@@ -13,6 +13,7 @@ public class MatchHandlerTests : IDisposable
 {
     private readonly SportsDbContext _db = InMemoryDbContextFactory.Create();
     private readonly MatchMapper _mapper = new();
+    private static readonly Guid _nonExistentId = Guid.Empty;
 
     public void Dispose() => _db.Dispose();
 
@@ -30,7 +31,7 @@ public class MatchHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new AddMatchCommand(999, 1, 2, null), CancellationToken.None);
+            new AddMatchCommand(_nonExistentId, TestDataBuilder.Id(1), TestDataBuilder.Id(2), null), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -50,7 +51,7 @@ public class MatchHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new AddMatchCommand(1, 999, 2, null), CancellationToken.None);
+            new AddMatchCommand(TestDataBuilder.Id(1), _nonExistentId, TestDataBuilder.Id(2), null), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -70,7 +71,7 @@ public class MatchHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new AddMatchCommand(1, 1, 999, null), CancellationToken.None);
+            new AddMatchCommand(TestDataBuilder.Id(1), TestDataBuilder.Id(1), _nonExistentId, null), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -92,7 +93,7 @@ public class MatchHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new AddMatchCommand(1, 1, 2, null), CancellationToken.None);
+            new AddMatchCommand(TestDataBuilder.Id(1), TestDataBuilder.Id(1), TestDataBuilder.Id(2), null), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -114,7 +115,7 @@ public class MatchHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new AddMatchCommand(2, 1, 2, null), CancellationToken.None);
+            new AddMatchCommand(TestDataBuilder.Id(2), TestDataBuilder.Id(1), TestDataBuilder.Id(2), null), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -122,14 +123,14 @@ public class MatchHandlerTests : IDisposable
     }
 
     [Fact]
-    public async Task GivenNonExistentId_WhenGetMatchById_ThenReturnsNotFound()
+    public async Task Given_nonExistentId_WhenGetMatchById_ThenReturnsNotFound()
     {
         // Arrange
         var handler = new GetMatchByIdHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new GetMatchByIdQuery(999), CancellationToken.None);
+            new GetMatchByIdQuery(_nonExistentId), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -137,14 +138,14 @@ public class MatchHandlerTests : IDisposable
     }
 
     [Fact]
-    public async Task GivenNonExistentId_WhenUpdateMatch_ThenReturnsNotFound()
+    public async Task Given_nonExistentId_WhenUpdateMatch_ThenReturnsNotFound()
     {
         // Arrange
         var handler = new UpdateMatchHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new UpdateMatchCommand(999, 1, 2, null), CancellationToken.None);
+            new UpdateMatchCommand(_nonExistentId, TestDataBuilder.Id(1), TestDataBuilder.Id(2), null), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -166,7 +167,7 @@ public class MatchHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new UpdateMatchCommand(1, 999, 2, null), CancellationToken.None);
+            new UpdateMatchCommand(TestDataBuilder.Id(1), _nonExistentId, TestDataBuilder.Id(2), null), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -188,7 +189,7 @@ public class MatchHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new UpdateMatchCommand(1, 1, 999, null), CancellationToken.None);
+            new UpdateMatchCommand(TestDataBuilder.Id(1), TestDataBuilder.Id(1), _nonExistentId, null), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -212,7 +213,7 @@ public class MatchHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new UpdateMatchCommand(1, 1, 3, null), CancellationToken.None);
+            new UpdateMatchCommand(TestDataBuilder.Id(1), TestDataBuilder.Id(1), TestDataBuilder.Id(3), null), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -220,14 +221,14 @@ public class MatchHandlerTests : IDisposable
     }
 
     [Fact]
-    public async Task GivenNonExistentId_WhenDeleteMatch_ThenReturnsNotFound()
+    public async Task Given_nonExistentId_WhenDeleteMatch_ThenReturnsNotFound()
     {
         // Arrange
         var handler = new DeleteMatchHandler(_db);
 
         // Act
         var result = await handler.Handle(
-            new DeleteMatchCommand(999), CancellationToken.None);
+            new DeleteMatchCommand(_nonExistentId), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();

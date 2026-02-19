@@ -3,10 +3,10 @@
 using Microsoft.AspNetCore.Mvc;
 
 public record UpdatePlayerRequest(
-    [FromRoute] int Id,
+    [FromRoute] Guid Id,
     string Name,
     string Position,
-    int? TeamId = null)
+    Guid? TeamId = null)
 {
-    public static UpdatePlayerRequest Example => new(1, "Lionel Messi", "RW", 1);
+    public static UpdatePlayerRequest Example => new(Guid.Empty, "Lionel Messi", "RW", Guid.Empty);
 }

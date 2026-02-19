@@ -2,7 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-public record GetLeagueByIdRequest([FromRoute] int Id)
+public record GetLeagueByIdRequest([FromRoute] Guid Id)
 {
-    public static GetLeagueByIdRequest Example => new(1);
+    public static GetLeagueByIdRequest Example => new(Guid.Empty);
 }

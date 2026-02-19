@@ -3,9 +3,9 @@
 using Microsoft.AspNetCore.Mvc;
 
 public record UpdateTeamRequest(
-    [FromRoute] int Id,
+    [FromRoute] Guid Id,
     string Name,
-    int? LeagueId = null)
+    Guid? LeagueId = null)
 {
-    public static UpdateTeamRequest Example => new(1, "FC Barcelona", 1);
+    public static UpdateTeamRequest Example => new(Guid.Empty, "FC Barcelona", Guid.Empty);
 }

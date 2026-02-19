@@ -6,8 +6,8 @@ using Sports.Api.Features.Players._Shared;
 using Sports.Domain.Entities;
 
 public record UpdatePlayerCommand(
-    int Id,
+    Guid Id,
     string Name,
     PlayerPosition Position,
-    int TeamId
+    Guid TeamId
 ) : IRequest<ErrorOr<PlayerResponse>>;

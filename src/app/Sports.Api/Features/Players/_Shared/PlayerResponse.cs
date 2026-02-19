@@ -4,8 +4,8 @@ using Sports.Domain.Entities;
 
 public record PlayerResponse
 {
-    public int Id { get; init; }
+    public Guid Id { get; init; }
     public string Name { get; init; } = string.Empty;
     public PlayerPosition Position { get; init; }
-    public int TeamId { get; init; }
+    public Guid TeamId { get; init; }
 }

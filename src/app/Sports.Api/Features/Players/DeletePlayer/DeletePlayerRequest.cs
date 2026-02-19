@@ -2,4 +2,4 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-public record DeletePlayerRequest([FromRoute] int Id);
+public record DeletePlayerRequest([FromRoute] Guid Id);

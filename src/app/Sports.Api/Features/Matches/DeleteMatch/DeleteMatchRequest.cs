@@ -2,7 +2,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-public record DeleteMatchRequest([FromRoute] int Id)
+public record DeleteMatchRequest([FromRoute] Guid Id)
 {
-    public static DeleteMatchRequest Example => new(1);
+    public static DeleteMatchRequest Example => new(Guid.Empty);
 }

@@ -4,7 +4,7 @@ using FluentValidation;
 
 public static class MatchPropertyValidator
 {
-    public static IRuleBuilderOptions<T, int> ValidateTeamId<T>(
-        this IRuleBuilder<T, int> ruleBuilder) => ruleBuilder
-            .GreaterThan(0).WithMessage("TeamId must be greater than 0");
+    public static IRuleBuilderOptions<T, Guid> ValidateTeamId<T>(
+        this IRuleBuilder<T, Guid> ruleBuilder) => ruleBuilder
+            .NotEmpty().WithMessage("TeamId must not be empty");
 }

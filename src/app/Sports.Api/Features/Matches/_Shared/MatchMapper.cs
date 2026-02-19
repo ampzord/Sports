@@ -12,6 +12,7 @@ public partial class MatchMapper
 {
     [MapperIgnoreSource(nameof(Match.HomeTeam))]
     [MapperIgnoreSource(nameof(Match.AwayTeam))]
+    [MapperIgnoreSource(nameof(Match.DomainEvents))]
     public partial MatchResponse ToResponse(Match match);
 
     public partial ImmutableList<MatchResponse> ToResponseList(List<Match> matches);
@@ -25,12 +26,14 @@ public partial class MatchMapper
     [MapperIgnoreTarget(nameof(Match.Id))]
     [MapperIgnoreTarget(nameof(Match.HomeTeam))]
     [MapperIgnoreTarget(nameof(Match.AwayTeam))]
+    [MapperIgnoreTarget(nameof(Match.DomainEvents))]
     [MapperIgnoreSource(nameof(AddMatchCommand.LeagueId))]
     public partial Match ToEntity(AddMatchCommand command);
 
     [MapperIgnoreTarget(nameof(Match.Id))]
     [MapperIgnoreTarget(nameof(Match.HomeTeam))]
     [MapperIgnoreTarget(nameof(Match.AwayTeam))]
+    [MapperIgnoreTarget(nameof(Match.DomainEvents))]
     [MapperIgnoreSource(nameof(UpdateMatchCommand.Id))]
     public partial void Apply(UpdateMatchCommand command, Match match);
 }

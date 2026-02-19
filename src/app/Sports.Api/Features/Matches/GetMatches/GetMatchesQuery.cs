@@ -5,4 +5,4 @@ using MediatR;
 using Sports.Api.Features.Matches._Shared;
 using System.Collections.Immutable;
 
-public record GetMatchesQuery(int? LeagueId) : IRequest<ErrorOr<ImmutableList<MatchResponse>>>;
+public record GetMatchesQuery(Guid? LeagueId) : IRequest<ErrorOr<ImmutableList<MatchResponse>>>;

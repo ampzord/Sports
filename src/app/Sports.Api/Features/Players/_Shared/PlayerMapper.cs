@@ -10,6 +10,7 @@ using Sports.Domain.Entities;
 public partial class PlayerMapper
 {
     [MapperIgnoreSource(nameof(Player.Team))]
+    [MapperIgnoreSource(nameof(Player.DomainEvents))]
     public partial PlayerResponse ToResponse(Player player);
 
     public partial ImmutableList<PlayerResponse> ToResponseList(List<Player> players);
@@ -20,10 +21,12 @@ public partial class PlayerMapper
 
     [MapperIgnoreTarget(nameof(Player.Id))]
     [MapperIgnoreTarget(nameof(Player.Team))]
+    [MapperIgnoreTarget(nameof(Player.DomainEvents))]
     public partial Player ToEntity(AddPlayerCommand command);
 
     [MapperIgnoreTarget(nameof(Player.Id))]
     [MapperIgnoreTarget(nameof(Player.Team))]
+    [MapperIgnoreTarget(nameof(Player.DomainEvents))]
     [MapperIgnoreSource(nameof(UpdatePlayerCommand.Id))]
     public partial void Apply(UpdatePlayerCommand command, Player player);
 }

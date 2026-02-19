@@ -2,4 +2,4 @@
 
 using Microsoft.AspNetCore.Mvc;
 
-public record GetMatchByIdRequest([FromRoute] int Id);
+public record GetMatchByIdRequest([FromRoute] Guid Id);

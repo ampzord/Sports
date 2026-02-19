@@ -1,4 +1,4 @@
-﻿namespace Sports.Api.UnitTests.Handlers;
+namespace Sports.Api.UnitTests.Handlers;
 
 using ErrorOr;
 using Sports.Api.Database;
@@ -13,6 +13,7 @@ public class LeagueHandlerTests : IDisposable
 {
     private readonly SportsDbContext _db = InMemoryDbContextFactory.Create();
     private readonly LeagueMapper _mapper = new();
+    private static readonly Guid _nonExistentId = Guid.Empty;
 
     public void Dispose() => _db.Dispose();
 
@@ -36,14 +37,14 @@ public class LeagueHandlerTests : IDisposable
     }
 
     [Fact]
-    public async Task GivenNonExistentId_WhenGetLeagueById_ThenReturnsNotFound()
+    public async Task Given_nonExistentId_WhenGetLeagueById_ThenReturnsNotFound()
     {
         // Arrange
         var handler = new GetLeagueByIdHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new GetLeagueByIdQuery(999), CancellationToken.None);
+            new GetLeagueByIdQuery(_nonExistentId), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -51,14 +52,14 @@ public class LeagueHandlerTests : IDisposable
     }
 
     [Fact]
-    public async Task GivenNonExistentId_WhenUpdateLeague_ThenReturnsNotFound()
+    public async Task Given_nonExistentId_WhenUpdateLeague_ThenReturnsNotFound()
     {
         // Arrange
         var handler = new UpdateLeagueHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new UpdateLeagueCommand(999, "New Name"), CancellationToken.None);
+            new UpdateLeagueCommand(_nonExistentId, "New Name"), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -78,7 +79,7 @@ public class LeagueHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new UpdateLeagueCommand(2, "Premier League"), CancellationToken.None);
+            new UpdateLeagueCommand(TestDataBuilder.Id(2), "Premier League"), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -86,14 +87,14 @@ public class LeagueHandlerTests : IDisposable
     }
 
     [Fact]
-    public async Task GivenNonExistentId_WhenDeleteLeague_ThenReturnsNotFound()
+    public async Task Given_nonExistentId_WhenDeleteLeague_ThenReturnsNotFound()
     {
         // Arrange
         var handler = new DeleteLeagueHandler(_db);
 
         // Act
         var result = await handler.Handle(
-            new DeleteLeagueCommand(999), CancellationToken.None);
+            new DeleteLeagueCommand(_nonExistentId), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -113,7 +114,7 @@ public class LeagueHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new DeleteLeagueCommand(1), CancellationToken.None);
+            new DeleteLeagueCommand(TestDataBuilder.Id(1)), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();

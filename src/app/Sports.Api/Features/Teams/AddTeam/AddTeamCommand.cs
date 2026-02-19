@@ -6,5 +6,5 @@ using Sports.Api.Features.Teams._Shared;
 
 public record AddTeamCommand(
     string Name,
-    int LeagueId
+    Guid LeagueId
 ) : IRequest<ErrorOr<TeamResponse>>;

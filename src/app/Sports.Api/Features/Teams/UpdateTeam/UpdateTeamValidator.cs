@@ -9,7 +9,7 @@ public class UpdateTeamValidator : Validator<UpdateTeamRequest>
     public UpdateTeamValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("Id must be greater than 0");
+            .NotEmpty().WithMessage("Id must not be empty");
 
         RuleFor(x => x.Name).ValidateTeamName();
         RuleFor(x => x.LeagueId).ValidateLeagueId();

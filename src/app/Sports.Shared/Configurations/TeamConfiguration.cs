@@ -9,6 +9,8 @@ public class TeamConfiguration : IEntityTypeConfiguration<Team>
     public void Configure(EntityTypeBuilder<Team> builder)
     {
         builder.HasKey(t => t.Id);
+        builder.Property(t => t.Id).ValueGeneratedNever();
+        builder.Ignore(t => t.DomainEvents);
         builder.Property(t => t.Name)
             .IsRequired()
             .HasMaxLength(100);

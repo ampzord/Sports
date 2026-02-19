@@ -9,8 +9,8 @@ public static class TeamPropertyValidator
             .NotEmpty().WithMessage("Name is required")
             .MaximumLength(100).WithMessage("Name must not exceed 100 characters");
 
-    public static IRuleBuilderOptions<T, int?> ValidateLeagueId<T>(
-        this IRuleBuilder<T, int?> ruleBuilder) => ruleBuilder
-            .GreaterThan(0).When(x => ruleBuilder != null)
-            .WithMessage("LeagueId must be greater than 0 if provided");
+    public static IRuleBuilderOptions<T, Guid?> ValidateLeagueId<T>(
+        this IRuleBuilder<T, Guid?> ruleBuilder) => ruleBuilder
+            .NotEmpty().When(x => ruleBuilder != null)
+            .WithMessage("LeagueId must not be empty if provided");
 }

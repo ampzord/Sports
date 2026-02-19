@@ -1,4 +1,4 @@
-﻿namespace Sports.Api.UnitTests.Handlers;
+namespace Sports.Api.UnitTests.Handlers;
 
 using Sports.Api.Database;
 using Sports.Api.Features.Players._Shared;
@@ -14,6 +14,7 @@ public class PlayerHandlerTests : IDisposable
 {
     private readonly SportsDbContext _db = InMemoryDbContextFactory.Create();
     private readonly PlayerMapper _mapper = new();
+    private static readonly Guid _nonExistentId = Guid.Empty;
 
     public void Dispose() => _db.Dispose();
 
@@ -25,7 +26,7 @@ public class PlayerHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new AddPlayerCommand("Saka", PlayerPosition.RW, 999), CancellationToken.None);
+            new AddPlayerCommand("Saka", PlayerPosition.RW, _nonExistentId), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -46,7 +47,7 @@ public class PlayerHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new AddPlayerCommand("Saka", PlayerPosition.LW, 1), CancellationToken.None);
+            new AddPlayerCommand("Saka", PlayerPosition.LW, TestDataBuilder.Id(1)), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -54,14 +55,14 @@ public class PlayerHandlerTests : IDisposable
     }
 
     [Fact]
-    public async Task GivenNonExistentId_WhenGetPlayerById_ThenReturnsNotFound()
+    public async Task Given_nonExistentId_WhenGetPlayerById_ThenReturnsNotFound()
     {
         // Arrange
         var handler = new GetPlayerByIdHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new GetPlayerByIdQuery(999), CancellationToken.None);
+            new GetPlayerByIdQuery(_nonExistentId), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -69,14 +70,14 @@ public class PlayerHandlerTests : IDisposable
     }
 
     [Fact]
-    public async Task GivenNonExistentId_WhenUpdatePlayer_ThenReturnsNotFound()
+    public async Task Given_nonExistentId_WhenUpdatePlayer_ThenReturnsNotFound()
     {
         // Arrange
         var handler = new UpdatePlayerHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new UpdatePlayerCommand(999, "Saka", PlayerPosition.RW, 1), CancellationToken.None);
+            new UpdatePlayerCommand(_nonExistentId, "Saka", PlayerPosition.RW, TestDataBuilder.Id(1)), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -98,7 +99,7 @@ public class PlayerHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new UpdatePlayerCommand(2, "Saka", PlayerPosition.CAM, 1), CancellationToken.None);
+            new UpdatePlayerCommand(TestDataBuilder.Id(2), "Saka", PlayerPosition.CAM, TestDataBuilder.Id(1)), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -106,14 +107,14 @@ public class PlayerHandlerTests : IDisposable
     }
 
     [Fact]
-    public async Task GivenNonExistentId_WhenDeletePlayer_ThenReturnsNotFound()
+    public async Task Given_nonExistentId_WhenDeletePlayer_ThenReturnsNotFound()
     {
         // Arrange
         var handler = new DeletePlayerHandler(_db);
 
         // Act
         var result = await handler.Handle(
-            new DeletePlayerCommand(999), CancellationToken.None);
+            new DeletePlayerCommand(_nonExistentId), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();

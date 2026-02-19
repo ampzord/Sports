@@ -12,6 +12,7 @@ public partial class TeamMapper
 {
     [MapperIgnoreSource(nameof(Team.Players))]
     [MapperIgnoreSource(nameof(Team.League))]
+    [MapperIgnoreSource(nameof(Team.DomainEvents))]
     public partial TeamResponse ToResponse(Team team);
 
     public partial ImmutableList<TeamResponse> ToResponseList(List<Team> teams);
@@ -25,11 +26,13 @@ public partial class TeamMapper
     [MapperIgnoreTarget(nameof(Team.Id))]
     [MapperIgnoreTarget(nameof(Team.Players))]
     [MapperIgnoreTarget(nameof(Team.League))]
+    [MapperIgnoreTarget(nameof(Team.DomainEvents))]
     public partial Team ToEntity(AddTeamCommand command);
 
     [MapperIgnoreTarget(nameof(Team.Id))]
     [MapperIgnoreTarget(nameof(Team.Players))]
     [MapperIgnoreTarget(nameof(Team.League))]
+    [MapperIgnoreTarget(nameof(Team.DomainEvents))]
     [MapperIgnoreSource(nameof(UpdateTeamCommand.Id))]
     public partial void Apply(UpdateTeamCommand command, Team team);
 }

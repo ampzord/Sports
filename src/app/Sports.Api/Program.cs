@@ -34,6 +34,7 @@ try
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<SportsDbContext>();
     await db.Database.MigrateAsync();
+    await SportsDbSeeder.SeedAsync(db);
 }
 catch (Exception ex)
 {

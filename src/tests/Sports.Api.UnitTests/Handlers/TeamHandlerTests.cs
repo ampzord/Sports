@@ -1,4 +1,4 @@
-﻿namespace Sports.Api.UnitTests.Handlers;
+namespace Sports.Api.UnitTests.Handlers;
 
 using Sports.Api.Database;
 using Sports.Api.Features.Leagues._Shared;
@@ -13,6 +13,7 @@ public class TeamHandlerTests : IDisposable
 {
     private readonly SportsDbContext _db = InMemoryDbContextFactory.Create();
     private readonly TeamMapper _mapper = new();
+    private static readonly Guid _nonExistentId = Guid.Empty;
 
     public void Dispose() => _db.Dispose();
 
@@ -24,7 +25,7 @@ public class TeamHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new AddTeamCommand("Arsenal", 999), CancellationToken.None);
+            new AddTeamCommand("Arsenal", _nonExistentId), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -44,7 +45,7 @@ public class TeamHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new AddTeamCommand("Arsenal", 1), CancellationToken.None);
+            new AddTeamCommand("Arsenal", TestDataBuilder.Id(1)), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -52,14 +53,14 @@ public class TeamHandlerTests : IDisposable
     }
 
     [Fact]
-    public async Task GivenNonExistentId_WhenGetTeamById_ThenReturnsNotFound()
+    public async Task Given_nonExistentId_WhenGetTeamById_ThenReturnsNotFound()
     {
         // Arrange
         var handler = new GetTeamByIdHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new GetTeamByIdQuery(999), CancellationToken.None);
+            new GetTeamByIdQuery(_nonExistentId), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -67,14 +68,14 @@ public class TeamHandlerTests : IDisposable
     }
 
     [Fact]
-    public async Task GivenNonExistentId_WhenUpdateTeam_ThenReturnsNotFound()
+    public async Task Given_nonExistentId_WhenUpdateTeam_ThenReturnsNotFound()
     {
         // Arrange
         var handler = new UpdateTeamHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new UpdateTeamCommand(999, "New Name", 1), CancellationToken.None);
+            new UpdateTeamCommand(_nonExistentId, "New Name", TestDataBuilder.Id(1)), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -95,7 +96,7 @@ public class TeamHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new UpdateTeamCommand(2, "Arsenal", 1), CancellationToken.None);
+            new UpdateTeamCommand(TestDataBuilder.Id(2), "Arsenal", TestDataBuilder.Id(1)), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -115,7 +116,7 @@ public class TeamHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new UpdateTeamCommand(1, "Arsenal", 999), CancellationToken.None);
+            new UpdateTeamCommand(TestDataBuilder.Id(1), "Arsenal", _nonExistentId), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -138,7 +139,7 @@ public class TeamHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new UpdateTeamCommand(1, "Arsenal", 2), CancellationToken.None);
+            new UpdateTeamCommand(TestDataBuilder.Id(1), "Arsenal", TestDataBuilder.Id(2)), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -159,22 +160,22 @@ public class TeamHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new UpdateTeamCommand(1, "Arsenal", 2), CancellationToken.None);
+            new UpdateTeamCommand(TestDataBuilder.Id(1), "Arsenal", TestDataBuilder.Id(2)), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.LeagueId.Should().Be(2);
+        result.Value.LeagueId.Should().Be(TestDataBuilder.Id(2));
     }
 
     [Fact]
-    public async Task GivenNonExistentId_WhenDeleteTeam_ThenReturnsNotFound()
+    public async Task Given_nonExistentId_WhenDeleteTeam_ThenReturnsNotFound()
     {
         // Arrange
         var handler = new DeleteTeamHandler(_db);
 
         // Act
         var result = await handler.Handle(
-            new DeleteTeamCommand(999), CancellationToken.None);
+            new DeleteTeamCommand(_nonExistentId), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -195,7 +196,7 @@ public class TeamHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new DeleteTeamCommand(1), CancellationToken.None);
+            new DeleteTeamCommand(TestDataBuilder.Id(1)), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -217,7 +218,7 @@ public class TeamHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new DeleteTeamCommand(1), CancellationToken.None);
+            new DeleteTeamCommand(TestDataBuilder.Id(1)), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();

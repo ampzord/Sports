@@ -10,6 +10,6 @@ public class AddTeamValidator : Validator<AddTeamRequest>
     {
         RuleFor(x => x.Name).ValidateTeamName();
         RuleFor(x => x.LeagueId)
-            .GreaterThan(0).WithMessage("LeagueId must be greater than 0");
+            .NotEmpty().WithMessage("LeagueId must not be empty");
     }
 }

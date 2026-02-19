@@ -2,4 +2,4 @@
 
 using FastEndpoints;
 
-public record GetPlayersRequest([property: QueryParam] int? TeamId);
+public record GetPlayersRequest([property: QueryParam] Guid? TeamId);

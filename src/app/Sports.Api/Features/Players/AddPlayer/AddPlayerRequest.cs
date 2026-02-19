@@ -3,10 +3,10 @@
 using Sports.Domain.Entities;
 
 public record AddPlayerRequest(
-    int TeamId,
+    Guid TeamId,
     string Name,
     PlayerPosition Position)
 {
     public static AddPlayerRequest Example =>
-        new(1, "Lionel Messi", PlayerPosition.RW);
+        new(Guid.Empty, "Lionel Messi", PlayerPosition.RW);
 }

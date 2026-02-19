@@ -2,4 +2,4 @@
 
 using FastEndpoints;
 
-public record GetMatchesRequest([property: QueryParam] int? LeagueId);
+public record GetMatchesRequest([property: QueryParam] Guid? LeagueId);

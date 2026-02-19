@@ -32,7 +32,6 @@ public class LeagueEndpointsTests(SportsApiFactory factory) : IntegrationTestBas
         var league = await response.Content.ReadFromJsonAsync<LeagueResponse>();
         league.Should().NotBeNull();
         league!.Name.Should().Be("Premier League");
-        league.Id.Should().Be(1);
     }
 
     [Fact]

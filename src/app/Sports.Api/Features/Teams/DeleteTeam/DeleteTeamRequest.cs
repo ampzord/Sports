@@ -1,6 +1,6 @@
 ﻿namespace Sports.Api.Features.Teams.DeleteTeam;
 
-public record DeleteTeamRequest(int Id)
+public record DeleteTeamRequest(Guid Id)
 {
-    public static DeleteTeamRequest Example => new(1);
+    public static DeleteTeamRequest Example => new(Guid.Empty);
 }

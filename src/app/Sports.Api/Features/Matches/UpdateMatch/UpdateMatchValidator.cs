@@ -9,7 +9,7 @@ public class UpdateMatchValidator : Validator<UpdateMatchRequest>
     public UpdateMatchValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(0).WithMessage("Id must be greater than 0");
+            .NotEmpty().WithMessage("Id must not be empty");
 
         RuleFor(x => x.HomeTeamId).ValidateTeamId();
         RuleFor(x => x.AwayTeamId).ValidateTeamId();

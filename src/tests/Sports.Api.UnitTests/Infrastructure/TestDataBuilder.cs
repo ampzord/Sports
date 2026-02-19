@@ -5,29 +5,31 @@ using Sports.Domain.Entities;
 
 public class TestDataBuilder(SportsDbContext db)
 {
+    private static Guid TestGuid(int n) => new($"00000000-0000-0000-0000-{n:D12}");
+
     public TestDataBuilder WithLeague(int id = 1, string name = "Premier League")
     {
-        db.Leagues.Add(new League { Id = id, Name = name });
+        db.Leagues.Add(League.Create(TestGuid(id), name));
         return this;
     }
 
     public TestDataBuilder WithTeam(int id = 1, string name = "Arsenal", int leagueId = 1)
     {
-        db.Teams.Add(new Team { Id = id, Name = name, LeagueId = leagueId });
+        db.Teams.Add(Team.Create(TestGuid(id), name, TestGuid(leagueId)));
         return this;
     }
 
     public TestDataBuilder WithPlayer(int id = 1, string name = "Saka",
         PlayerPosition position = PlayerPosition.RW, int teamId = 1)
     {
-        db.Players.Add(new Player { Id = id, Name = name, Position = position, TeamId = teamId });
+        db.Players.Add(Player.Create(TestGuid(id), name, position, TestGuid(teamId)));
         return this;
     }
 
     public TestDataBuilder WithMatch(int id = 1, int homeTeamId = 1, int awayTeamId = 2,
         int? totalPasses = null)
     {
-        db.Matches.Add(new Match { Id = id, HomeTeamId = homeTeamId, AwayTeamId = awayTeamId, TotalPasses = totalPasses });
+        db.Matches.Add(Match.Create(TestGuid(id), TestGuid(homeTeamId), TestGuid(awayTeamId), totalPasses));
         return this;
     }
 
@@ -36,4 +38,6 @@ public class TestDataBuilder(SportsDbContext db)
         await db.SaveChangesAsync();
         return this;
     }
+
+    public static Guid Id(int n) => TestGuid(n);
 }

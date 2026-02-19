@@ -5,8 +5,8 @@ using MediatR;
 using Sports.Api.Features.Matches._Shared;
 
 public record AddMatchCommand(
-    int LeagueId,
-    int HomeTeamId,
-    int AwayTeamId,
+    Guid LeagueId,
+    Guid HomeTeamId,
+    Guid AwayTeamId,
     int? TotalPasses
 ) : IRequest<ErrorOr<MatchResponse>>;

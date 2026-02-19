@@ -5,7 +5,7 @@ using MediatR;
 using Sports.Api.Features.Teams._Shared;
 
 public record UpdateTeamCommand(
-    int Id,
+    Guid Id,
     string Name,
-    int? LeagueId
+    Guid? LeagueId
 ) : IRequest<ErrorOr<TeamResponse>>;

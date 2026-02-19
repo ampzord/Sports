@@ -27,14 +27,14 @@ public static class ApiHelper
         return (await response.Content.ReadFromJsonAsync<LeagueResponse>())!;
     }
 
-    public static async Task<TeamResponse> CreateTeamAsync(this HttpClient client, int leagueId, string name)
+    public static async Task<TeamResponse> CreateTeamAsync(this HttpClient client, Guid leagueId, string name)
     {
         var response = await client.PostAsJsonAsync($"/{ApiRoutes.Prefix}/teams", new AddTeamRequest(leagueId, name));
         return (await response.Content.ReadFromJsonAsync<TeamResponse>())!;
     }
 
     public static async Task<PlayerResponse> CreatePlayerAsync(
-        this HttpClient client, int teamId, string name, PlayerPosition position)
+        this HttpClient client, Guid teamId, string name, PlayerPosition position)
     {
         var response = await client.PostAsJsonAsync(
             $"/{ApiRoutes.Prefix}/players",
@@ -43,7 +43,7 @@ public static class ApiHelper
     }
 
     public static async Task<MatchResponse> CreateMatchAsync(
-        this HttpClient client, int leagueId, int homeTeamId, int awayTeamId)
+        this HttpClient client, Guid leagueId, Guid homeTeamId, Guid awayTeamId)
     {
         var response = await client.PostAsJsonAsync(
             $"/{ApiRoutes.Prefix}/matches", new AddMatchRequest(leagueId, homeTeamId, awayTeamId));

@@ -8,5 +8,5 @@ using Sports.Domain.Entities;
 public record AddPlayerCommand(
     string Name,
     PlayerPosition Position,
-    int TeamId
+    Guid TeamId
 ) : IRequest<ErrorOr<PlayerResponse>>;

@@ -3,8 +3,8 @@
 using Microsoft.AspNetCore.Mvc;
 
 public record UpdateLeagueRequest(
-    [FromRoute] int Id,
+    [FromRoute] Guid Id,
     string Name)
 {
-    public static UpdateLeagueRequest Example => new(1, "La Liga");
+    public static UpdateLeagueRequest Example => new(Guid.Empty, "La Liga");
 }
