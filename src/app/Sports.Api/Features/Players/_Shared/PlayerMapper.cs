@@ -4,7 +4,9 @@ using System.Collections.Immutable;
 using Riok.Mapperly.Abstractions;
 using Sports.Api.Features.Players.AddPlayer;
 using Sports.Api.Features.Players.UpdatePlayer;
-using Sports.Domain.Entities;
+using Sports.Domain.PlayerAggregate;
+using Sports.Domain.PlayerAggregate.ValueObjects;
+using Sports.Domain.TeamAggregate.ValueObjects;
 
 [Mapper]
 public partial class PlayerMapper
@@ -19,14 +21,6 @@ public partial class PlayerMapper
 
     public partial UpdatePlayerCommand ToCommand(UpdatePlayerRequest request);
 
-    [MapperIgnoreTarget(nameof(Player.Id))]
-    [MapperIgnoreTarget(nameof(Player.Team))]
-    [MapperIgnoreTarget(nameof(Player.DomainEvents))]
-    public partial Player ToEntity(AddPlayerCommand command);
-
-    [MapperIgnoreTarget(nameof(Player.Id))]
-    [MapperIgnoreTarget(nameof(Player.Team))]
-    [MapperIgnoreTarget(nameof(Player.DomainEvents))]
-    [MapperIgnoreSource(nameof(UpdatePlayerCommand.Id))]
-    public partial void Apply(UpdatePlayerCommand command, Player player);
+    private static Guid ToGuid(PlayerId id) => id.Value;
+    private static Guid ToGuid(TeamId id) => id.Value;
 }

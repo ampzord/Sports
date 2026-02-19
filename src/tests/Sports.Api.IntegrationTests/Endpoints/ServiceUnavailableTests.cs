@@ -1,6 +1,7 @@
 ﻿namespace Sports.Api.IntegrationTests.Endpoints;
 
 using Microsoft.AspNetCore.Mvc;
+using Sports.Api;
 using Sports.Api.IntegrationTests.Infrastructure;
 using System.Net.Http.Json;
 using System.Net;

@@ -5,6 +5,7 @@ using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
+using Sports.Domain.LeagueAggregate;
 
 public class AddLeagueHandler(SportsDbContext db, LeagueMapper mapper)
     : IRequestHandler<AddLeagueCommand, ErrorOr<LeagueResponse>>
@@ -19,7 +20,7 @@ public class AddLeagueHandler(SportsDbContext db, LeagueMapper mapper)
         if (nameExists)
             return LeagueErrors.NameConflict;
 
-        var league = mapper.ToEntity(command);
+        var league = League.Create(command.Name);
 
         db.Leagues.Add(league);
         await db.SaveChangesAsync(cancellationToken);

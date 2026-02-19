@@ -7,6 +7,7 @@ using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
+using Sports.Domain.LeagueAggregate.ValueObjects;
 
 public class GetMatchesHandler(SportsDbContext db, MatchMapper mapper)
     : IRequestHandler<GetMatchesQuery, ErrorOr<ImmutableList<MatchResponse>>>
@@ -17,8 +18,9 @@ public class GetMatchesHandler(SportsDbContext db, MatchMapper mapper)
     {
         if (query.LeagueId is not null)
         {
+            var leagueId = LeagueId.Create(query.LeagueId.Value);
             var leagueExists = await db.Leagues.AnyAsync(
-                l => l.Id == query.LeagueId, cancellationToken);
+                l => l.Id == leagueId, cancellationToken);
 
             if (!leagueExists)
                 return LeagueErrors.NotFound;
@@ -30,7 +32,7 @@ public class GetMatchesHandler(SportsDbContext db, MatchMapper mapper)
 
         if (query.LeagueId is not null)
             matchesQuery = matchesQuery
-                .Where(m => m.HomeTeam.LeagueId == query.LeagueId);
+                .Where(m => m.HomeTeam.LeagueId == LeagueId.Create(query.LeagueId.Value));
 
         var matches = await matchesQuery.ToListAsync(cancellationToken);
 

@@ -1,4 +1,4 @@
-namespace Sports.Domain.Entities;
+namespace Sports.Domain.PlayerAggregate.Enums;
 
 public enum PlayerPosition
 {

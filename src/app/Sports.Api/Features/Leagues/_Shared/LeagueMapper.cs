@@ -5,7 +5,8 @@ using Riok.Mapperly.Abstractions;
 using Sports.Api.Features.Leagues.AddLeague;
 using Sports.Api.Features.Leagues.DeleteLeague;
 using Sports.Api.Features.Leagues.UpdateLeague;
-using Sports.Domain.Entities;
+using Sports.Domain.LeagueAggregate;
+using Sports.Domain.LeagueAggregate.ValueObjects;
 
 [Mapper]
 public partial class LeagueMapper
@@ -22,14 +23,5 @@ public partial class LeagueMapper
 
     public partial DeleteLeagueCommand ToCommand(DeleteLeagueRequest request);
 
-    [MapperIgnoreTarget(nameof(League.Id))]
-    [MapperIgnoreTarget(nameof(League.Teams))]
-    [MapperIgnoreTarget(nameof(League.DomainEvents))]
-    public partial League ToEntity(AddLeagueCommand command);
-
-    [MapperIgnoreTarget(nameof(League.Id))]
-    [MapperIgnoreTarget(nameof(League.Teams))]
-    [MapperIgnoreTarget(nameof(League.DomainEvents))]
-    [MapperIgnoreSource(nameof(UpdateLeagueCommand.Id))]
-    public partial void Apply(UpdateLeagueCommand command, League league);
+    private static Guid ToGuid(LeagueId id) => id.Value;
 }

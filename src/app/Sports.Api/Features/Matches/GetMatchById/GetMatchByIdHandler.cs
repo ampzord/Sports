@@ -4,6 +4,7 @@ using Sports.Api.Features.Matches._Shared;
 using ErrorOr;
 using MediatR;
 using Sports.Api.Database;
+using Sports.Domain.MatchAggregate.ValueObjects;
 
 public class GetMatchByIdHandler(SportsDbContext db, MatchMapper mapper)
     : IRequestHandler<GetMatchByIdQuery, ErrorOr<MatchResponse>>
@@ -12,7 +13,7 @@ public class GetMatchByIdHandler(SportsDbContext db, MatchMapper mapper)
         GetMatchByIdQuery query,
         CancellationToken cancellationToken)
     {
-        var match = await db.Matches.FindAsync([query.Id], cancellationToken);
+        var match = await db.Matches.FindAsync([MatchId.Create(query.Id)], cancellationToken);
 
         if (match is null)
             return MatchErrors.NotFound;

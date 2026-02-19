@@ -6,6 +6,8 @@ using ErrorOr;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
+using Sports.Domain.LeagueAggregate.ValueObjects;
+using Sports.Domain.TeamAggregate;
 
 public class AddTeamHandler(SportsDbContext db, TeamMapper mapper)
     : IRequestHandler<AddTeamCommand, ErrorOr<TeamResponse>>
@@ -17,8 +19,9 @@ public class AddTeamHandler(SportsDbContext db, TeamMapper mapper)
     {
         var errors = new List<Error>();
 
+        var leagueId = LeagueId.Create(command.LeagueId);
         var leagueExists = await db.Leagues.AnyAsync(
-            l => l.Id == command.LeagueId,
+            l => l.Id == leagueId,
             cancellationToken);
 
         if (!leagueExists)
@@ -34,7 +37,7 @@ public class AddTeamHandler(SportsDbContext db, TeamMapper mapper)
         if (errors.Count > 0)
             return errors;
 
-        var team = mapper.ToEntity(command);
+        var team = Team.Create(command.Name, leagueId);
         db.Teams.Add(team);
         await db.SaveChangesAsync(cancellationToken);
 

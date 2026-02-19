@@ -2,7 +2,8 @@
 
 using Microsoft.EntityFrameworkCore;
 using Sports.MatchSimulationWorker.Database;
-using Sports.Domain.Entities;
+using Sports.Domain.MatchAggregate;
+using Sports.Domain.TeamAggregate.ValueObjects;
 using Sports.Tests.Shared;
 using Testcontainers.MsSql;
 
@@ -59,7 +60,7 @@ public class WorkerDatabaseFixture : IAsyncLifetime
 
         for (var i = 0; i < count; i++)
         {
-            context.Matches.Add(Match.Create(homeTeamId, awayTeamId));
+            context.Matches.Add(Match.Create(TeamId.Create(homeTeamId), TeamId.Create(awayTeamId)));
         }
 
         await context.SaveChangesAsync();

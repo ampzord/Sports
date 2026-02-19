@@ -2,7 +2,7 @@
 
 using Sports.Api.Features.Players._Shared;
 using Sports.Api.IntegrationTests.Infrastructure;
-using Sports.Domain.Entities;
+using Sports.Domain.PlayerAggregate.Enums;
 using Sports.Tests.Shared;
 using System.Net.Http.Json;
 
@@ -17,7 +17,7 @@ public class PlayerEndpointsTests(SportsApiFactory factory) : IntegrationTestBas
 
         // Act
         var response = await Client.PostAsJsonAsync(
-            $"/{ApiRoutes.Prefix}/players",
+            "players",
             new { TeamId = team.Id, Name = "Bukayo Saka", Position = "RW" });
 
         // Assert
@@ -39,7 +39,7 @@ public class PlayerEndpointsTests(SportsApiFactory factory) : IntegrationTestBas
         var created = await Client.CreatePlayerAsync(team.Id, "Declan Rice", PlayerPosition.CDM);
 
         // Act
-        var response = await Client.GetAsync($"/{ApiRoutes.Prefix}/players/{created.Id}");
+        var response = await Client.GetAsync($"players/{created.Id}");
 
         // Assert
         response.Should().Be200Ok();
@@ -57,7 +57,7 @@ public class PlayerEndpointsTests(SportsApiFactory factory) : IntegrationTestBas
         await Client.CreatePlayerAsync(team.Id, "William Saliba", PlayerPosition.CB);
 
         // Act
-        var response = await Client.GetAsync($"/{ApiRoutes.Prefix}/players?teamId={team.Id}");
+        var response = await Client.GetAsync($"players?teamId={team.Id}");
 
         // Assert
         response.Should().Be200Ok();
@@ -76,7 +76,7 @@ public class PlayerEndpointsTests(SportsApiFactory factory) : IntegrationTestBas
 
         // Act
         var response = await Client.PutAsJsonAsync(
-            $"/{ApiRoutes.Prefix}/players/{created.Id}",
+            $"players/{created.Id}",
             new { Name = "Updated Player", Position = "RB", TeamId = team.Id });
 
         // Assert
@@ -95,7 +95,7 @@ public class PlayerEndpointsTests(SportsApiFactory factory) : IntegrationTestBas
         var created = await Client.CreatePlayerAsync(team.Id, "Aaron Ramsdale", PlayerPosition.GK);
 
         // Act
-        var response = await Client.DeleteAsync($"/{ApiRoutes.Prefix}/players/{created.Id}");
+        var response = await Client.DeleteAsync($"players/{created.Id}");
 
         // Assert
         response.Should().Be204NoContent();
@@ -105,7 +105,7 @@ public class PlayerEndpointsTests(SportsApiFactory factory) : IntegrationTestBas
     public async Task GivenNonExistentId_WhenGetById_ThenReturnsNotFound()
     {
         // Act
-        var response = await Client.GetAsync($"/{ApiRoutes.Prefix}/players/99999");
+        var response = await Client.GetAsync($"players/{Guid.Empty}");
 
         // Assert
         response.Should().Be404NotFound();

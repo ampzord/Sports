@@ -5,7 +5,9 @@ using Riok.Mapperly.Abstractions;
 using Sports.Api.Features.Matches.AddMatch;
 using Sports.Api.Features.Matches.DeleteMatch;
 using Sports.Api.Features.Matches.UpdateMatch;
-using Sports.Domain.Entities;
+using Sports.Domain.MatchAggregate;
+using Sports.Domain.MatchAggregate.ValueObjects;
+using Sports.Domain.TeamAggregate.ValueObjects;
 
 [Mapper]
 public partial class MatchMapper
@@ -23,17 +25,6 @@ public partial class MatchMapper
 
     public partial DeleteMatchCommand ToCommand(DeleteMatchRequest request);
 
-    [MapperIgnoreTarget(nameof(Match.Id))]
-    [MapperIgnoreTarget(nameof(Match.HomeTeam))]
-    [MapperIgnoreTarget(nameof(Match.AwayTeam))]
-    [MapperIgnoreTarget(nameof(Match.DomainEvents))]
-    [MapperIgnoreSource(nameof(AddMatchCommand.LeagueId))]
-    public partial Match ToEntity(AddMatchCommand command);
-
-    [MapperIgnoreTarget(nameof(Match.Id))]
-    [MapperIgnoreTarget(nameof(Match.HomeTeam))]
-    [MapperIgnoreTarget(nameof(Match.AwayTeam))]
-    [MapperIgnoreTarget(nameof(Match.DomainEvents))]
-    [MapperIgnoreSource(nameof(UpdateMatchCommand.Id))]
-    public partial void Apply(UpdateMatchCommand command, Match match);
+    private static Guid ToGuid(MatchId id) => id.Value;
+    private static Guid ToGuid(TeamId id) => id.Value;
 }

@@ -1,7 +1,10 @@
 namespace Sports.Api.Database;
 
 using Microsoft.EntityFrameworkCore;
-using Sports.Domain.Entities;
+using Sports.Domain.LeagueAggregate;
+using Sports.Domain.MatchAggregate;
+using Sports.Domain.PlayerAggregate;
+using Sports.Domain.TeamAggregate;
 using Sports.Shared.Configurations;
 
 public class SportsDbContext : DbContext

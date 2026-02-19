@@ -1,7 +1,7 @@
 namespace Sports.Api.Features.Players._Shared;
 
 using FluentValidation;
-using Sports.Domain.Entities;
+using Sports.Domain.PlayerAggregate.Enums;
 
 public static class PlayerPropertyValidator
 {

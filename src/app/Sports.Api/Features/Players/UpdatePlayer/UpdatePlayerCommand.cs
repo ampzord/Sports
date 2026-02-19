@@ -3,7 +3,7 @@
 using ErrorOr;
 using MediatR;
 using Sports.Api.Features.Players._Shared;
-using Sports.Domain.Entities;
+using Sports.Domain.PlayerAggregate.Enums;
 
 public record UpdatePlayerCommand(
     Guid Id,

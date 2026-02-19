@@ -1,6 +1,6 @@
 ﻿namespace Sports.Api.Features.Players.AddPlayer;
 
-using Sports.Domain.Entities;
+using Sports.Domain.PlayerAggregate.Enums;
 
 public record AddPlayerRequest(
     Guid TeamId,

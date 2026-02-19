@@ -8,7 +8,7 @@ using Sports.Api.Features.Players.GetPlayerById;
 using Sports.Api.Features.Players.UpdatePlayer;
 using Sports.Api.Features.Teams._Shared;
 using Sports.Api.UnitTests.Infrastructure;
-using Sports.Domain.Entities;
+using Sports.Domain.PlayerAggregate.Enums;
 
 public class PlayerHandlerTests : IDisposable
 {
@@ -37,7 +37,7 @@ public class PlayerHandlerTests : IDisposable
     public async Task GivenDuplicateName_WhenAddPlayer_ThenReturnsConflict()
     {
         // Arrange
-        await new TestDataBuilder(_db)
+        var data = await new TestDataBuilder(_db)
             .WithLeague()
             .WithTeam()
             .WithPlayer()
@@ -47,7 +47,7 @@ public class PlayerHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new AddPlayerCommand("Saka", PlayerPosition.LW, TestDataBuilder.Id(1)), CancellationToken.None);
+            new AddPlayerCommand("Saka", PlayerPosition.LW, data.Id("Arsenal")), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -77,7 +77,7 @@ public class PlayerHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new UpdatePlayerCommand(_nonExistentId, "Saka", PlayerPosition.RW, TestDataBuilder.Id(1)), CancellationToken.None);
+            new UpdatePlayerCommand(_nonExistentId, "Saka", PlayerPosition.RW, Guid.Empty), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -88,18 +88,18 @@ public class PlayerHandlerTests : IDisposable
     public async Task GivenDuplicateName_WhenUpdatePlayer_ThenReturnsConflict()
     {
         // Arrange
-        await new TestDataBuilder(_db)
+        var data = await new TestDataBuilder(_db)
             .WithLeague()
             .WithTeam()
-            .WithPlayer(1, "Saka")
-            .WithPlayer(2, "Odegaard", PlayerPosition.CAM)
+            .WithPlayer("Saka")
+            .WithPlayer("Odegaard", PlayerPosition.CAM)
             .SaveAsync();
 
         var handler = new UpdatePlayerHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new UpdatePlayerCommand(TestDataBuilder.Id(2), "Saka", PlayerPosition.CAM, TestDataBuilder.Id(1)), CancellationToken.None);
+            new UpdatePlayerCommand(data.Id("Odegaard"), "Saka", PlayerPosition.CAM, data.Id("Arsenal")), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();

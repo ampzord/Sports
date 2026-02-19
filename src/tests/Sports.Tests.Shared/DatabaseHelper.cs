@@ -14,9 +14,5 @@ public static class DatabaseHelper
             DELETE FROM Players;
             DELETE FROM Teams;
             DELETE FROM Leagues;
-            DBCC CHECKIDENT ('Matches', RESEED, 0);
-            DBCC CHECKIDENT ('Players', RESEED, 0);
-            DBCC CHECKIDENT ('Teams', RESEED, 0);
-            DBCC CHECKIDENT ('Leagues', RESEED, 0);
             """);
 }

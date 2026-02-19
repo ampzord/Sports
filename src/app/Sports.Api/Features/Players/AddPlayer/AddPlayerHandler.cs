@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Sports.Api.Database;
 using Sports.Api.Features.Players._Shared;
 using Sports.Api.Features.Teams._Shared;
+using Sports.Domain.PlayerAggregate;
+using Sports.Domain.TeamAggregate.ValueObjects;
 
 public class AddPlayerHandler(SportsDbContext db, PlayerMapper mapper)
     : IRequestHandler<AddPlayerCommand, ErrorOr<PlayerResponse>>
@@ -17,8 +19,9 @@ public class AddPlayerHandler(SportsDbContext db, PlayerMapper mapper)
     {
         var errors = new List<Error>();
 
+        var teamId = TeamId.Create(command.TeamId);
         var teamExists = await db.Teams.AnyAsync(
-            t => t.Id == command.TeamId,
+            t => t.Id == teamId,
             cancellationToken);
 
         if (!teamExists)
@@ -34,7 +37,7 @@ public class AddPlayerHandler(SportsDbContext db, PlayerMapper mapper)
         if (errors.Count > 0)
             return errors;
 
-        var player = mapper.ToEntity(command);
+        var player = Player.Create(command.Name, command.Position, teamId);
 
         db.Players.Add(player);
         await db.SaveChangesAsync(cancellationToken);

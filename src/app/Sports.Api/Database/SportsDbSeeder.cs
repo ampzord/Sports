@@ -1,7 +1,12 @@
 namespace Sports.Api.Database;
 
 using Microsoft.EntityFrameworkCore;
-using Sports.Domain.Entities;
+using Sports.Domain.LeagueAggregate;
+using Sports.Domain.MatchAggregate;
+using Sports.Domain.PlayerAggregate;
+using Sports.Domain.PlayerAggregate.Enums;
+using Sports.Domain.TeamAggregate;
+using Sports.Domain.TeamAggregate.ValueObjects;
 
 public static class SportsDbSeeder
 {
@@ -36,8 +41,8 @@ public static class SportsDbSeeder
     }
 
     private static void SeedPlayers(SportsDbContext db,
-        Guid arsenal, Guid manchesterCity, Guid liverpool, Guid chelsea,
-        Guid realMadrid, Guid barcelona, Guid atleticoMadrid, Guid sevilla) => db.Players.AddRange(
+        TeamId arsenal, TeamId manchesterCity, TeamId liverpool, TeamId chelsea,
+        TeamId realMadrid, TeamId barcelona, TeamId atleticoMadrid, TeamId sevilla) => db.Players.AddRange(
             // Arsenal (4-3-3)
             Player.Create("David Raya", PlayerPosition.GK, arsenal),
             Player.Create("Ben White", PlayerPosition.RB, arsenal),

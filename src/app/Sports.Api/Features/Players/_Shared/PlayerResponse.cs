@@ -1,6 +1,6 @@
 namespace Sports.Api.Features.Players._Shared;
 
-using Sports.Domain.Entities;
+using Sports.Domain.PlayerAggregate.Enums;
 
 public record PlayerResponse
 {

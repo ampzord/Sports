@@ -61,10 +61,10 @@ public class SimulateMatchesJob(
 
         foreach (var match in matches)
         {
-            match.TotalPasses = random.Next(
+            match.SetTotalPasses(random.Next(
                 ISimulateMatchesJob.MinPasses,
                 ISimulateMatchesJob.MaxPasses
-            );
+            ));
         }
 
         await db.SaveChangesAsync();

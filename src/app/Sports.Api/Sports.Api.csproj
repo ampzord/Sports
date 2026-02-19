@@ -29,6 +29,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Features\Leagues\_Shared\Responses\" />
+	  <Folder Include="Migrations\" />
 	</ItemGroup>
 
 </Project>

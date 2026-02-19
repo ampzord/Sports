@@ -70,16 +70,16 @@ public class LeagueHandlerTests : IDisposable
     public async Task GivenDuplicateName_WhenUpdateLeague_ThenReturnsConflict()
     {
         // Arrange
-        await new TestDataBuilder(_db)
-            .WithLeague(1, "Premier League")
-            .WithLeague(2, "La Liga")
+        var data = await new TestDataBuilder(_db)
+            .WithLeague("Premier League")
+            .WithLeague("La Liga")
             .SaveAsync();
 
         var handler = new UpdateLeagueHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new UpdateLeagueCommand(TestDataBuilder.Id(2), "Premier League"), CancellationToken.None);
+            new UpdateLeagueCommand(data.Id("La Liga"), "Premier League"), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -105,7 +105,7 @@ public class LeagueHandlerTests : IDisposable
     public async Task GivenLeagueWithTeams_WhenDeleteLeague_ThenReturnsConflict()
     {
         // Arrange
-        await new TestDataBuilder(_db)
+        var data = await new TestDataBuilder(_db)
             .WithLeague()
             .WithTeam()
             .SaveAsync();
@@ -114,7 +114,7 @@ public class LeagueHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new DeleteLeagueCommand(TestDataBuilder.Id(1)), CancellationToken.None);
+            new DeleteLeagueCommand(data.Id("Premier League")), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();

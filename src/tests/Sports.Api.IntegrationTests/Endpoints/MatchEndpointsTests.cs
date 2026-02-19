@@ -18,7 +18,7 @@ public class MatchEndpointsTests(SportsApiFactory factory) : IntegrationTestBase
 
         // Act
         var response = await Client.PostAsJsonAsync(
-            $"/{ApiRoutes.Prefix}/matches", new AddMatchRequest(league.Id, home.Id, away.Id));
+            "matches", new AddMatchRequest(league.Id, home.Id, away.Id));
 
         // Assert
         response.Should().Be201Created();
@@ -40,7 +40,7 @@ public class MatchEndpointsTests(SportsApiFactory factory) : IntegrationTestBase
         var created = await Client.CreateMatchAsync(league.Id, home.Id, away.Id);
 
         // Act
-        var response = await Client.GetAsync($"/{ApiRoutes.Prefix}/matches/{created.Id}");
+        var response = await Client.GetAsync($"matches/{created.Id}");
 
         // Assert
         response.Should().Be200Ok();
@@ -58,7 +58,7 @@ public class MatchEndpointsTests(SportsApiFactory factory) : IntegrationTestBase
         await Client.CreateMatchAsync(league.Id, home.Id, away.Id);
 
         // Act
-        var response = await Client.GetAsync($"/{ApiRoutes.Prefix}/matches?leagueId={league.Id}");
+        var response = await Client.GetAsync($"matches?leagueId={league.Id}");
 
         // Assert
         response.Should().Be200Ok();
@@ -77,7 +77,7 @@ public class MatchEndpointsTests(SportsApiFactory factory) : IntegrationTestBase
 
         // Act
         var response = await Client.PutAsJsonAsync(
-            $"/{ApiRoutes.Prefix}/matches/{created.Id}",
+            $"matches/{created.Id}",
             new { HomeTeamId = away.Id, AwayTeamId = home.Id, TotalPasses = 500 });
 
         // Assert
@@ -98,7 +98,7 @@ public class MatchEndpointsTests(SportsApiFactory factory) : IntegrationTestBase
         var created = await Client.CreateMatchAsync(league.Id, home.Id, away.Id);
 
         // Act
-        var response = await Client.DeleteAsync($"/{ApiRoutes.Prefix}/matches/{created.Id}");
+        var response = await Client.DeleteAsync($"matches/{created.Id}");
 
         // Assert
         response.Should().Be204NoContent();
@@ -108,7 +108,7 @@ public class MatchEndpointsTests(SportsApiFactory factory) : IntegrationTestBase
     public async Task GivenNonExistentId_WhenGetById_ThenReturnsNotFound()
     {
         // Act
-        var response = await Client.GetAsync($"/{ApiRoutes.Prefix}/matches/99999");
+        var response = await Client.GetAsync($"matches/{Guid.Empty}");
 
         // Assert
         response.Should().Be404NotFound();
@@ -123,7 +123,7 @@ public class MatchEndpointsTests(SportsApiFactory factory) : IntegrationTestBase
 
         // Act
         var response = await Client.PostAsJsonAsync(
-            $"/{ApiRoutes.Prefix}/matches", new AddMatchRequest(league.Id, team.Id, team.Id));
+            "matches", new AddMatchRequest(league.Id, team.Id, team.Id));
 
         // Assert
         response.Should().Be400BadRequest();
@@ -140,7 +140,7 @@ public class MatchEndpointsTests(SportsApiFactory factory) : IntegrationTestBase
 
         // Act
         var response = await Client.PostAsJsonAsync(
-            $"/{ApiRoutes.Prefix}/matches", new AddMatchRequest(premierLeague.Id, arsenal.Id, barcelona.Id));
+            "matches", new AddMatchRequest(premierLeague.Id, arsenal.Id, barcelona.Id));
 
         // Assert
         response.Should().Be400BadRequest();
@@ -159,7 +159,7 @@ public class MatchEndpointsTests(SportsApiFactory factory) : IntegrationTestBase
 
         // Act
         var response = await Client.PutAsJsonAsync(
-            $"/{ApiRoutes.Prefix}/matches/{created.Id}",
+            $"matches/{created.Id}",
             new { HomeTeamId = arsenal.Id, AwayTeamId = barcelona.Id });
 
         // Assert
@@ -177,7 +177,7 @@ public class MatchEndpointsTests(SportsApiFactory factory) : IntegrationTestBase
 
         // Act — teams are in the same league, but not the one specified
         var response = await Client.PostAsJsonAsync(
-            $"/{ApiRoutes.Prefix}/matches", new AddMatchRequest(laLiga.Id, arsenal.Id, chelsea.Id));
+            "matches", new AddMatchRequest(laLiga.Id, arsenal.Id, chelsea.Id));
 
         // Assert
         response.Should().Be400BadRequest();

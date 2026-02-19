@@ -36,7 +36,7 @@ public class TeamHandlerTests : IDisposable
     public async Task GivenDuplicateName_WhenAddTeam_ThenReturnsConflict()
     {
         // Arrange
-        await new TestDataBuilder(_db)
+        var data = await new TestDataBuilder(_db)
             .WithLeague()
             .WithTeam()
             .SaveAsync();
@@ -45,7 +45,7 @@ public class TeamHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new AddTeamCommand("Arsenal", TestDataBuilder.Id(1)), CancellationToken.None);
+            new AddTeamCommand("Arsenal", data.Id("Premier League")), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -75,7 +75,7 @@ public class TeamHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new UpdateTeamCommand(_nonExistentId, "New Name", TestDataBuilder.Id(1)), CancellationToken.None);
+            new UpdateTeamCommand(_nonExistentId, "New Name", Guid.Empty), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -86,17 +86,17 @@ public class TeamHandlerTests : IDisposable
     public async Task GivenDuplicateName_WhenUpdateTeam_ThenReturnsConflict()
     {
         // Arrange
-        await new TestDataBuilder(_db)
+        var data = await new TestDataBuilder(_db)
             .WithLeague()
-            .WithTeam(1, "Arsenal")
-            .WithTeam(2, "Chelsea")
+            .WithTeam("Arsenal")
+            .WithTeam("Chelsea")
             .SaveAsync();
 
         var handler = new UpdateTeamHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new UpdateTeamCommand(TestDataBuilder.Id(2), "Arsenal", TestDataBuilder.Id(1)), CancellationToken.None);
+            new UpdateTeamCommand(data.Id("Chelsea"), "Arsenal", data.Id("Premier League")), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -107,7 +107,7 @@ public class TeamHandlerTests : IDisposable
     public async Task GivenNonExistentLeague_WhenUpdateTeamLeague_ThenReturnsNotFound()
     {
         // Arrange
-        await new TestDataBuilder(_db)
+        var data = await new TestDataBuilder(_db)
             .WithLeague()
             .WithTeam()
             .SaveAsync();
@@ -116,7 +116,7 @@ public class TeamHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new UpdateTeamCommand(TestDataBuilder.Id(1), "Arsenal", _nonExistentId), CancellationToken.None);
+            new UpdateTeamCommand(data.Id("Arsenal"), "Arsenal", _nonExistentId), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -127,19 +127,19 @@ public class TeamHandlerTests : IDisposable
     public async Task GivenTeamWithMatches_WhenChangeLeague_ThenReturnsValidationError()
     {
         // Arrange
-        await new TestDataBuilder(_db)
-            .WithLeague(1, "Premier League")
-            .WithLeague(2, "La Liga")
-            .WithTeam(1, "Arsenal", leagueId: 1)
-            .WithTeam(2, "Chelsea", leagueId: 1)
-            .WithMatch(1, homeTeamId: 1, awayTeamId: 2)
+        var data = await new TestDataBuilder(_db)
+            .WithLeague("Premier League")
+            .WithLeague("La Liga")
+            .WithTeam("Arsenal")
+            .WithTeam("Chelsea")
+            .WithMatch(homeTeam: "Arsenal", awayTeam: "Chelsea")
             .SaveAsync();
 
         var handler = new UpdateTeamHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new UpdateTeamCommand(TestDataBuilder.Id(1), "Arsenal", TestDataBuilder.Id(2)), CancellationToken.None);
+            new UpdateTeamCommand(data.Id("Arsenal"), "Arsenal", data.Id("La Liga")), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -150,9 +150,9 @@ public class TeamHandlerTests : IDisposable
     public async Task GivenTeamWithNoMatches_WhenChangeLeague_ThenSucceeds()
     {
         // Arrange
-        await new TestDataBuilder(_db)
-            .WithLeague(1, "Premier League")
-            .WithLeague(2, "La Liga")
+        var data = await new TestDataBuilder(_db)
+            .WithLeague("Premier League")
+            .WithLeague("La Liga")
             .WithTeam()
             .SaveAsync();
 
@@ -160,11 +160,11 @@ public class TeamHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new UpdateTeamCommand(TestDataBuilder.Id(1), "Arsenal", TestDataBuilder.Id(2)), CancellationToken.None);
+            new UpdateTeamCommand(data.Id("Arsenal"), "Arsenal", data.Id("La Liga")), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeFalse();
-        result.Value.LeagueId.Should().Be(TestDataBuilder.Id(2));
+        result.Value.LeagueId.Should().Be(data.Id("La Liga"));
     }
 
     [Fact]
@@ -186,7 +186,7 @@ public class TeamHandlerTests : IDisposable
     public async Task GivenTeamWithPlayers_WhenDeleteTeam_ThenReturnsConflict()
     {
         // Arrange
-        await new TestDataBuilder(_db)
+        var data = await new TestDataBuilder(_db)
             .WithLeague()
             .WithTeam()
             .WithPlayer()
@@ -196,7 +196,7 @@ public class TeamHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new DeleteTeamCommand(TestDataBuilder.Id(1)), CancellationToken.None);
+            new DeleteTeamCommand(data.Id("Arsenal")), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -207,18 +207,18 @@ public class TeamHandlerTests : IDisposable
     public async Task GivenTeamWithMatches_WhenDeleteTeam_ThenReturnsConflict()
     {
         // Arrange
-        await new TestDataBuilder(_db)
+        var data = await new TestDataBuilder(_db)
             .WithLeague()
-            .WithTeam(1, "Arsenal")
-            .WithTeam(2, "Chelsea")
-            .WithMatch(1, homeTeamId: 1, awayTeamId: 2)
+            .WithTeam("Arsenal")
+            .WithTeam("Chelsea")
+            .WithMatch(homeTeam: "Arsenal", awayTeam: "Chelsea")
             .SaveAsync();
 
         var handler = new DeleteTeamHandler(_db);
 
         // Act
         var result = await handler.Handle(
-            new DeleteTeamCommand(TestDataBuilder.Id(1)), CancellationToken.None);
+            new DeleteTeamCommand(data.Id("Arsenal")), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();

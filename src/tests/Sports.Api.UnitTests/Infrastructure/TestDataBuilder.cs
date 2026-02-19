@@ -1,35 +1,51 @@
 ﻿namespace Sports.Api.UnitTests.Infrastructure;
 
 using Sports.Api.Database;
-using Sports.Domain.Entities;
+using Sports.Domain.LeagueAggregate;
+using Sports.Domain.MatchAggregate;
+using Sports.Domain.MatchAggregate.ValueObjects;
+using Sports.Domain.PlayerAggregate;
+using Sports.Domain.PlayerAggregate.Enums;
+using Sports.Domain.PlayerAggregate.ValueObjects;
+using Sports.Domain.TeamAggregate;
+using Sports.Domain.TeamAggregate.ValueObjects;
+using Sports.Domain.LeagueAggregate.ValueObjects;
 
 public class TestDataBuilder(SportsDbContext db)
 {
-    private static Guid TestGuid(int n) => new($"00000000-0000-0000-0000-{n:D12}");
+    private readonly Dictionary<string, Guid> _ids = [];
 
-    public TestDataBuilder WithLeague(int id = 1, string name = "Premier League")
+    public TestDataBuilder WithLeague(string name = "Premier League")
     {
-        db.Leagues.Add(League.Create(TestGuid(id), name));
+        var league = League.Create(name);
+        _ids[name] = league.Id.Value;
+        db.Leagues.Add(league);
         return this;
     }
 
-    public TestDataBuilder WithTeam(int id = 1, string name = "Arsenal", int leagueId = 1)
+    public TestDataBuilder WithTeam(string name = "Arsenal", string inLeague = "Premier League")
     {
-        db.Teams.Add(Team.Create(TestGuid(id), name, TestGuid(leagueId)));
+        var team = Team.Create(name, LeagueId.Create(_ids[inLeague]));
+        _ids[name] = team.Id.Value;
+        db.Teams.Add(team);
         return this;
     }
 
-    public TestDataBuilder WithPlayer(int id = 1, string name = "Saka",
-        PlayerPosition position = PlayerPosition.RW, int teamId = 1)
+    public TestDataBuilder WithPlayer(string name = "Saka",
+        PlayerPosition position = PlayerPosition.RW, string inTeam = "Arsenal")
     {
-        db.Players.Add(Player.Create(TestGuid(id), name, position, TestGuid(teamId)));
+        var player = Player.Create(name, position, TeamId.Create(_ids[inTeam]));
+        _ids[name] = player.Id.Value;
+        db.Players.Add(player);
         return this;
     }
 
-    public TestDataBuilder WithMatch(int id = 1, int homeTeamId = 1, int awayTeamId = 2,
-        int? totalPasses = null)
+    public TestDataBuilder WithMatch(string key = "match", string homeTeam = "Arsenal",
+        string awayTeam = "Chelsea", int? totalPasses = null)
     {
-        db.Matches.Add(Match.Create(TestGuid(id), TestGuid(homeTeamId), TestGuid(awayTeamId), totalPasses));
+        var match = Match.Create(TeamId.Create(_ids[homeTeam]), TeamId.Create(_ids[awayTeam]), totalPasses);
+        _ids[key] = match.Id.Value;
+        db.Matches.Add(match);
         return this;
     }
 
@@ -39,5 +55,5 @@ public class TestDataBuilder(SportsDbContext db)
         return this;
     }
 
-    public static Guid Id(int n) => TestGuid(n);
+    public Guid Id(string name) => _ids[name];
 }

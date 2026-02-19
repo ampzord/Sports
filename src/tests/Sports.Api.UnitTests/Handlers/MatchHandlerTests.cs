@@ -21,17 +21,17 @@ public class MatchHandlerTests : IDisposable
     public async Task GivenNonExistentLeague_WhenAddMatch_ThenReturnsNotFound()
     {
         // Arrange
-        await new TestDataBuilder(_db)
+        var data = await new TestDataBuilder(_db)
             .WithLeague()
-            .WithTeam(1, "Arsenal")
-            .WithTeam(2, "Chelsea")
+            .WithTeam("Arsenal")
+            .WithTeam("Chelsea")
             .SaveAsync();
 
         var handler = new AddMatchHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new AddMatchCommand(_nonExistentId, TestDataBuilder.Id(1), TestDataBuilder.Id(2), null), CancellationToken.None);
+            new AddMatchCommand(_nonExistentId, data.Id("Arsenal"), data.Id("Chelsea"), null), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -42,16 +42,16 @@ public class MatchHandlerTests : IDisposable
     public async Task GivenNonExistentHomeTeam_WhenAddMatch_ThenReturnsNotFound()
     {
         // Arrange
-        await new TestDataBuilder(_db)
+        var data = await new TestDataBuilder(_db)
             .WithLeague()
-            .WithTeam(2, "Chelsea")
+            .WithTeam("Chelsea")
             .SaveAsync();
 
         var handler = new AddMatchHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new AddMatchCommand(TestDataBuilder.Id(1), _nonExistentId, TestDataBuilder.Id(2), null), CancellationToken.None);
+            new AddMatchCommand(data.Id("Premier League"), _nonExistentId, data.Id("Chelsea"), null), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -62,7 +62,7 @@ public class MatchHandlerTests : IDisposable
     public async Task GivenNonExistentAwayTeam_WhenAddMatch_ThenReturnsNotFound()
     {
         // Arrange
-        await new TestDataBuilder(_db)
+        var data = await new TestDataBuilder(_db)
             .WithLeague()
             .WithTeam()
             .SaveAsync();
@@ -71,7 +71,7 @@ public class MatchHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new AddMatchCommand(TestDataBuilder.Id(1), TestDataBuilder.Id(1), _nonExistentId, null), CancellationToken.None);
+            new AddMatchCommand(data.Id("Premier League"), data.Id("Arsenal"), _nonExistentId, null), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -82,18 +82,18 @@ public class MatchHandlerTests : IDisposable
     public async Task GivenTeamsFromDifferentLeagues_WhenAddMatch_ThenReturnsValidationError()
     {
         // Arrange
-        await new TestDataBuilder(_db)
-            .WithLeague(1, "Premier League")
-            .WithLeague(2, "La Liga")
-            .WithTeam(1, "Arsenal", leagueId: 1)
-            .WithTeam(2, "Barcelona", leagueId: 2)
+        var data = await new TestDataBuilder(_db)
+            .WithLeague("Premier League")
+            .WithLeague("La Liga")
+            .WithTeam("Arsenal")
+            .WithTeam("Barcelona", inLeague: "La Liga")
             .SaveAsync();
 
         var handler = new AddMatchHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new AddMatchCommand(TestDataBuilder.Id(1), TestDataBuilder.Id(1), TestDataBuilder.Id(2), null), CancellationToken.None);
+            new AddMatchCommand(data.Id("Premier League"), data.Id("Arsenal"), data.Id("Barcelona"), null), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -104,18 +104,18 @@ public class MatchHandlerTests : IDisposable
     public async Task GivenTeamsNotInSpecifiedLeague_WhenAddMatch_ThenReturnsValidationError()
     {
         // Arrange
-        await new TestDataBuilder(_db)
-            .WithLeague(1, "Premier League")
-            .WithLeague(2, "La Liga")
-            .WithTeam(1, "Arsenal", leagueId: 1)
-            .WithTeam(2, "Chelsea", leagueId: 1)
+        var data = await new TestDataBuilder(_db)
+            .WithLeague("Premier League")
+            .WithLeague("La Liga")
+            .WithTeam("Arsenal")
+            .WithTeam("Chelsea")
             .SaveAsync();
 
         var handler = new AddMatchHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new AddMatchCommand(TestDataBuilder.Id(2), TestDataBuilder.Id(1), TestDataBuilder.Id(2), null), CancellationToken.None);
+            new AddMatchCommand(data.Id("La Liga"), data.Id("Arsenal"), data.Id("Chelsea"), null), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -145,7 +145,7 @@ public class MatchHandlerTests : IDisposable
 
         // Act
         var result = await handler.Handle(
-            new UpdateMatchCommand(_nonExistentId, TestDataBuilder.Id(1), TestDataBuilder.Id(2), null), CancellationToken.None);
+            new UpdateMatchCommand(_nonExistentId, Guid.Empty, Guid.Empty, null), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -156,18 +156,18 @@ public class MatchHandlerTests : IDisposable
     public async Task GivenNonExistentHomeTeam_WhenUpdateMatch_ThenReturnsNotFound()
     {
         // Arrange
-        await new TestDataBuilder(_db)
+        var data = await new TestDataBuilder(_db)
             .WithLeague()
-            .WithTeam(1, "Arsenal")
-            .WithTeam(2, "Chelsea")
-            .WithMatch(1, homeTeamId: 1, awayTeamId: 2)
+            .WithTeam("Arsenal")
+            .WithTeam("Chelsea")
+            .WithMatch(homeTeam: "Arsenal", awayTeam: "Chelsea")
             .SaveAsync();
 
         var handler = new UpdateMatchHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new UpdateMatchCommand(TestDataBuilder.Id(1), _nonExistentId, TestDataBuilder.Id(2), null), CancellationToken.None);
+            new UpdateMatchCommand(data.Id("match"), _nonExistentId, data.Id("Chelsea"), null), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -178,18 +178,18 @@ public class MatchHandlerTests : IDisposable
     public async Task GivenNonExistentAwayTeam_WhenUpdateMatch_ThenReturnsNotFound()
     {
         // Arrange
-        await new TestDataBuilder(_db)
+        var data = await new TestDataBuilder(_db)
             .WithLeague()
-            .WithTeam(1, "Arsenal")
-            .WithTeam(2, "Chelsea")
-            .WithMatch(1, homeTeamId: 1, awayTeamId: 2)
+            .WithTeam("Arsenal")
+            .WithTeam("Chelsea")
+            .WithMatch(homeTeam: "Arsenal", awayTeam: "Chelsea")
             .SaveAsync();
 
         var handler = new UpdateMatchHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new UpdateMatchCommand(TestDataBuilder.Id(1), TestDataBuilder.Id(1), _nonExistentId, null), CancellationToken.None);
+            new UpdateMatchCommand(data.Id("match"), data.Id("Arsenal"), _nonExistentId, null), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
@@ -200,20 +200,20 @@ public class MatchHandlerTests : IDisposable
     public async Task GivenTeamsFromDifferentLeagues_WhenUpdateMatch_ThenReturnsValidationError()
     {
         // Arrange
-        await new TestDataBuilder(_db)
-            .WithLeague(1, "Premier League")
-            .WithLeague(2, "La Liga")
-            .WithTeam(1, "Arsenal", leagueId: 1)
-            .WithTeam(2, "Chelsea", leagueId: 1)
-            .WithTeam(3, "Barcelona", leagueId: 2)
-            .WithMatch(1, homeTeamId: 1, awayTeamId: 2)
+        var data = await new TestDataBuilder(_db)
+            .WithLeague("Premier League")
+            .WithLeague("La Liga")
+            .WithTeam("Arsenal")
+            .WithTeam("Chelsea")
+            .WithTeam("Barcelona", inLeague: "La Liga")
+            .WithMatch(homeTeam: "Arsenal", awayTeam: "Chelsea")
             .SaveAsync();
 
         var handler = new UpdateMatchHandler(_db, _mapper);
 
         // Act
         var result = await handler.Handle(
-            new UpdateMatchCommand(TestDataBuilder.Id(1), TestDataBuilder.Id(1), TestDataBuilder.Id(3), null), CancellationToken.None);
+            new UpdateMatchCommand(data.Id("match"), data.Id("Arsenal"), data.Id("Barcelona"), null), CancellationToken.None);
 
         // Assert
         result.IsError.Should().BeTrue();
